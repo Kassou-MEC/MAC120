@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Descriptive Stats: Interactive Practice (No Variance/SD) 🎉 — Tukey Quartiles Fixed</title>
+<style>
+  :root{
+    --bg1:#667eea; --bg2:#764ba2; --ink:#2d3748; --muted:#4a5568; --soft:#edf2f7;
+    --card:#ffffff; --line:#e2e8f0; --ok:#48bb78; --warn:#f56565; --accent:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2)); color:var(--ink);
+  }
+  .wrap{max-width:1200px; margin:0 auto; padding:20px;}
+  .slide{
+    display:none; background:var(--card); border-radius:16px; padding:28px; margin:22px 0;
+    box-shadow:0 14px 36px rgba(0,0,0,.25); animation:pop .45s ease;
+  }
+  .slide.active{display:block}
+  @keyframes pop{from{opacity:0; transform:translateY(20px)} to{opacity:1; transform:translateY(0)}}
+  h1{margin:.1rem 0 1rem; text-align:center; color:#334155; font-size:clamp(1.8rem,2.6vw,2.6rem)}
+  h2{margin:0 0 .75rem; border-bottom:3px solid var(--bg1); padding-bottom:.25rem; color:#1f2937}
+  h3{margin:1rem 0 .5rem; color:#334155}
+  p{line-height:1.6}
+  .muted{color:var(--muted)}
+  .grid{display:grid; gap:16px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+  .card{background:#f7fafc; border:2px solid var(--line); border-radius:12px; padding:16px}
+  .box{background:var(--soft); border-radius:12px; padding:16px}
+  .humor{background:linear-gradient(45deg,#ffeaa7,#fab1a0); padding:12px 16px; border-radius:12px; font-style:italic; text-align:center}
+  .def{background:linear-gradient(135deg,#a8edea,#fed6e3); border-left:5px solid var(--bg1); border-radius:12px; padding:14px 16px}
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin:.5rem 0}
+  button,.btn{
+    background:linear-gradient(45deg,var(--bg1),var(--bg2)); color:white; border:0; padding:10px 16px; border-radius:999px;
+    cursor:pointer; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,.2); transition:transform .15s ease, box-shadow .2s ease;
+  }
+  button:hover{transform:translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,.25)}
+  button:disabled{opacity:.55; cursor:not-allowed; transform:none; box-shadow:none}
+  input,textarea,select{
+    width:100%; padding:10px 12px; border:2px solid var(--line); border-radius:10px; font-size:16px; background:#fff;
+  }
+  .pill{display:inline-block; background:#eef2ff; color:#3730a3; padding:4px 10px; border-radius:999px; font-size:.9rem; margin-right:6px}
+  .kv{display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border:1px dashed var(--line); border-radius:8px; background:#fff}
+  .ok{color:var(--ok); font-weight:700}
+  .bad{color:var(--warn); font-weight:700}
+  .progress{height:10px; background:#e2e8f0; border-radius:6px; overflow:hidden}
+  .progress>span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--bg1),var(--bg2)); transition:width .2s ease}
+  .fixedCounter{
+    position:fixed; top:16px; right:16px; background:rgba(255,255,255,.95); padding:10px 12px; border-radius:10px; font-weight:700; z-index:10;
+    box-shadow:0 6px 16px rgba(0,0,0,.2)
+  }
+  canvas.chart{border:1px solid #d1d5db; border-radius:8px; background:#fff}
+  .quiz .option{padding:10px; border:2px solid transparent; border-radius:10px; background:#fff; cursor:pointer; margin:6px 0}
+  .quiz .option:hover{border-color:var(--bg1); background:#f8fafc}
+  .quiz .correct{background:#c6f6d5 !important; border-color:var(--ok) !important}
+  .quiz .incorrect{background:#fed7d7 !important; border-color:var(--warn) !important}
+  .legend{display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-size:.9rem}
+  .legend .sw{width:14px; height:14px; border-radius:3px; border:1px solid #0001}
+  .footnote{font-size:.9rem; color:#334155; text-align:center; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="fixedCounter">Slide <span id="cur">1</span> / <span id="tot">16</span></div>
+
+<div class="wrap">
+
+  <!-- 1. Title -->
+  <section class="slide active" data-init="initTitle">
+    <h1>Descriptive Statistics: Interactive Practice Lab 🤹‍♀️</h1>
+    <div class="humor">“Turning ‘huh?’ into ‘aha!’—one chart at a time.”</div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="def">
+        <strong>What’s inside:</strong>
+        <ul>
+          <li>Mean • Median • Mode (M<sub>3</sub>—like a data boy band)</li>
+          <li>Quartiles • Percentiles • IQR • Boxplots</li>
+          <li>Frequency tables (absolute/relative/cumulative) & histograms</li>
+          <li>Stem-and-leaf, bar charts (categorical), time-series trends</li>
+          <li>Choosing the right display & interpretation drills</li>
+        </ul>
+        <div class="pill">No variance</div><div class="pill">No standard deviation</div><div class="pill">100% interactive</div>
+      </div>
+      <div class="card">
+        <h3>Quick start</h3>
+        <p>Paste your numbers anywhere you see a big input box. Use commas or spaces. For categories, use <code>Label:Value</code>.</p>
+        <div class="kv"><span>Example numbers</span><code>67, 72, 75, 78, 81, 83, 84, 87, 89, 91, 93, 95</code></div>
+        <div class="kv"><span>Example categories</span><code>Red:12, Blue:18, Green:7, Purple:9</code></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Central Tendency -->
+  <section class="slide">
+    <h2>🎯 Mean, Median, Mode</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def"><strong>Goal:</strong> Enter a dataset and compute the “center” three ways. Skips variance/SD because you told me to behave 😇.</div>
+        <div class="humor">The mean is sensitive; the median is chill; the mode is popular.</div>
+        <textarea id="cData" rows="6" placeholder="e.g., 10, 12, 12, 15, 19, 22, 27"></textarea>
+        <div class="toolbar"><button onclick="calcMMM()">Compute</button><button onclick="fillSample('cData')">Sample</button></div>
+        <div id="mmmOut" class="card"></div>
+      </div>
+      <div class="card">
+        <h3>Skew-o-meter™</h3>
+        <p class="muted">A quick hint: if <em>mean &gt; median</em> → right-skew; if <em>mean &lt; median</em> → left-skew.</p>
+        <div id="skewBadge" class="kv"><span>Status</span><strong id="skewStatus">—</strong></div>
+        <canvas id="cLine" class="chart" width="520" height="220"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Quartiles, IQR, Boxplot -->
+  <section class="slide">
+    <h2>📦 Quartiles, IQR & Boxplot (with Outliers)</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def"><strong>Five-number summary:</strong> min, Q1, median (Q2), Q3, max. Outliers by the 1.5×IQR rule.<br><span class="pill">Quartiles = <b>Tukey median-of-halves</b> (exclusive median)</span></div>
+        <textarea id="boxData" rows="5" placeholder="Numbers only, please"></textarea>
+        <div class="toolbar"><button onclick="calcBox()">Summarize</button><button onclick="fillSample('boxData')">Sample</button></div>
+        <div id="boxStats" class="card"></div>
+        <div class="footnote">No SD/variance used—just as ordered. 🫡</div>
+      </div>
+      <div class="card">
+        <h3>Boxplot</h3>
+        <canvas id="boxCanvas" class="chart" width="640" height="240"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Percentiles & Explorer -->
+  <section class="slide">
+    <h2>📏 Percentiles & Quartile Explorer</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Pick a percentile and see where it lands. (Percentiles here use linear interpolation; quartiles elsewhere use Tukey.)</div>
+        <textarea id="percData" rows="6" placeholder="e.g., 60, 62, 65, 68, 70, 73, 75, 77, 80, 84, 87, 90, 94"></textarea>
+        <div class="toolbar">
+          <label style="display:flex; gap:8px; align-items:center">Percentile:
+            <input id="pCtl" type="range" min="1" max="99" value="50" oninput="showPercentile()" />
+            <span id="pVal" class="pill">50th</span>
+          </label>
+          <button onclick="showPercentile()">Locate</button>
+          <button onclick="fillSample('percData')">Sample</button>
+        </div>
+        <div id="percOut" class="card"></div>
+      </div>
+      <div class="card">
+        <h3>Mini plot</h3>
+        <canvas id="percCanvas" class="chart" width="640" height="220"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Frequency Tables -->
+  <section class="slide">
+    <h2>🧮 Frequency • Relative • Cumulative</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Build a grouped table. Choose number of classes or a class width. We’ll compute the rest.</div>
+        <textarea id="freqData" rows="6" placeholder="e.g., 12 13 15 17 18 18 19 21 22 22 23 24 26 26 27 29 31 31 32 33"></textarea>
+        <div class="grid g3">
+          <div class="card">
+            <label># Classes (k)<br><input id="kClasses" type="number" min="2" max="20" placeholder="e.g., 6"></label>
+          </div>
+          <div class="card">
+            <label>Class width (optional)<br><input id="classWidth" type="number" min="1" placeholder="auto if blank"></label>
+          </div>
+          <div class="card">
+            <label>Start at (optional)<br><input id="classStart" type="number" placeholder="min if blank"></label>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button onclick="buildFreq()">Build Table</button>
+          <button onclick="fillSample('freqData')">Sample</button>
+        </div>
+        <div id="freqOut" class="card" style="overflow:auto"></div>
+      </div>
+      <div class="card">
+        <h3>Histogram & Ogive</h3>
+        <div class="legend">
+          <span class="sw" style="background:#667eea"></span> Histogram
+          <span class="sw" style="background:#f59e0b"></span> Cumulative (Ogive)
+        </div>
+        <canvas id="histCanvas" class="chart" width="640" height="260"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Stem-and-Leaf -->
+  <section class="slide">
+    <h2>🌱 Stem-and-Leaf Builder</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Old-school charm, new-school speed. Stems are leading digits; leaves are trailing digits.</div>
+        <textarea id="stemData" rows="6" placeholder="e.g., 23, 25, 27, 29, 31, 33, 35"></textarea>
+        <div class="toolbar"><button onclick="makeStem()">Make Plot</button><button onclick="fillSample('stemData')">Sample</button></div>
+        <pre id="stemOut" class="card" style="white-space:pre-wrap"></pre>
+      </div>
+      <div class="card">
+        <h3>Key</h3>
+        <div id="stemKey" class="kv"><span>Example</span><strong>6 | 7 = 67</strong></div>
+        <div class="humor">It’s like a histogram went analog ✍️</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Bar Charts (categorical) -->
+  <section class="slide">
+    <h2>🍫 Bar Chart (Categorical)</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Use <code>Label:Value</code> pairs. Bars don’t touch—because categories need personal space.</div>
+        <textarea id="barData" rows="6" placeholder="Donuts:18, Bagels:12, Croissants:9, Muffins:15"></textarea>
+        <div class="toolbar"><button onclick="drawBar()">Draw</button><button onclick="fillSample('barData')">Sample</button></div>
+        <div class="footnote">Tip: For continuous data → use a histogram instead.</div>
+      </div>
+      <div class="card">
+        <h3>Bar Chart</h3>
+        <canvas id="barCanvas" class="chart" width="640" height="260"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Histogram (quick) -->
+  <section class="slide">
+    <h2>📈 Histogram (Quick Builder)</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Paste numbers; choose bins; we’ll draw.</div>
+        <textarea id="hData" rows="6" placeholder="e.g., 65,67,69,71,73,75,77,79,81,83,85,87,89,91,93"></textarea>
+        <div class="toolbar">
+          <label>Bins <input id="hBins" type="number" min="3" max="20" value="8" style="width:120px"></label>
+          <button onclick="quickHist()">Plot</button>
+          <button onclick="fillSample('hData')">Sample</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Histogram</h3>
+        <canvas id="hCanvas" class="chart" width="640" height="260"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Time Series -->
+  <section class="slide">
+    <h2>⏱️ Time Series & Trend Peek</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Enter monthly data (12 values). We’ll show a simple moving average trend (no stdev needed!).</div>
+        <input id="tsData" placeholder="e.g., 100,110,105,115,120,125,130,135,140,145,150,155" />
+        <div class="toolbar"><button onclick="tsAnalyze()">Analyze</button><button onclick="fillSample('tsData')">Sample</button></div>
+        <div id="tsOut" class="card"></div>
+      </div>
+      <div class="card">
+        <h3>Series</h3>
+        <canvas id="tsCanvas" class="chart" width="640" height="260"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Choose the Right Display (drag & drop lite) -->
+  <section class="slide">
+    <h2>🧩 Choose the Right Display</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Scenario</h3>
+        <ol>
+          <li>Favorite beverages among students → <em>categorical</em></li>
+          <li>Heights of a basketball team → <em>continuous</em></li>
+          <li>Daily sales over a month → <em>time</em></li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Pick one per line</h3>
+        <div class="quiz" id="displayQuiz">
+          <div class="option" data-answer="Bar">Bar chart</div>
+          <div class="option" data-answer="Histogram">Histogram</div>
+          <div class="option" data-answer="Time">Time series line</div>
+        </div>
+        <div class="toolbar"><button onclick="gradeDisplayQuiz()">Grade</button></div>
+        <div id="displayResult" class="kv"><span>Score</span><strong id="displayScore">—</strong></div>
+      </div>
+    </div>
+    <div class="humor" style="margin-top:10px">Bar charts are for categories. Histograms are for numbers that don’t like personal space.</div>
+  </section>
+
+  <!-- 11. Interpretation MCQs -->
+  <section class="slide">
+    <h2>🧐 Interpretation Drill</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Q1</h3>
+        <p>If your score is at the 85th percentile, you...</p>
+        <div class="quiz" id="q1">
+          <div class="option" data-correct="true">scored better than 85% of test takers</div>
+          <div class="option">got 85% correct</div>
+          <div class="option">are 85th tallest</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Q2</h3>
+        <p>With an extreme outlier present, which center is most representative?</p>
+        <div class="quiz" id="q2">
+          <div class="option" data-correct="true">Median</div>
+          <div class="option">Mean</div>
+          <div class="option">Mode</div>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar"><button onclick="gradeMC()">Submit</button></div>
+    <div id="mcScore" class="kv"><span>Result</span><strong id="mcOut">—</strong></div>
+  </section>
+
+  <!-- 12. Build Your Own Problem Set -->
+  <section class="slide">
+    <h2>🛠️ Build-Your-Own Practice Set</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Paste data once</h3>
+        <textarea id="allData" rows="6" placeholder="Drop a dataset used throughout (we won’t ask for SD/variance)"></textarea>
+        <div class="toolbar"><button onclick="fillSample('allData')">Sample</button></div>
+      </div>
+      <div class="card">
+        <h3>Tasks</h3>
+        <label><input type="checkbox" id="tMean" checked /> Mean / Median / Mode</label><br/>
+        <label><input type="checkbox" id="tBox" checked /> Five-number summary & boxplot</label><br/>
+        <label><input type="checkbox" id="tFreq" checked /> Frequency + Histogram</label><br/>
+        <label><input type="checkbox" id="tStem" /> Stem-and-leaf</label><br/>
+        <label><input type="checkbox" id="tPct" /> Percentile lookup</label><br/>
+        <div class="toolbar"><button onclick="runAll()">Run Selected</button></div>
+        <div id="allOut" class="card"></div>
+      </div>
+    </div>
+    <div class="humor">This is like a data gym. No leg day skipped; just variance day. 🏋️‍♀️</div>
+  </section>
+
+  <!-- 13. Quick Reference -->
+  <section class="slide">
+    <h2>📚 Quick Reference</h2>
+    <div class="grid g3">
+      <div class="box">
+        <h3>Centers</h3>
+        <ul><li>Mean: arithmetic average</li><li>Median: middle value</li><li>Mode: most frequent</li></ul>
+      </div>
+      <div class="box">
+        <h3>Spread (we use IQR only)</h3>
+        <ul><li>IQR = Q3 − Q1</li><li>Outliers: &lt; Q1−1.5·IQR or &gt; Q3+1.5·IQR</li><li>Quartiles: Tukey median-of-halves</li></ul>
+      </div>
+      <div class="box">
+        <h3>Display choices</h3>
+        <ul><li>Bar chart → categorical</li><li>Histogram → continuous</li><li>Line/time series → across time</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. Export -->
+  <section class="slide">
+    <h2>🖨️ Export & Share</h2>
+    <p>Use your browser’s print dialog to export as PDF. Results in the cards will be captured.</p>
+    <div class="toolbar">
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <div class="humor">Resume bullet: “Made boxplots so good, the whiskers purr.” 🐱</div>
+  </section>
+
+  <!-- 15. Credits -->
+  <section class="slide">
+    <h2>✅ Done & Dusted</h2>
+    <p>All core exercises and problem types are covered interactively (except variance/SD). Quartiles are now calculated via <b>Tukey’s median-of-halves</b>, so for your page-3 data Q1 = <b>76.5</b> and Q3 = <b>90</b>.</p>
+    <div class="card">
+      <strong>Note:</strong> The percentile explorer uses interpolation; that’s separate from quartiles shown in boxplots.
+    </div>
+  </section>
+
+  <!-- 16. Controls -->
+  <section class="slide">
+    <h2>🎬 Controls</h2>
+    <p>Use <kbd>←</kbd>/<kbd>→</kbd> or the buttons below to navigate. Your progress bar tracks how far you’ve gone.</p>
+    <div class="progress"><span id="prog"></span></div>
+  </section>
+
+  <!-- NAV -->
+  <div class="card" style="display:flex; gap:10px; justify-content:center; align-items:center; position:sticky; bottom:10px;">
+    <button id="prevBtn" onclick="go(-1)">← Previous</button>
+    <button id="nextBtn" onclick="go(1)">Next →</button>
+  </div>
+
+  <div class="progress"><span id="globalProg"></span></div>
+</div>
+
+<script>
+/*** Utilities ***/
+const $ = sel => document.querySelector(sel);
+const parseNums = s => (s||"")
+  .split(/[\s,;]+/)
+  .map(x=>+x)
+  .filter(x=>Number.isFinite(x))
+  .sort((a,b)=>a-b);
+
+const parsePairs = s => (s||"")
+  .split(/,/)
+  .map(p=>p.trim())
+  .map(p=>{ const [k,v]=p.split(':'); return k && v ? {k:k.trim(), v:+v} : null; })
+  .filter(Boolean);
+
+const mean = a => a.reduce((x,y)=>x+y,0)/a.length;
+const medianOf = a => {
+  if(!a.length) return NaN;
+  const m = Math.floor(a.length/2);
+  return a.length%2 ? a[m] : (a[m-1]+a[m])/2;
+};
+const mode = a => {
+  if(!a.length) return [];
+  const f = new Map();
+  for(const x of a) f.set(x,(f.get(x)||0)+1);
+  const max = Math.max(...f.values());
+  const modes = [...f.entries()].filter(([k,v])=>v===max).map(([k])=>k);
+  return modes;
+};
+
+/* Linear-interpolation percentile (used only for the Percentile Explorer) */
+const percentileLinear = (a, p01to1) => {
+  if(!a.length) return NaN;
+  const pos = (a.length-1)*p01to1;
+  const lo = Math.floor(pos), hi = Math.ceil(pos);
+  if(lo===hi) return a[lo];
+  return a[lo] + (pos-lo)*(a[hi]-a[lo]);
+};
+
+/* Tukey quartiles (median-of-halves, exclusive median) */
+function tukeyQuartiles(aSorted){
+  const n = aSorted.length;
+  if(!n) return {q1:NaN, q2:NaN, q3:NaN};
+  let lower, upper, q2;
+  if(n%2===0){
+    lower = aSorted.slice(0, n/2);
+    upper = aSorted.slice(n/2);
+    q2 = (aSorted[n/2-1] + aSorted[n/2]) / 2;
+  }else{
+    const mid = Math.floor(n/2);
+    q2 = aSorted[mid];
+    lower = aSorted.slice(0, mid);
+    upper = aSorted.slice(mid+1);
+  }
+  const q1 = medianOf(lower);
+  const q3 = medianOf(upper);
+  return {q1, q2, q3};
+}
+
+/* Pretty formatter */
+function fmt(x){
+  if(!Number.isFinite(x)) return '—';
+  const s = (+x.toFixed(4)).toString();
+  return s.replace(/(\.\d*?[1-9])0+$/,'$1').replace(/\.0+$/,'');
+}
+
+function niceRange(min, max, bins){
+  const span = max - min || 1;
+  const raw = span / bins;
+  const pow10 = Math.pow(10, Math.floor(Math.log10(raw)));
+  const nice = [1,2,5,10].map(m=>m*pow10).reduce((best,c)=>Math.abs(c-raw)<Math.abs(best-raw)?c:best);
+  const start = Math.floor(min/nice)*nice;
+  return {width:nice, start:start};
+}
+
+function fillSample(id){
+  const el = typeof id === 'string' ? $('#'+id) : id;
+  if(!el) return;
+  if(id==='cData') el.value = "10, 12, 12, 15, 19, 22, 27";
+  else if(id==='boxData') el.value = "67, 72, 75, 78, 81, 83, 84, 87, 89, 91, 93, 95";
+  else if(id==='percData') el.value = "60,62,65,68,70,73,75,77,80,84,87,90,94";
+  else if(id==='freqData') el.value = "12 13 15 17 18 18 19 21 22 22 23 24 26 26 27 29 31 31 32 33 34 35 36";
+  else if(id==='stemData') el.value = "23,25,27,29,31,33,35,37,39,41,43,45,47,49";
+  else if(id==='barData') el.value = "Donuts:18, Bagels:12, Croissants:9, Muffins:15";
+  else if(id==='hData') el.value = "65,67,69,71,73,75,77,79,81,83,85,87,89,91,93";
+  else if(id==='tsData') el.value = "100,110,105,115,120,125,130,135,140,145,150,155";
+  else if(id==='allData') el.value = "67, 72, 75, 78, 81, 83, 84, 87, 89, 91, 93, 95";
+}
+
+/*** 1. Title (no-op) ***/
+function initTitle(){}
+
+/*** 2. Mean/Median/Mode ***/
+function calcMMM(){
+  const a = parseNums($('#cData').value);
+  if(!a.length) { $('#mmmOut').innerHTML = '<span class="bad">Please enter numbers.</span>'; return; }
+  const mu = mean(a);
+  const med = medianOf(a);
+  const mo = mode(a);
+  const skew = mu>med ? 'Right-skew (mean > median)' : mu<med ? 'Left-skew (mean < median)' : 'Roughly symmetric';
+  $('#mmmOut').innerHTML = `
+    <div class="grid g3">
+      <div class="kv"><span>Mean</span><strong>${fmt(mu)}</strong></div>
+      <div class="kv"><span>Median</span><strong>${fmt(med)}</strong></div>
+      <div class="kv"><span>Mode(s)</span><strong>${mo.join(', ')}</strong></div>
+    </div>
+    <div class="kv"><span>Skew-o-meter</span><strong>${skew}</strong></div>
+  `;
+  $('#skewStatus').textContent = skew;
+  drawLine('#cLine', a, {title:'Data (sorted)', points:true});
+}
+
+/*** 3. Boxplot (Tukey quartiles) ***/
+function calcBox(){
+  const a = parseNums($('#boxData').value);
+  if(!a.length) { $('#boxStats').innerHTML = '<span class="bad">Please enter numbers.</span>'; return; }
+  const {q1,q2,q3} = tukeyQuartiles(a);
+  const iqr = q3 - q1;
+  const lowFence = q1 - 1.5*iqr, highFence = q3 + 1.5*iqr;
+  const outliers = a.filter(x=>x<lowFence || x>highFence);
+  const inner = a.filter(x=>x>=lowFence && x<=highFence);
+  const min = Math.min(...inner), max = Math.max(...inner);
+  $('#boxStats').innerHTML = `
+    <div class="grid g3">
+      <div class="kv"><span>min</span><strong>${fmt(min)}</strong></div>
+      <div class="kv"><span>Q1</span><strong>${fmt(q1)}</strong></div>
+      <div class="kv"><span>Median</span><strong>${fmt(q2)}</strong></div>
+      <div class="kv"><span>Q3</span><strong>${fmt(q3)}</strong></div>
+      <div class="kv"><span>max</span><strong>${fmt(max)}</strong></div>
+      <div class="kv"><span>IQR</span><strong>${fmt(iqr)}</strong></div>
+    </div>
+    <div class="kv"><span>Outliers (±1.5·IQR)</span><strong>${outliers.length? outliers.join(', '):'None'}</strong></div>
+  `;
+  drawBox('#boxCanvas', {min,q1,med:q2,q3,max}, outliers);
+}
+
+/*** 4. Percentiles (linear interpolation for slider) ***/
+function showPercentile(){
+  const a = parseNums($('#percData').value);
+  const p = +$('#pCtl').value;
+  $('#pVal').textContent = `${p}th`;
+  if(!a.length){ $('#percOut').textContent = 'Enter data to explore percentiles.'; return; }
+  const val = percentileLinear(a, p/100);
+  const pos = (a.length-1)*(p/100);
+  $('#percOut').innerHTML = `
+    <div class="kv"><span>Position</span><strong>${fmt(pos)} (0-indexed in sorted data)</strong></div>
+    <div class="kv"><span>Value at ${p}th</span><strong>${fmt(val)}</strong></div>
+    <p class="muted">Interpretation: ~${p}% of values are ≤ ${fmt(val)}. (Note: quartiles in boxplots use Tukey method.)</p>
+  `;
+  drawLine('#percCanvas', a, {title:`Percentile marker (${p}th)`, points:true, marker:{index:pos, value:val}});
+}
+
+/*** 5. Frequency Table + Histogram + Ogive ***/
+function buildFreq(){
+  const a = parseNums($('#freqData').value);
+  if(!a.length){ $('#freqOut').innerHTML = '<span class="bad">Enter numbers.</span>'; return; }
+  const k = +$('#kClasses').value || Math.round(1 + Math.log2(a.length)); // Sturges-ish if unspecified
+  const min = a[0], max = a[a.length-1];
+  const w = +$('#classWidth').value || Math.max(1, Math.ceil((max-min)/k));
+  const start = Number.isFinite(+$('#classStart').value) ? +$('#classStart').value : min;
+  const classes = [];
+  for(let i=0;i<k;i++){
+    const lo = start + i*w;
+    const hi = lo + w;
+    classes.push({lo,hi,f:0});
+  }
+  for(const x of a){
+    let idx = Math.floor((x-start)/w);
+    if(idx<0) idx = 0;
+    if(idx>=classes.length) idx = classes.length-1;
+    classes[idx].f++;
+  }
+  const n = a.length;
+  let cf = 0;
+  const rows = classes.map(c=>{
+    cf += c.f;
+    return {...c, rf: c.f/n, cf};
+  });
+  const table = `
+    <table style="border-collapse:collapse; width:100%">
+      <thead>
+        <tr>
+          <th style="border:1px solid #ddd; padding:8px">Class</th>
+          <th style="border:1px solid #ddd; padding:8px">Frequency</th>
+          <th style="border:1px solid #ddd; padding:8px">Relative</th>
+          <th style="border:1px solid #ddd; padding:8px">Cumulative</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(r=>`
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px">[${fmt(r.lo)}, ${fmt(r.hi)})</td>
+          <td style="border:1px solid #ddd; padding:8px">${r.f}</td>
+          <td style="border:1px solid #ddd; padding:8px">${(r.rf*100).toFixed(1)}%</td>
+          <td style="border:1px solid #ddd; padding:8px">${r.cf}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+  $('#freqOut').innerHTML = table;
+  drawHistOgive('#histCanvas', rows);
+}
+
+/*** 6. Stem-and-Leaf ***/
+function makeStem(){
+  const a = parseNums($('#stemData').value);
+  if(!a.length){ $('#stemOut').textContent = 'Enter numbers.'; return; }
+  const m = new Map();
+  for(const x of a){
+    const stem = Math.trunc(x/10);
+    const leaf = Math.abs(Math.trunc(x))%10;
+    if(!m.has(stem)) m.set(stem, []);
+    m.get(stem).push(leaf);
+  }
+  const keys = [...m.keys()].sort((x,y)=>x-y);
+  const lines = keys.map(st=>`${st} | ${m.get(st).sort((x,y)=>x-y).join(' ')}`);
+  const firstStem = keys[0], firstLeaf = m.get(firstStem)[0];
+  $('#stemOut').textContent = lines.join('\n') + `\n\nKey: ${firstStem} | ${firstLeaf} = ${firstStem}${firstLeaf}`;
+}
+
+/*** 7. Bar Chart ***/
+function drawBar(){
+  const pairs = parsePairs($('#barData').value);
+  if(!pairs.length){ return; }
+  const labels = pairs.map(p=>p.k), vals = pairs.map(p=>p.v);
+  drawBars('#barCanvas', labels, vals, {title:'Categorical counts'});
+}
+
+/*** 8. Histogram Quick ***/
+function quickHist(){
+  const a = parseNums($('#hData').value);
+  if(!a.length) return;
+  const bins = Math.min(20, Math.max(3, +$('#hBins').value || 8));
+  const min = a[0], max = a[a.length-1];
+  const {width,start} = niceRange(min,max,bins);
+  const k = Math.ceil((max-start)/width);
+  const rows = Array.from({length:k},(_,i)=>({lo:start+i*width, hi:start+(i+1)*width, f:0}));
+  for(const x of a){
+    let idx = Math.floor((x-start)/width);
+    if(idx<0) idx=0;
+    if(idx>=rows.length) idx=rows.length-1;
+    rows[idx].f++;
+  }
+  drawOnlyHist('#hCanvas', rows);
+}
+
+/*** 9. Time Series ***/
+function tsAnalyze(){
+  const a = parseNums($('#tsData').value);
+  if(a.length!==12){ $('#tsOut').innerHTML = '<span class="bad">Enter exactly 12 monthly values.</span>'; return; }
+  const first = mean(a.slice(0,6)), second = mean(a.slice(6));
+  const trend = second>first ? 'Upward' : second<first ? 'Downward' : 'Flat';
+  const maxV = Math.max(...a), minV = Math.min(...a);
+  const maxM = a.indexOf(maxV), minM = a.indexOf(minV);
+  $('#tsOut').innerHTML = `
+    <div class="grid g3">
+      <div class="kv"><span>Overall trend</span><strong>${trend}</strong></div>
+      <div class="kv"><span>Max</span><strong>${fmt(maxV)} (month ${maxM+1})</strong></div>
+      <div class="kv"><span>Min</span><strong>${fmt(minV)} (month ${minM+1})</strong></div>
+    </div>
+    <div class="kv"><span>Average</span><strong>${fmt(mean(a))}</strong></div>
+  `;
+  drawTS('#tsCanvas', a);
+}
+
+/*** 10. Choose display (simple reveal) ***/
+function gradeDisplayQuiz(){
+  const opts = [...$('#displayQuiz').querySelectorAll('.option')];
+  opts.forEach(o=>o.classList.remove('correct','incorrect'));
+  const key = { 'Bar':true, 'Histogram':true, 'Time':true };
+  opts.forEach(o=>{ if(key[o.dataset.answer]) o.classList.add('correct'); });
+  $('#displayScore').textContent = 'Shown the correct picks: Bar • Histogram • Time';
+}
+
+/*** 11. MC grading (click to reveal) ***/
+function gradeMC(){
+  ['#q1','#q2'].forEach(id=>{
+    const box = $(id);
+    const opts = [...box.querySelectorAll('.option')];
+    opts.forEach(o=>{
+      o.onclick = ()=> {
+        opts.forEach(x=>x.classList.remove('correct','incorrect'));
+        if(o.dataset.correct==='true'){ o.classList.add('correct'); }
+        else { o.classList.add('incorrect'); opts.find(x=>x.dataset.correct==='true').classList.add('correct'); }
+      }
+    });
+  });
+  $('#mcOut').textContent = 'Answer(s) highlighted. Click an option to see why.';
+}
+
+/*** 12. One-click problem set (Tukey quartiles) ***/
+function runAll(){
+  const a = parseNums($('#allData').value);
+  if(!a.length){ $('#allOut').innerHTML = '<span class="bad">Paste a dataset.</span>'; return; }
+  const wants = {
+    mean: $('#tMean').checked,
+    box: $('#tBox').checked,
+    freq: $('#tFreq').checked,
+    stem: $('#tStem').checked,
+    pct: $('#tPct').checked
+  };
+  let html = '';
+  if(wants.mean){
+    const mu = mean(a), md = medianOf(a), mo = mode(a);
+    html += `<h3>Center</h3>
+    <div class="grid g3">
+      <div class="kv"><span>Mean</span><strong>${fmt(mu)}</strong></div>
+      <div class="kv"><span>Median</span><strong>${fmt(md)}</strong></div>
+      <div class="kv"><span>Mode(s)</span><strong>${mo.join(', ')}</strong></div>
+    </div>`;
+  }
+  if(wants.box){
+    const {q1,q2,q3} = tukeyQuartiles(a);
+    const iqr = q3-q1, lo=q1-1.5*iqr, hi=q3+1.5*iqr;
+    const outs=a.filter(x=>x<lo||x>hi); const inner=a.filter(x=>x>=lo&&x<=hi);
+    html += `<h3>Five-number & IQR</h3>
+    <div class="grid g3">
+      <div class="kv"><span>min</span><strong>${fmt(Math.min(...inner))}</strong></div>
+      <div class="kv"><span>Q1</span><strong>${fmt(q1)}</strong></div>
+      <div class="kv"><span>Median</span><strong>${fmt(q2)}</strong></div>
+      <div class="kv"><span>Q3</span><strong>${fmt(q3)}</strong></div>
+      <div class="kv"><span>max</span><strong>${fmt(Math.max(...inner))}</strong></div>
+    </div>
+    <div class="kv"><span>IQR</span><strong>${fmt(iqr)}</strong></div>
+    <div class="kv"><span>Outliers</span><strong>${outs.length? outs.join(', '):'None'}</strong></div>
+    <div class="footnote">Quartiles via <b>Tukey median-of-halves</b>.</div>`;
+  }
+  if(wants.freq){
+    const min=a[0], max=a[a.length-1];
+    const k=Math.round(1+Math.log2(a.length));
+    const {width,start} = niceRange(min,max,k);
+    const rows=Array.from({length:Math.ceil((max-start)/width)},(_,i)=>({lo:start+i*width,hi:start+(i+1)*width,f:0}));
+    for(const x of a){ let idx=Math.floor((x-start)/width); if(idx<0) idx=0; if(idx>=rows.length) idx=rows.length-1; rows[idx].f++; }
+    const n=a.length; let cf=0;
+    const out = rows.map(r=>{ cf+=r.f; return `<tr><td>[${fmt(r.lo)}, ${fmt(r.hi)})</td><td>${r.f}</td><td>${(r.f/n*100).toFixed(1)}%</td><td>${cf}</td></tr>` }).join('');
+    html += `<h3>Grouped Frequency</h3>
+      <table style="border-collapse:collapse; width:100%">
+        <thead><tr><th>Class</th><th>f</th><th>Rel</th><th>Cum</th></tr></thead>
+        <tbody>${out}</tbody>
+      </table>
+      <div class="footnote">Histogram/ogive in the Frequency section.</div>`;
+  }
+  if(wants.stem){
+    const m=new Map();
+    for(const x of a){ const st=Math.trunc(x/10); const leaf=Math.abs(Math.trunc(x))%10; if(!m.has(st)) m.set(st,[]); m.get(st).push(leaf); }
+    const lines=[...m.keys()].sort((x,y)=>x-y).map(st=>`${st} | ${m.get(st).sort((x,y)=>x-y).join(' ')}`).join('\n');
+    html += `<h3>Stem-and-Leaf</h3><pre>${lines}</pre>`;
+  }
+  if(wants.pct){
+    const p = 75; // example
+    const val = percentileLinear(a, p/100);
+    html += `<h3>Percentile</h3>
+    <div class="kv"><span>${p}th Percentile (interp.)</span><strong>${fmt(val)}</strong></div>
+    <div class="footnote">Percentile uses interpolation; quartiles elsewhere use Tukey.</div>`;
+  }
+  $('#allOut').innerHTML = html;
+}
+
+/*** Drawing helpers ***/
+function drawLine(sel, arr, opts={}){
+  const c = $(sel); const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const pad=40, W=c.width-2*pad, H=c.height-2*pad;
+  const min = arr[0], max = arr[arr.length-1], span=(max-min)||1;
+  // axes
+  ctx.strokeStyle='#1115'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,pad+H); ctx.lineTo(pad+W,pad+H); ctx.stroke();
+  // line
+  ctx.strokeStyle='#667eea'; ctx.lineWidth=2;
+  ctx.beginPath();
+  arr.forEach((v,i)=>{
+    const x = pad + (i/(arr.length-1))*W;
+    const y = pad+H - ((v-min)/span)*H;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  if(opts.points){
+    ctx.fillStyle='#667eea';
+    arr.forEach((v,i)=>{
+      const x = pad + (i/(arr.length-1))*W;
+      const y = pad+H - ((v-min)/span)*H;
+      ctx.fillRect(x-2.5,y-2.5,5,5);
+    });
+  }
+  if(opts.marker){
+    const {index,value} = opts.marker;
+    const x = pad + (index/(arr.length-1))*W;
+    const y = pad+H - ((value-min)/span)*H;
+    ctx.fillStyle='#f59e0b'; ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2); ctx.fill();
+  }
+  // title
+  ctx.fillStyle='#111'; ctx.font='bold 14px system-ui'; ctx.textAlign='center';
+  ctx.fillText(opts.title||'', c.width/2, 18);
+}
+
+function drawBox(sel, s, outliers){
+  const c = $(sel); const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const pad=50, W=c.width-2*pad, mid=c.height/2;
+  const min=s.min, q1=s.q1, med=s.med, q3=s.q3, max=s.max;
+  const lo = Math.min(min, ...(outliers||[]).length?outliers:[min]), hi = Math.max(max, ...(outliers||[]).length?outliers:[max]);
+  const span=(hi-lo)||1;
+  const x = v => pad + ((v-lo)/span)*W;
+
+  // whiskers
+  ctx.strokeStyle='#1118'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(x(min),mid); ctx.lineTo(x(q1),mid);
+  ctx.moveTo(x(q3),mid); ctx.lineTo(x(max),mid); ctx.stroke();
+
+  // box
+  ctx.fillStyle='#e0e7ff'; ctx.strokeStyle='#3730a3'; ctx.lineWidth=2;
+  ctx.fillRect(x(q1), mid-30, x(q3)-x(q1), 60);
+  ctx.strokeRect(x(q1), mid-30, x(q3)-x(q1), 60);
+
+  // median
+  ctx.beginPath(); ctx.moveTo(x(med), mid-30); ctx.lineTo(x(med), mid+30); ctx.stroke();
+
+  // whisker caps
+  ctx.beginPath(); ctx.moveTo(x(min), mid-12); ctx.lineTo(x(min), mid+12);
+  ctx.moveTo(x(max), mid-12); ctx.lineTo(x(max), mid+12); ctx.stroke();
+
+  // outliers
+  ctx.fillStyle='#f59e0b';
+  (outliers||[]).forEach(v=>{ ctx.beginPath(); ctx.arc(x(v), mid, 4, 0, Math.PI*2); ctx.fill(); });
+
+  ctx.fillStyle='#111'; ctx.font='bold 14px system-ui'; ctx.textAlign='center';
+  ctx.fillText('Boxplot (Tukey quartiles; dots = outliers)', c.width/2, 20);
+}
+
+function drawBars(sel, labels, values, opts={}){
+  const c=$(sel), ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const pad=50, W=c.width-2*pad, H=c.height-2*pad;
+  const max = Math.max(...values)||1;
+  const bw = W/labels.length*0.8, gap=W/labels.length*0.2;
+  ctx.fillStyle='#667eea'; ctx.strokeStyle='#1115';
+  labels.forEach((lab,i)=>{
+    const x = pad + i*(bw+gap);
+    const h = (values[i]/max)*H;
+    ctx.fillRect(x, pad+H-h, bw, h);
+    // label
+    ctx.fillStyle='#111'; ctx.font='12px system-ui'; ctx.textAlign='center';
+    ctx.fillText(lab, x+bw/2, pad+H+14);
+    ctx.fillStyle='#667eea';
+  });
+  // axes
+  ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,pad+H); ctx.lineTo(pad+W,pad+H); ctx.stroke();
+  ctx.fillStyle='#111'; ctx.font='bold 14px system-ui'; ctx.textAlign='center';
+  ctx.fillText(opts.title||'', c.width/2, 18);
+}
+
+function drawOnlyHist(sel, rows){
+  const c=$(sel), ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
+  const pad=50, W=c.width-2*pad, H=c.height-2*pad;
+  const maxF = Math.max(...rows.map(r=>r.f))||1;
+  const bw = W/rows.length;
+  // bars
+  ctx.fillStyle='#667eea';
+  rows.forEach((r,i)=>{
+    const h=(r.f/maxF)*H, x=pad+i*bw, y=pad+H-h;
+    ctx.fillRect(x,y,bw-2,h);
+    // tick
+    ctx.fillStyle='#111'; ctx.font='10px system-ui'; ctx.textAlign='center';
+    ctx.fillText(r.lo.toFixed(1), x+bw/2, pad+H+14);
+    ctx.fillStyle='#667eea';
+  });
+  // axes
+  ctx.strokeStyle='#1115'; ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,pad+H); ctx.lineTo(pad+W,pad+H); ctx.stroke();
+  ctx.fillStyle='#111'; ctx.font='bold 14px system-ui'; ctx.textAlign='center';
+  ctx.fillText('Histogram', c.width/2, 18);
+}
+
+function drawHistOgive(sel, rows){
+  const c=$(sel), ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
+  const pad=50, W=c.width-2*pad, H=c.height-2*pad;
+  const maxF = Math.max(...rows.map(r=>r.f))||1;
+  const bw = W/rows.length;
+
+  // histogram
+  ctx.fillStyle='#667eea';
+  rows.forEach((r,i)=>{
+    const h=(r.f/maxF)*H, x=pad+i*bw, y=pad+H-h;
+    ctx.fillRect(x,y,bw-2,h);
+  });
+
+  // ogive (cumulative)
+  ctx.strokeStyle='#f59e0b'; ctx.lineWidth=2; ctx.beginPath();
+  rows.forEach((r,i)=>{
+    const cf = rows.slice(0,i+1).reduce((s,t)=>s+t.f,0);
+    const y = pad+H - (cf/(rows[rows.length-1].cf))*H;
+    const x = pad + (i+1)*bw; // end of class
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // axes
+  ctx.strokeStyle='#1115'; ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,pad+H); ctx.lineTo(pad+W,pad+H); ctx.stroke();
+  ctx.fillStyle='#111'; ctx.font='bold 14px system-ui'; ctx.textAlign='center';
+  ctx.fillText('Histogram + Ogive (cumulative)', c.width/2, 18);
+}
+
+function drawTS(sel, arr){
+  const c=$(sel), ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
+  const pad=50, W=c.width-2*pad, H=c.height-2*pad;
+  const min=Math.min(...arr), max=Math.max(...arr), span=(max-min)||1;
+  // axes
+  ctx.strokeStyle='#1115'; ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,pad+H); ctx.lineTo(pad+W,pad+H); ctx.stroke();
+
+  // series line
+  ctx.strokeStyle='#667eea'; ctx.lineWidth=2; ctx.beginPath();
+  arr.forEach((v,i)=>{
+    const x = pad + (i/(arr.length-1))*W;
+    const y = pad+H - ((v-min)/span)*H;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // simple moving average (window=3)
+  const m = [];
+  for(let i=0;i<arr.length;i++){
+    const from=Math.max(0,i-1), to=Math.min(arr.length,i+2);
+    const sub=arr.slice(from,to);
+    m.push(sub.reduce((a,b)=>a+b,0)/sub.length);
+  }
+  ctx.strokeStyle='#f59e0b'; ctx.lineWidth=2; ctx.beginPath();
+  m.forEach((v,i)=>{
+    const x = pad + (i/(m.length-1))*W;
+    const y = pad+H - ((v-min)/span)*H;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  ctx.fillStyle='#111'; ctx.font='bold 14px system-ui'; ctx.textAlign='center';
+  ctx.fillText('Time Series (blue) + Moving Avg (orange)', c.width/2, 18);
+}
+
+/*** Slides / Navigation ***/
+const slides = [...document.querySelectorAll('.slide')];
+const tot = slides.length;
+let idx = 0;
+$('#tot').textContent = tot;
+
+function show(i){
+  slides[idx].classList.remove('active');
+  idx = Math.max(0, Math.min(tot-1, i));
+  slides[idx].classList.add('active');
+  $('#cur').textContent = idx+1;
+  const pct = ((idx+1)/tot*100).toFixed(2);
+  $('#prog').style.width = pct+'%';
+  $('#globalProg').style.width = pct+'%';
+  $('#prevBtn').disabled = idx===0;
+  $('#nextBtn').disabled = idx===tot-1;
+  // per-slide init
+  const initFn = slides[idx].dataset.init;
+  if(initFn && typeof window[initFn]==='function') window[initFn]();
+}
+function go(d){ show(idx + d); }
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') go(1);
+  if(e.key==='ArrowLeft') go(-1);
+});
+
+/*** Boot ***/
+show(0);
+</script>
+</body>
+</html>
