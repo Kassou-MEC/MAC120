@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linear Equations, Scatter, Regression, Correlation & Determination — Interactive Practice 🤓✨</title>
+<style>
+  :root{
+    --bg1:#06b6d4; --bg2:#6366f1; --ink:#0f172a; --muted:#475569; --soft:#eef2ff;
+    --card:#ffffff; --line:#e2e8f0; --ok:#10b981; --warn:#ef4444; --accent:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2)); color:var(--ink);
+  }
+  .wrap{max-width:1200px; margin:0 auto; padding:20px;}
+  .slide{
+    display:none; background:var(--card); border-radius:16px; padding:28px; margin:22px 0;
+    box-shadow:0 14px 36px rgba(0,0,0,.25); animation:pop .45s ease;
+  }
+  .slide.active{display:block}
+  @keyframes pop{from{opacity:0; transform:translateY(20px)} to{opacity:1; transform:translateY(0)}}
+  h1{margin:.1rem 0 1rem; text-align:center; color:#111827; font-size:clamp(1.8rem,2.6vw,2.6rem)}
+  h2{margin:0 0 .75rem; border-bottom:3px solid #0ea5e9; padding-bottom:.25rem; color:#0f172a}
+  h3{margin:1rem 0 .5rem; color:#111827}
+  p{line-height:1.6}
+  .muted{color:var(--muted)}
+  .grid{display:grid; gap:16px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+  .card{background:#f8fafc; border:2px solid var(--line); border-radius:12px; padding:16px}
+  .box{background:var(--soft); border-radius:12px; padding:16px}
+  .humor{background:linear-gradient(45deg,#ffedd5,#fde68a); padding:12px 16px; border-radius:12px; font-style:italic; text-align:center}
+  .def{background:linear-gradient(135deg,#a7f3d0,#dbeafe); border-left:5px solid #06b6d4; border-radius:12px; padding:14px 16px}
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin:.6rem 0}
+  button{
+    background:linear-gradient(45deg,var(--bg1),var(--bg2)); color:white; border:0; padding:10px 16px; border-radius:999px;
+    cursor:pointer; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,.2); transition:transform .15s ease, box-shadow .2s ease;
+  }
+  button:hover{transform:translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,.25)}
+  button:disabled{opacity:.55; cursor:not-allowed; transform:none; box-shadow:none}
+  input,textarea,select{
+    width:100%; padding:10px 12px; border:2px solid var(--line); border-radius:10px; font-size:16px; background:#fff;
+  }
+  .kv{display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border:1px dashed var(--line); border-radius:8px; background:#fff}
+  .ok{color:var(--ok); font-weight:700}
+  .bad{color:var(--warn); font-weight:700}
+  .progress{height:10px; background:#e2e8f0; border-radius:6px; overflow:hidden}
+  .progress>span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--bg1),var(--bg2)); transition:width .2s ease}
+  .fixedCounter{
+    position:fixed; top:16px; right:16px; background:rgba(255,255,255,.95); padding:10px 12px; border-radius:10px; font-weight:700; z-index:10;
+    box-shadow:0 6px 16px rgba(0,0,0,.2)
+  }
+  canvas.chart{border:1px solid #d1d5db; border-radius:8px; background:#fff}
+  .quiz .option{padding:10px; border:2px solid transparent; border-radius:10px; background:#fff; cursor:pointer; margin:6px 0}
+  .quiz .option:hover{border-color:#06b6d4; background:#f8fafc}
+  .quiz .correct{background:#d1fae5 !important; border-color:#10b981 !important}
+  .quiz .incorrect{background:#fee2e2 !important; border-color:#ef4444 !important}
+  .quiz .selected{outline:3px solid #06b6d4}
+  .legend{display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-size:.9rem}
+  .legend .sw{width:14px; height:14px; border-radius:3px; border:1px solid #0001}
+  .footnote{font-size:.9rem; color:#334155; margin-top:8px}
+  .pill{display:inline-block; background:#eef2ff; color:#3730a3; padding:4px 10px; border-radius:999px; font-size:.9rem; margin-right:6px}
+</style>
+</head>
+<body>
+<div class="fixedCounter">Slide <span id="cur">1</span> / <span id="tot">16</span></div>
+
+<div class="wrap">
+  <!-- 1. Title -->
+  <section class="slide active">
+    <h1>Linear Equations, Scatter, Regression, <u>Correlation (r)</u> & <u>Determination (R²)</u> — Interactive Practice 🎯</h1>
+    <div class="humor">“We connect the dots. Literally. Then we measure how well the dots agree with our line. No crystal ball required.” 🔮</div>
+    <div class="grid g2" style="margin-top:12px">
+      <div class="def">
+        <strong>We’ll cover:</strong>
+        <ul>
+          <li>Linear equations (slope-intercept & point-slope)</li>
+          <li>Scatter plots (visualizing data relationships)</li>
+          <li>Regression equation (least squares fit)</li>
+          <li>Dependent vs. independent variables</li>
+          <li>Coefficients (slope & intercept), prediction</li>
+          <li><b>NEW:</b> Coefficient of correlation <b>r</b> & coefficient of determination <b>R²</b></li>
+        </ul>
+        <div class="pill">Hands-on</div><div class="pill">From easy → spicy</div><div class="pill">Quiz at the end</div>
+      </div>
+      <div class="card">
+        <h3>Mini-glossary</h3>
+        <p><b>Independent variable (x):</b> input you control or choose.</p>
+        <p><b>Dependent variable (y):</b> output that responds to x.</p>
+        <p><b>Linear model:</b> y = b₀ + b₁x (straight line).</p>
+        <p><b>Coefficients:</b> b₀ (intercept), b₁ (slope).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Linear Equations: Slope-Intercept -->
+  <section class="slide">
+    <h2>🧭 Linear Equations: Slope–Intercept Form</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def"><b>Form:</b> y = b + m x (often y = b₀ + b₁x) <br/> m = slope (rise/run), b = y-intercept (value when x = 0)</div>
+        <div class="humor">Slope tells you how dramatic the line is; intercept tells you where it crosses the stage.</div>
+        <div class="card">
+          <label>Slope (m): <input type="range" id="mSlider" min="-5" max="5" value="1" step="0.1" oninput="updateLineBuilder()"></label>
+          <label>Intercept (b): <input type="range" id="bSlider" min="-10" max="10" value="0" step="0.5" oninput="updateLineBuilder()"></label>
+          <div class="kv" style="margin-top:8px"><span>Equation</span><strong id="lineEq">y = 1x + 0</strong></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Playground</h3>
+        <canvas id="lineCanvas" class="chart" width="640" height="300"></canvas>
+        <div class="footnote">Try reading off the y-value at x = 2. (Hint: y = m·2 + b)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. From Two Points to an Equation -->
+  <section class="slide">
+    <h2>✏️ From Two Points → Line Equation</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Two points (x₁,y₁), (x₂,y₂): slope m = (y₂−y₁)/(x₂−x₁). Use b = y₁ − m x₁ (or ȳ − m x̄).</div>
+        <div class="card">
+          <div class="grid g2">
+            <label>Point A (x₁,y₁)<br/><input id="p1" placeholder="e.g., 1, 3"></label>
+            <label>Point B (x₂,y₂)<br/><input id="p2" placeholder="e.g., 5, 11"></label>
+          </div>
+          <div class="toolbar">
+            <button onclick="calcFromTwoPoints()">Compute m & b</button>
+            <button onclick="fillTwoPointSample()">Sample</button>
+          </div>
+          <div id="twoPtOut" class="card"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Quick Check</h3>
+        <p>Enter your <b>own</b> two points and verify the drawn line matches them.</p>
+        <canvas id="twoPtCanvas" class="chart" width="640" height="300"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Scatter Plots (visual) -->
+  <section class="slide">
+    <h2>📊 Scatter Plots: Seeing Relationships</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">A scatter plot places each observation (x,y) as a dot. If dots roughly line up, a linear model might fit.</div>
+        <textarea id="scatterData" rows="6" placeholder="Enter (x,y) pairs. Examples:
+1 2
+2 3
+3 3.8
+4 5
+5 5.2"></textarea>
+        <div class="toolbar">
+          <button onclick="drawScatterOnly()">Plot Points</button>
+          <button onclick="loadScatterSample('pos')">Load: Positive trend</button>
+          <button onclick="loadScatterSample('neg')">Load: Negative trend</button>
+          <button onclick="loadScatterSample('none')">Load: No trend</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Plot</h3>
+        <canvas id="scatterCanvas" class="chart" width="640" height="300"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Regression Equation (least squares) -->
+  <section class="slide">
+    <h2>📐 Regression: Best-Fit Line (Least Squares)</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def"><b>Goal:</b> Find b₀ (intercept) and b₁ (slope) minimizing squared vertical distances from points to the line y = b₀ + b₁x.</div>
+        <textarea id="regData" rows="6" placeholder="(x,y) pairs or lines like: 1 2, 2 3, 3 3.8, 4 5, 5 5.2"></textarea>
+        <div class="toolbar">
+          <button onclick="computeRegression()">Fit Line</button>
+          <button onclick="useScatterText()">Use points from Scatter slide</button>
+          <button onclick="loadScatterSample('pos', 'regData')">Sample</button>
+        </div>
+        <div id="regOut" class="card"></div>
+      </div>
+      <div class="card">
+        <h3>Scatter + Fit</h3>
+        <canvas id="regCanvas" class="chart" width="640" height="300"></canvas>
+        <div class="legend">
+          <span class="sw" style="background:#06b6d4"></span> Data
+          <span class="sw" style="background:#22c55e"></span> Regression line
+        </div>
+        <div class="footnote">Interpretation: “For each +1 in x, we predict y changes by <b>slope</b>.” Intercept is predicted y when x = 0 (context matters!).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Prediction -->
+  <section class="slide">
+    <h2>🔮 Prediction with the Regression Line</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Once you have ŷ = b₀ + b₁x, plug in a new x to predict ŷ. (Beware <i>extrapolation</i> beyond your data’s x-range!)</div>
+        <div class="card">
+          <div class="grid g2">
+            <label>Enter x for prediction<br/><input id="xPred" placeholder="e.g., 6"></label>
+            <label>Optional actual y (to see residual)<br/><input id="yActual" placeholder="e.g., 6.1"></label>
+          </div>
+          <div class="toolbar"><button onclick="predictY()">Predict</button></div>
+          <div id="predOut" class="card"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Visual</h3>
+        <canvas id="predCanvas" class="chart" width="640" height="300"></canvas>
+        <div class="legend">
+          <span class="sw" style="background:#06b6d4"></span> Data
+          <span class="sw" style="background:#22c55e"></span> Regression line
+          <span class="sw" style="background:#f59e0b"></span> Prediction
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Correlation & Determination: Definitions -->
+  <section class="slide">
+    <h2>🧲 Correlation (r) & Determination (R²): What & Why</h2>
+    <div class="grid g2">
+      <div class="def">
+        <p><b>Coefficient of correlation (r):</b> measures <i>strength and direction</i> of the linear relationship between x and y.</p>
+        <ul>
+          <li>Range: −1 ≤ r ≤ +1</li>
+          <li>Sign: + (increase together), − (one up, the other down)</li>
+          <li>Magnitude: 0≈none, ~0.1–0.3 weak, ~0.3–0.5 moderate, ≥0.7 strong (context matters!)</li>
+        </ul>
+        <p><b>Coefficient of determination (R²):</b> proportion of variability in y explained by the linear model with x.</p>
+        <ul>
+          <li>0 ≤ R² ≤ 1 (or 0–100%)</li>
+          <li>R² = r² in simple linear regression</li>
+          <li>Higher R² ⇒ model explains more of y’s variation</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Important cautions</h3>
+        <ul>
+          <li><b>Correlation ≠ Causation.</b> Dots agreeing doesn’t mean x causes y.</li>
+          <li>Outliers can inflate/deflate r and R².</li>
+          <li>Nonlinear patterns can have small r but strong relationships.</li>
+        </ul>
+        <div class="humor">If r were a dating score: +1 = “soulmates,” 0 = “it’s complicated,” −1 = “arch-nemeses.” 💘🫤😤</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Correlation & Determination: Interactive calculator -->
+  <section class="slide">
+    <h2>🧮 r & R² Calculator (with Plot)</h2>
+    <div class="grid g2">
+      <div>
+        <textarea id="corrData" rows="7" placeholder="Paste (x y) pairs, one per line:
+1 2
+2 3
+3 3.8
+4 5
+5 5.2"></textarea>
+        <div class="toolbar">
+          <button onclick="calcCorr()">Compute r & R²</button>
+          <button onclick="loadCorrSample('strong_pos')">Strong +</button>
+          <button onclick="loadCorrSample('moderate_neg')">Moderate −</button>
+          <button onclick="loadCorrSample('near_zero')">Near 0</button>
+        </div>
+        <div id="corrOut" class="card"></div>
+      </div>
+      <div class="card">
+        <h3>Plot</h3>
+        <canvas id="corrCanvas" class="chart" width="640" height="300"></canvas>
+        <div class="legend">
+          <span class="sw" style="background:#06b6d4"></span> Data
+          <span class="sw" style="background:#22c55e"></span> Regression line
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Outlier Impact Playground -->
+  <section class="slide">
+    <h2>🧪 Outlier Playground: Move One Point</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">See how a single dramatic point can yank your regression line, <b>r</b>, and <b>R²</b> around.</div>
+        <div class="card">
+          <div class="grid g2">
+            <label>Outlier x <input type="range" id="outX" min="-5" max="15" value="8" step="0.1" oninput="updateOutlier()"></label>
+            <label>Outlier y <input type="range" id="outY" min="-5" max="15" value="10" step="0.1" oninput="updateOutlier()"></label>
+          </div>
+          <div class="kv"><span>Current outlier</span><strong id="outlierLabel">(8, 10)</strong></div>
+          <div class="toolbar"><button onclick="resetOutlier()">Reset</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Effect on Fit, r & R²</h3>
+        <canvas id="outCanvas" class="chart" width="640" height="300"></canvas>
+        <div id="outStats" class="footnote"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Practice (Easy): Slope from Two Points -->
+  <section class="slide">
+    <h2>💪 Practice #1 (Easy): Slope from Two Points</h2>
+    <div class="grid g2">
+      <div class="card">
+        <p><b>Given:</b> A(2, 3) and B(8, 9). Compute the slope m.</p>
+        <div class="grid g2">
+          <label>Your slope (accept fraction like 3/2 or decimal)<br/><input id="slopeAns" placeholder="e.g., 1"></label>
+        </div>
+        <div class="toolbar"><button onclick="checkSlope()">Check</button></div>
+        <div id="slopeOut" class="kv"><span>Result</span><strong id="slopeRes">—</strong></div>
+      </div>
+      <div class="card">
+        <h3>Sketch</h3>
+        <canvas id="slopeCanvas" class="chart" width="640" height="300"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Practice (Medium): Equation from Two Points -->
+  <section class="slide">
+    <h2>💪 Practice #2 (Medium): Equation from Two Points</h2>
+    <div class="grid g2">
+      <div class="card">
+        <p><b>Given:</b> C(−1, 2) and D(3, 10). Enter the slope and intercept of the line through C & D.</p>
+        <div class="grid g2">
+          <label>Slope m <input id="mAns" placeholder="e.g., 2"></label>
+          <label>Intercept b <input id="bAns" placeholder="e.g., 4"></label>
+        </div>
+        <div class="toolbar"><button onclick="checkLineFromPoints()">Check</button></div>
+        <div id="lineFromPtsOut" class="kv"><span>Equation</span><strong id="lineFromPtsRes">—</strong></div>
+      </div>
+      <div class="card">
+        <h3>Plot</h3>
+        <canvas id="lineFromPtsCanvas" class="chart" width="640" height="300"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. Practice (Harder): Fit & Interpret Slope -->
+  <section class="slide">
+    <h2>🔥 Practice #3 (Harder): Fit & Interpret</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Data: hours studied (x) vs. test score (y)</div>
+        <textarea id="hardData" rows="6">1 59
+2 63
+3 67
+4 72
+5 76
+6 80
+7 84</textarea>
+        <div class="toolbar"><button onclick="fitHard()">Fit regression</button></div>
+        <div id="hardOut" class="card"></div>
+      </div>
+      <div class="card">
+        <h3>Interpretation Prompt</h3>
+        <p>Complete: “For each additional hour, predicted score changes by <b><span id="interpSlope">__</span></b> points on average.”</p>
+        <div class="grid g2">
+          <label>Your slope<br/><input id="hardSlopeGuess" placeholder="e.g., 4.2"></label>
+        </div>
+        <div class="toolbar"><button onclick="checkHardSlope()">Check</button></div>
+        <div id="hardSlopeOut" class="kv"><span>Result</span><strong id="hardSlopeRes">—</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. Dependent vs Independent (mini) -->
+  <section class="slide">
+    <h2>🔗 Dependent vs. Independent — Quick Drill</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Scenario A</h3>
+        <p>Predicting <b>crop yield</b> from <b>fertilizer amount</b>.</p>
+        <div class="quiz" id="dv1">
+          <div class="option" data-role="dep">Crop yield is the dependent variable</div>
+          <div class="option">Fertilizer is the dependent variable</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Scenario B</h3>
+        <p>Predicting <b>fuel use</b> from <b>distance driven</b>.</p>
+        <div class="quiz" id="dv2">
+          <div class="option" data-role="dep">Fuel use is the dependent variable</div>
+          <div class="option">Distance is the dependent variable</div>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar"><button onclick="gradeDV()">Grade</button></div>
+    <div id="dvOut" class="kv"><span>Score</span><strong id="dvRes">—</strong></div>
+  </section>
+
+  <!-- 14. Mixed Practice: Build & Predict -->
+  <section class="slide">
+    <h2>🛠️ Mixed Practice: Build a Model & Predict (r & R² included)</h2>
+    <div class="grid g2">
+      <div>
+        <div class="def">Paste data once, do all the things: fit a line, see coefficients, r & R², make a prediction.</div>
+        <textarea id="allData" rows="6" placeholder="(x,y) pairs lines..."></textarea>
+        <div class="grid g3">
+          <label>Predict at x₀<input id="x0" placeholder="e.g., 10"></label>
+          <label>Optional actual y₀<input id="y0" placeholder="e.g., 41.5"></label>
+          <div class="toolbar" style="margin:0"><button onclick="runAll()">Run</button></div>
+        </div>
+        <div id="allOut" class="card"></div>
+      </div>
+      <div class="card">
+        <h3>View</h3>
+        <canvas id="allCanvas" class="chart" width="640" height="300"></canvas>
+        <div class="legend">
+          <span class="sw" style="background:#06b6d4"></span> Data
+          <span class="sw" style="background:#22c55e"></span> Regression line
+          <span class="sw" style="background:#f59e0b"></span> Prediction
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15. Mini Quiz (includes r & R²) -->
+  <section class="slide">
+    <h2>🎓 Mini Quiz</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Q1</h3>
+        <p>In y = b₀ + b₁x, which is the <b>slope</b>?</p>
+        <div class="quiz" id="q1">
+          <div class="option" data-correct="true">b₁</div>
+          <div class="option">b₀</div>
+          <div class="option">y</div>
+          <div class="option">x</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Q2</h3>
+        <p>“Dependent variable” means:</p>
+        <div class="quiz" id="q2">
+          <div class="option" data-correct="true">The variable we predict (y)</div>
+          <div class="option">The variable we control (x)</div>
+          <div class="option">Always equal to x</div>
+          <div class="option">The slope</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Q3</h3>
+        <p>After fitting a regression line, the intercept b₀ is best read as:</p>
+        <div class="quiz" id="q3">
+          <div class="option" data-correct="true">Predicted y when x = 0 (if that makes sense)</div>
+          <div class="option">Change in y per 1 unit x</div>
+          <div class="option">The average of x</div>
+          <div class="option">The largest residual</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Q4</h3>
+        <p>“Extrapolation” means:</p>
+        <div class="quiz" id="q4">
+          <div class="option">Predicting within the x-range of the data</div>
+          <div class="option" data-correct="true">Predicting beyond the observed x-range (risky!)</div>
+          <div class="option">Plotting without data</div>
+          <div class="option">Scaling the y-axis</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Q5</h3>
+        <p>Which statement about <b>r</b> is TRUE?</p>
+        <div class="quiz" id="q5">
+          <div class="option" data-correct="true">r measures direction & strength of a linear relationship and lies between −1 and +1</div>
+          <div class="option">r is always positive</div>
+          <div class="option">r measures causation</div>
+          <div class="option">r equals the slope</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Q6</h3>
+        <p>What does <b>R²</b> represent in simple linear regression?</p>
+        <div class="quiz" id="q6">
+          <div class="option">The slope divided by the intercept</div>
+          <div class="option" data-correct="true">The proportion of variability in y explained by x (and equals r²)</div>
+          <div class="option">The average residual</div>
+          <div class="option">Always 1 for any line</div>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar"><button onclick="gradeQuiz()">Submit</button></div>
+    <div id="quizOut" class="kv"><span>Score</span><strong id="quizRes">—</strong></div>
+  </section>
+
+  <!-- 16. Wrap-up -->
+  <section class="slide">
+    <h2>✅ Wrap-up</h2>
+    <div class="grid g2">
+      <div class="box">
+        <h3>Your toolkit</h3>
+        <ul>
+          <li>Linear equation skills (build/interpret)</li>
+          <li>Scatter plot reading</li>
+          <li>Least-squares regression line</li>
+          <li>Dependent vs independent variables</li>
+          <li><b>Correlation r</b> & <b>Determination R²</b></li>
+          <li>Prediction (with caution!)</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Parting wisdom</h3>
+        <p>Lines are simple. The world is not. Use models as maps, not the territory. ✌️</p>
+      </div>
+    </div>
+    <div class="humor" style="margin-top:10px">You now wield the power of straight lines and <b>know how strong they are</b>. Use responsibly. 🦸‍♀️🦸</div>
+  </section>
+
+  <!-- NAV -->
+  <div class="card" style="display:flex; gap:10px; justify-content:center; align-items:center; position:sticky; bottom:10px;">
+    <button id="prevBtn" onclick="go(-1)">← Previous</button>
+    <button id="nextBtn" onclick="go(1)">Next →</button>
+  </div>
+  <div class="progress"><span id="globalProg"></span></div>
+</div>
+
+<script>
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const slides = [...document.querySelectorAll('.slide')];
+$('#tot').textContent = slides.length;
+let idx = 0;
+
+function show(i){
+  slides[idx].classList.remove('active');
+  idx = Math.max(0, Math.min(slides.length-1, i));
+  slides[idx].classList.add('active');
+  $('#cur').textContent = idx+1;
+  const pct = ((idx+1)/slides.length*100).toFixed(2);
+  $('#globalProg').style.width = pct+'%';
+  $('#prevBtn').disabled = idx===0;
+  $('#nextBtn').disabled = idx===slides.length-1;
+}
+function go(d){ show(idx + d); }
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') go(1);
+  if(e.key==='ArrowLeft') go(-1);
+});
+
+/* parsing numbers & pairs */
+function parseXY(text){
+  const pairs=[];
+  const lines = text.trim().split(/[\n;]+/);
+  for(const line of lines){
+    const nums = (line.match(/-?\d*\.?\d+(?:e[+-]?\d+)?/gi) || []).map(Number);
+    if(nums.length>=2) pairs.push([nums[0], nums[1]]);
+  }
+  return pairs;
+}
+function parseFracOrNum(s){
+  if(!s) return NaN;
+  s = (''+s).trim();
+  if(/^\s*-?\d+\s*\/\s*-?\d+\s*$/.test(s)){
+    const [a,b]=s.split('/').map(x=>+x);
+    if(b===0) return NaN;
+    return a/b;
+  }
+  const v = +s;
+  return Number.isFinite(v)? v : NaN;
+}
+const mean = a => a.reduce((x,y)=>x+y,0)/a.length;
+
+/* regression + correlation */
+function linreg(x,y){
+  const n=x.length;
+  if(n<2) return {ok:false, msg:'Need at least 2 points.'};
+  const xbar = mean(x), ybar = mean(y);
+  let sxx=0, sxy=0, syy=0;
+  for(let i=0;i<n;i++){
+    const dx = x[i]-xbar, dy = y[i]-ybar;
+    sxx += dx*dx; sxy += dx*dy; syy += dy*dy;
+  }
+  if(sxx===0) return {ok:false, msg:'All x are identical — vertical line (slope undefined).'};
+  const b1 = sxy/sxx;
+  const b0 = ybar - b1*xbar;
+  const r2 = (sxy*sxy) / (sxx*(syy||1));
+  let r = sxy===0 ? 0 : sxy / Math.sqrt((sxx||1)*(syy||1));
+  if(!Number.isFinite(r)) r = 0; // handle degenerate case
+  return {ok:true, b0, b1, xbar, ybar, r2, r};
+}
+
+/* drawing */
+function drawAxes(ctx, pad, W, H){
+  ctx.strokeStyle = '#1115';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(pad, pad); ctx.lineTo(pad, pad+H); ctx.lineTo(pad+W, pad+H);
+  ctx.stroke();
+}
+function scaleForPoints(xs, ys, pad, W, H){
+  const xmin=Math.min(...xs), xmax=Math.max(...xs), ymin=Math.min(...ys), ymax=Math.max(...ys);
+  const xspan=(xmax-xmin)||1, yspan=(ymax-ymin)||1;
+  const x = v => pad + (v - xmin)/xspan * W;
+  const y = v => pad+H - (v - ymin)/yspan * H;
+  return {x,y, xmin,xmax,ymin,ymax};
+}
+function drawScatter(canvas, xs, ys, line=null, pred=null){
+  const c= (typeof canvas==='string') ? $(canvas) : canvas;
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const pad=50, W=c.width-2*pad, H=c.height-2*pad;
+  if(xs.length===0){ drawAxes(ctx,pad,W,H); return; }
+  const sc = scaleForPoints(xs,ys,pad,W,H);
+  drawAxes(ctx,pad,W,H);
+  // points
+  ctx.fillStyle='#06b6d4';
+  for(let i=0;i<xs.length;i++){
+    const px=sc.x(xs[i]), py=sc.y(ys[i]);
+    ctx.beginPath(); ctx.arc(px,py,3,0,Math.PI*2); ctx.fill();
+  }
+  // line
+  if(line){
+    ctx.strokeStyle='#22c55e'; ctx.lineWidth=2;
+    const x1=sc.x(sc.xmin), y1=sc.y(line.b0 + line.b1*sc.xmin);
+    const x2=sc.x(sc.xmax), y2=sc.y(line.b0 + line.b1*sc.xmax);
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  }
+  // prediction
+  if(pred){
+    const px=sc.x(pred.x), py=sc.y(pred.yhat);
+    ctx.fillStyle='#f59e0b';
+    ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fill();
+  }
+}
+
+/* ---------- Slide 2: Line builder ---------- */
+function updateLineBuilder(){
+  const m = +$('#mSlider').value, b = +$('#bSlider').value;
+  $('#lineEq').textContent = `y = ${m}x + ${b}`;
+  const c = $('#lineCanvas'), ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const pad=50, W=c.width-2*pad, H=c.height-2*pad;
+  drawAxes(ctx,pad,W,H);
+  // draw line over x in [-10,10]
+  const xs=[-10,10], ys=xs.map(x=>m*x+b);
+  const sc = scaleForPoints(xs,ys,pad,W,H);
+  ctx.strokeStyle='#06b6d4'; ctx.lineWidth=2;
+  const x1=sc.x(xs[0]), y1=sc.y(ys[0]), x2=sc.x(xs[1]), y2=sc.y(ys[1]);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+}
+updateLineBuilder();
+
+/* ---------- Slide 3: Two points ---------- */
+function fillTwoPointSample(){
+  $('#p1').value = "1, 3";
+  $('#p2').value = "5, 11";
+}
+function calcFromTwoPoints(){
+  const p1 = ($('#p1').value.match(/-?\d*\.?\d+/g)||[]).map(Number);
+  const p2 = ($('#p2').value.match(/-?\d*\.?\d+/g)||[]).map(Number);
+  if(p1.length<2 || p2.length<2){ $('#twoPtOut').innerHTML = '<span class="bad">Please enter two numeric coordinates.</span>'; return; }
+  const [x1,y1]=p1, [x2,y2]=p2;
+  if(x1===x2){ $('#twoPtOut').innerHTML = '<span class="bad">Vertical line: slope undefined.</span>'; return; }
+  const m = (y2-y1)/(x2-x1);
+  const b = y1 - m*x1;
+  $('#twoPtOut').innerHTML = `
+    <div class="grid g3">
+      <div class="kv"><span>Slope (m)</span><strong>${m.toFixed(4)}</strong></div>
+      <div class="kv"><span>Intercept (b)</span><strong>${b.toFixed(4)}</strong></div>
+      <div class="kv"><span>Equation</span><strong>y = ${m.toFixed(4)}x + ${b.toFixed(4)}</strong></div>
+    </div>`;
+  // draw
+  const xs=[x1,x2], ys=[y1,y2];
+  drawScatter('#twoPtCanvas', xs, ys, {b0:b, b1:m});
+}
+
+/* ---------- Slide 4: Scatter only ---------- */
+function loadScatterSample(kind, targetId){
+  const pos = `1 2
+2 3
+3 3.8
+4 5
+5 5.2
+6 6.4`;
+  const neg = `1 9
+2 7.8
+3 7
+4 6
+5 4.5
+6 3.8`;
+  const none = `1 5
+2 2
+3 8
+4 4
+5 7
+6 3
+7 9`;
+  const data = kind==='pos'?pos:kind==='neg'?neg:none;
+  const id = targetId || 'scatterData';
+  $('#'+id).value = data;
+  if(!targetId) drawScatterOnly();
+}
+function drawScatterOnly(){
+  const pairs = parseXY($('#scatterData').value);
+  if(!pairs.length){ return; }
+  const xs=pairs.map(p=>p[0]), ys=pairs.map(p=>p[1]);
+  drawScatter('#scatterCanvas', xs, ys);
+}
+
+/* ---------- Slide 5: Regression ---------- */
+let regCache = {xs:[], ys:[], fit:null};
+function useScatterText(){
+  const t = $('#scatterData').value.trim();
+  $('#regData').value = t;
+}
+function strengthLabel(r){
+  const a=Math.abs(r);
+  if(a<0.1) return '≈ none';
+  if(a<0.3) return 'weak';
+  if(a<0.5) return 'moderate';
+  if(a<0.7) return 'moderately strong';
+  return 'strong';
+}
+function computeRegression(){
+  const pairs = parseXY($('#regData').value);
+  if(!pairs.length){ $('#regOut').innerHTML = '<span class="bad">Please enter (x,y) pairs.</span>'; return; }
+  const xs=pairs.map(p=>p[0]), ys=pairs.map(p=>p[1]);
+  const fit = linreg(xs,ys);
+  if(!fit.ok){ $('#regOut').innerHTML = `<span class="bad">${fit.msg}</span>`; return; }
+  regCache = {xs,ys,fit};
+  const lbl = strengthLabel(fit.r);
+  $('#regOut').innerHTML = `
+    <div class="grid g3">
+      <div class="kv"><span>Intercept b₀</span><strong>${fit.b0.toFixed(4)}</strong></div>
+      <div class="kv"><span>Slope b₁</span><strong>${fit.b1.toFixed(4)}</strong></div>
+      <div class="kv"><span>R²</span><strong>${fit.r2.toFixed(4)}</strong></div>
+    </div>
+    <div class="grid g2" style="margin-top:8px">
+      <div class="kv"><span>Correlation r</span><strong>${fit.r.toFixed(4)} (${lbl})</strong></div>
+      <div class="kv"><span>Equation</span><strong>ŷ = ${fit.b0.toFixed(4)} + ${fit.b1.toFixed(4)}x</strong></div>
+    </div>
+    <p class="muted">Interpret slope: +1 in x → Δŷ ≈ <b>${fit.b1.toFixed(4)}</b>.  R² says ${ (fit.r2*100).toFixed(1)}% of y-variation is explained by x.  r gives direction (${fit.r>=0? 'positive' : 'negative'}) and strength (${lbl}).</p>`;
+  drawScatter('#regCanvas', xs, ys, {b0:fit.b0, b1:fit.b1});
+}
+
+/* ---------- Slide 6: Prediction ---------- */
+function predictY(){
+  if(!regCache.fit){ $('#predOut').innerHTML = '<span class="bad">Fit a regression first (previous slide).</span>'; return; }
+  const x = +$('#xPred').value;
+  if(!Number.isFinite(x)){ $('#predOut').innerHTML = '<span class="bad">Enter a numeric x.</span>'; return; }
+  const {b0,b1} = regCache.fit;
+  const yhat = b0 + b1*x;
+  const yact = +$('#yActual').value;
+  let extra='';
+  if(Number.isFinite(yact)){
+    const resid = yact - yhat;
+    extra = `<div class="kv"><span>Residual (actual − predicted)</span><strong>${resid.toFixed(4)}</strong></div>`;
+  }
+  $('#predOut').innerHTML = `
+    <div class="kv"><span>Prediction</span><strong>ŷ = ${yhat.toFixed(4)}</strong></div>
+    ${extra}
+    <p class="muted">Heads-up: if x is far outside your data’s range, prediction may be sketchy (extrapolation).</p>`;
+  drawScatter('#predCanvas', regCache.xs, regCache.ys, {b0,b1}, {x, yhat});
+}
+
+/* ---------- Slide 8: r & R² calculator ---------- */
+function loadCorrSample(kind){
+  let t='';
+  if(kind==='strong_pos'){
+    t=`1 2
+2 3
+3 4.1
+4 5.2
+5 6.1
+6 7.1
+7 8.2`;
+  }else if(kind==='moderate_neg'){
+    t=`1 9
+2 7.8
+3 7
+4 6.3
+5 5.5
+6 4.8
+7 3.7`;
+  }else{
+    t=`1 5
+2 2
+3 8
+4 4
+5 7
+6 3
+7 9`;
+  }
+  $('#corrData').value=t;
+  calcCorr();
+}
+function calcCorr(){
+  const pairs=parseXY($('#corrData').value);
+  if(!pairs.length){ $('#corrOut').innerHTML='<span class="bad">Enter (x,y) pairs.</span>'; return; }
+  const xs=pairs.map(p=>p[0]), ys=pairs.map(p=>p[1]);
+  const fit=linreg(xs,ys);
+  if(!fit.ok){ $('#corrOut').innerHTML=`<span class="bad">${fit.msg}</span>`; return; }
+  const lbl=strengthLabel(fit.r);
+  $('#corrOut').innerHTML = `
+    <div class="grid g3">
+      <div class="kv"><span>r</span><strong>${fit.r.toFixed(4)} (${lbl})</strong></div>
+      <div class="kv"><span>R²</span><strong>${fit.r2.toFixed(4)} (${(fit.r2*100).toFixed(1)}%)</strong></div>
+      <div class="kv"><span>Line</span><strong>ŷ = ${fit.b0.toFixed(3)} + ${fit.b1.toFixed(3)}x</strong></div>
+    </div>
+    <p class="muted">r gives direction & strength; R² says how much y-variance the line explains.</p>`;
+  drawScatter('#corrCanvas', xs, ys, {b0:fit.b0, b1:fit.b1});
+}
+
+/* ---------- Slide 9: Outlier playground ---------- */
+let baseOutData = {xs:[1,2,3,4,5,6,7], ys:[2,2.6,3.2,3.7,4.3,4.8,5.1]};
+function updateOutlier(){
+  const ox=+$('#outX').value, oy=+$('#outY').value;
+  $('#outlierLabel').textContent = `(${ox}, ${oy})`;
+  const xs = baseOutData.xs.concat([ox]);
+  const ys = baseOutData.ys.concat([oy]);
+  const fit = linreg(xs,ys);
+  const fitBase = linreg(baseOutData.xs, baseOutData.ys);
+  drawScatter('#outCanvas', xs, ys, {b0:fit.b0, b1:fit.b1});
+  $('#outStats').innerHTML = `
+    With outlier: ŷ = ${fit.b0.toFixed(3)} + ${fit.b1.toFixed(3)}x, r=${fit.r.toFixed(3)}, R²=${fit.r2.toFixed(3)}.
+    <br/>Without outlier: ŷ = ${fitBase.b0.toFixed(3)} + ${fitBase.b1.toFixed(3)}x, r=${fitBase.r.toFixed(3)}, R²=${fitBase.r2.toFixed(3)}.`;
+}
+function resetOutlier(){
+  $('#outX').value = 8; $('#outY').value = 10; updateOutlier();
+}
+updateOutlier();
+
+/* ---------- Slide 10: Practice slope ---------- */
+function checkSlope(){
+  const mUser = parseFracOrNum($('#slopeAns').value);
+  if(!Number.isFinite(mUser)){ $('#slopeRes').textContent='Enter a number or fraction.'; $('#slopeRes').className='bad'; return; }
+  const x1=2,y1=3,x2=8,y2=9;
+  const mTrue = (y2-y1)/(x2-x1); // 6/6 = 1
+  const correct = Math.abs(mUser - mTrue) < 1e-3;
+  $('#slopeRes').textContent = correct ? 'Correct 🎉 (m = 1)' : `Not quite. True slope is 1.`;
+  $('#slopeRes').className = correct ? 'ok' : 'bad';
+  drawScatter('#slopeCanvas', [x1,x2],[y1,y2], {b0: y1 - mTrue*x1, b1:mTrue});
+}
+
+/* ---------- Slide 11: Practice line from points ---------- */
+function checkLineFromPoints(){
+  const C=[-1,2], D=[3,10];
+  const mTrue=(D[1]-C[1])/(D[0]-C[0]); // 8/4=2
+  const bTrue=C[1]-mTrue*C[0]; // 2 - 2*(-1)=4
+  const mUser = parseFracOrNum($('#mAns').value);
+  const bUser = parseFracOrNum($('#bAns').value);
+  if(!Number.isFinite(mUser) || !Number.isFinite(bUser)){
+    $('#lineFromPtsRes').textContent='Enter numeric slope and intercept.'; $('#lineFromPtsRes').className='bad'; return;
+  }
+  const ok = Math.abs(mUser-mTrue)<1e-3 && Math.abs(bUser-bTrue)<1e-3;
+  $('#lineFromPtsRes').textContent = ok ? 'Correct 🎉  y = 2x + 4' : `Not quite. True: y = 2x + 4`;
+  $('#lineFromPtsRes').className = ok ? 'ok' : 'bad';
+  drawScatter('#lineFromPtsCanvas', [C[0],D[0]], [C[1],D[1]], {b0:bTrue, b1:mTrue});
+}
+
+/* ---------- Slide 12: Harder fit ---------- */
+let hardFit = null;
+function fitHard(){
+  const pairs = parseXY($('#hardData').value);
+  const xs=pairs.map(p=>p[0]), ys=pairs.map(p=>p[1]);
+  const fit = linreg(xs,ys);
+  hardFit = fit.ok ? fit : null;
+  if(!fit.ok){ $('#hardOut').innerHTML = `<span class="bad">${fit.msg}</span>`; return; }
+  $('#hardOut').innerHTML = `
+    <div class="grid g3">
+      <div class="kv"><span>b₀</span><strong>${fit.b0.toFixed(4)}</strong></div>
+      <div class="kv"><span>b₁ (slope)</span><strong id="hardSlopeTrue">${fit.b1.toFixed(4)}</strong></div>
+      <div class="kv"><span>r, R²</span><strong>${fit.r.toFixed(4)}, ${fit.r2.toFixed(4)}</strong></div>
+    </div>
+    <div class="kv"><span>Equation</span><strong>ŷ = ${fit.b0.toFixed(4)} + ${fit.b1.toFixed(4)}x</strong></div>`;
+  $('#interpSlope').textContent = fit.b1.toFixed(2);
+}
+function checkHardSlope(){
+  if(!hardFit){ $('#hardSlopeRes').textContent='Fit the model first.'; $('#hardSlopeRes').className='bad'; return; }
+  const guess = parseFracOrNum($('#hardSlopeGuess').value);
+  if(!Number.isFinite(guess)){ $('#hardSlopeRes').textContent='Enter a number.'; $('#hardSlopeRes').className='bad'; return; }
+  const trueS = hardFit.b1;
+  const ok = Math.abs(guess-trueS) <= 0.15; // allow small error
+  $('#hardSlopeRes').textContent = ok ? 'Nice! That matches the slope magnitude.' : `Off. True slope ≈ ${trueS.toFixed(2)}.`;
+  $('#hardSlopeRes').className = ok ? 'ok' : 'bad';
+}
+
+/* ---------- Slide 13: DV vs IV ---------- */
+function gradeDV(){
+  let score=0, total=2;
+  [['#dv1',0],['#dv2',0]].forEach(([id])=>{
+    const box=$(id), opts=[...box.querySelectorAll('.option')];
+    opts.forEach(o=>o.classList.remove('correct','incorrect'));
+    opts.forEach(o=>{
+      if(o.dataset.role==='dep'){ o.classList.add('correct'); score++; }
+      else { o.classList.add('incorrect'); }
+    });
+  });
+  $('#dvRes').textContent = `${score}/${total} (correct answers highlighted)`;
+}
+
+/* ---------- Slide 14: Mixed run ---------- */
+function runAll(){
+  const pairs = parseXY($('#allData').value);
+  if(!pairs.length){ $('#allOut').innerHTML = '<span class="bad">Paste (x,y) data.</span>'; return; }
+  const xs=pairs.map(p=>p[0]), ys=pairs.map(p=>p[1]);
+  const fit = linreg(xs,ys);
+  if(!fit.ok){ $('#allOut').innerHTML = `<span class="bad">${fit.msg}</span>`; return; }
+  let html = `
+    <div class="grid g3">
+      <div class="kv"><span>b₀</span><strong>${fit.b0.toFixed(4)}</strong></div>
+      <div class="kv"><span>b₁</span><strong>${fit.b1.toFixed(4)}</strong></div>
+      <div class="kv"><span>r / R²</span><strong>${fit.r.toFixed(4)} / ${fit.r2.toFixed(4)}</strong></div>
+    </div>
+    <div class="kv"><span>Equation</span><strong>ŷ = ${fit.b0.toFixed(4)} + ${fit.b1.toFixed(4)}x</strong></div>`;
+  let predObj=null;
+  const x0 = +$('#x0').value;
+  if(Number.isFinite(x0)){
+    const yhat = fit.b0 + fit.b1*x0;
+    html += `<div class="kv"><span>Prediction at x₀=${x0}</span><strong>${yhat.toFixed(4)}</strong></div>`;
+    const y0 = +$('#y0').value;
+    if(Number.isFinite(y0)){
+      html += `<div class="kv"><span>Residual</span><strong>${(y0-yhat).toFixed(4)}</strong></div>`;
+    }
+    predObj = {x:x0, yhat};
+  }
+  html += `<p class="muted">Slope: +1 in x → Δŷ ≈ ${fit.b1.toFixed(3)}.  R² ≈ ${(fit.r2*100).toFixed(1)}% explained.  r = ${fit.r>=0? 'positive' : 'negative'} ${strengthLabel(fit.r)}.</p>`;
+  $('#allOut').innerHTML = html;
+  drawScatter('#allCanvas', xs, ys, {b0:fit.b0, b1:fit.b1}, predObj);
+}
+
+/* ---------- Slide 15: Quiz ---------- */
+/* make quiz options selectable */
+document.addEventListener('click', (e)=>{
+  const opt = e.target.closest('.quiz .option');
+  if(!opt) return;
+  const parent = opt.parentElement;
+  parent.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  opt.classList.add('selected');
+});
+function gradeQuiz(){
+  const boxes = [...document.querySelectorAll('.slide:nth-of-type(15) .quiz')]; // slide 15 content
+  let score=0;
+  boxes.forEach(box=>{
+    const opts=[...box.querySelectorAll('.option')];
+    const chosen = box.querySelector('.option.selected');
+    const right = opts.find(o=>o.dataset.correct==='true');
+    opts.forEach(o=>o.classList.remove('correct','incorrect'));
+    right.classList.add('correct');
+    opts.filter(o=>o!==right).forEach(o=>o.classList.add('incorrect'));
+    if(chosen && chosen===right) score++;
+  });
+  $('#quizRes').textContent = `${score}/${boxes.length} — (answers highlighted)`;
+}
+
+/* boot */
+show(0);
+</script>
+</body>
+</html>
