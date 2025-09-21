@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Regression & Correlation: From Scatter to Splatter!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 120px;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            margin: 20px 0;
+            padding: 40px;
+            display: none;
+            animation: slideIn 0.6s ease-in-out;
+            min-height: 700px;
+            position: relative;
+            border: 3px solid #f0f0f0;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); }
+            60% { transform: translateY(-15px); }
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            75% { transform: rotate(-1deg); }
+        }
+
+        h1 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 3em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            animation: bounce 3s infinite;
+        }
+
+        h2 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+            position: relative;
+        }
+
+        h3 {
+            color: #4a5568;
+            margin: 25px 0 20px 0;
+            font-size: 1.4em;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 2px solid #667eea;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 6px solid #667eea;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .example-box {
+            background: #f7fafc;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .practice-box {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%);
+            border: 3px solid #fed7d7;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 6px solid #f56565;
+        }
+
+        .exercise-box {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6ffe6 100%);
+            border: 3px solid #c6f6d5;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 6px solid #48bb78;
+        }
+
+        .funny-box {
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+            font-size: 1.1em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: wiggle 5s infinite;
+        }
+
+        .interactive-section {
+            background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 2px dashed #667eea;
+        }
+
+        .calculator {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .calculator input, .calculator textarea, .practice-input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .calculator button, .practice-btn, .check-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .calculator button:hover, .practice-btn:hover, .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .check-btn {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+        }
+
+        .chart-canvas {
+            border: 2px solid #e2e8f0;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+        }
+
+        .result {
+            font-weight: bold;
+            color: #2d3748;
+            margin: 15px 0;
+            padding: 15px;
+            background: #e6fffa;
+            border-radius: 8px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        .practice-input {
+            width: 200px;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            margin: 8px;
+        }
+
+        .practice-feedback {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .correct-feedback {
+            background: #f0fff4;
+            border: 2px solid #68d391;
+            color: #22543d;
+        }
+
+        .incorrect-feedback {
+            background: #fff5f5;
+            border: 2px solid #f56565;
+            color: #742a2a;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 6px solid #48bb78;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .quiz-option {
+            display: block;
+            margin: 12px 0;
+            padding: 15px;
+            background: #f7fafc;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .quiz-option:hover {
+            background: #e2e8f0;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #48bb78;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #f56565;
+        }
+
+        .equation-display {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                padding-bottom: 120px;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .slide {
+                padding: 25px;
+                min-height: 600px;
+            }
+
+            .navigation {
+                bottom: 15px;
+                gap: 15px;
+            }
+
+            .nav-btn {
+                padding: 15px 25px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div class="slide-counter">
+        Slide <span id="current-slide">1</span> of <span id="total-slides">10</span>
+    </div>
+
+    <div class="container">
+        <!-- Slide 1: Introduction -->
+        <div class="slide active">
+            <h1>Linear Regression & Correlation</h1>
+            <h2 style="text-align: center; border: none;">From Scatter to Splatter!</h2>
+            
+            <div class="funny-box">
+                "Linear regression: Because sometimes life really IS a straight line... but mostly it's not, and that's where statistics gets interesting!"
+            </div>
+            
+            <div style="text-align: center; font-size: 1.3em; margin: 40px 0;">
+                <p>Welcome to the wild world of linear relationships, where X meets Y and they decide whether to be friends, enemies, or just awkward acquaintances!</p>
+            </div>
+
+            <div class="example-box">
+                <h3>Your Journey Through Linear Land:</h3>
+                <ul style="font-size: 1.1em; line-height: 2;">
+                    <li><strong>Linear Equations:</strong> The GPS of mathematics</li>
+                    <li><strong>Scatter Plots:</strong> Where data points go to party</li>
+                    <li><strong>Independent vs Dependent Variables:</strong> Who's the boss?</li>
+                    <li><strong>Regression Equations:</strong> Finding the best-fit line</li>
+                    <li><strong>Correlation Coefficients:</strong> Measuring how much variables like each other</li>
+                    <li><strong>Testing Significance:</strong> Is this relationship real?</li>
+                    <li><strong>Prediction:</strong> Crystal ball mathematics</li>
+                </ul>
+            </div>
+
+            <div class="practice-box">
+                <h3>What Makes This Presentation Special:</h3>
+                <p><strong>Interactive Elements:</strong> Click, drag, calculate, and discover!</p>
+                <p><strong>Humor:</strong> Because math doesn't have to be scary</p>
+                <p><strong>Practice Problems:</strong> From "I got this" to "Help me, statistics gods!"</p>
+                <p><strong>Final Quiz:</strong> Prove you're a regression rockstar</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Linear Equations -->
+        <div class="slide">
+            <h2>Linear Equations: The Foundation</h2>
+            
+            <div class="definition-box">
+                <strong>Linear Equation:</strong> An equation that creates a straight line when graphed. It has the form y = mx + b, where 'm' is the slope and 'b' is the y-intercept.
+            </div>
+
+            <h3>The Anatomy of y = mx + b</h3>
+            <div class="example-box">
+                <div class="equation-display">
+                    y = mx + b
+                </div>
+                <ul style="font-size: 1.1em;">
+                    <li><strong>y:</strong> The output variable</li>
+                    <li><strong>m:</strong> The slope (how steep the line is)</li>
+                    <li><strong>x:</strong> The input variable</li>
+                    <li><strong>b:</strong> The y-intercept (where line crosses y-axis)</li>
+                </ul>
+            </div>
+
+            <div class="funny-box">
+                "Remember: m is for 'mountain' (how steep), b is for 'beginning' (where you start on the y-axis)!"
+            </div>
+
+            <div class="example-box">
+                <h4>Easy Example: Pizza Cost</h4>
+                <p><strong>Scenario:</strong> A pizza costs $8 plus $2 per topping.</p>
+                <p><strong>Equation:</strong> Cost = 2(toppings) + 8</p>
+                <p><strong>In y = mx + b form:</strong> y = 2x + 8</p>
+                <ul>
+                    <li>m = 2 (each topping adds $2)</li>
+                    <li>b = 8 (base cost is $8)</li>
+                    <li>For 3 toppings: y = 2(3) + 8 = $14</li>
+                </ul>
+            </div>
+
+            <div class="interactive-section">
+                <h4>Interactive Linear Equation Explorer</h4>
+                <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                    <div>
+                        <label>Slope (m): </label>
+                        <input type="number" id="slope-input" value="2" step="0.1" style="width: 80px;">
+                    </div>
+                    <div>
+                        <label>Y-intercept (b): </label>
+                        <input type="number" id="intercept-input" value="3" step="0.1" style="width: 80px;">
+                    </div>
+                    <button onclick="updateLinearEquation()">Update</button>
+                </div>
+                <div id="equation-result" class="equation-display">y = 2x + 3</div>
+                <canvas id="linear-graph" width="400" height="300" class="chart-canvas"></canvas>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice: Uber Pricing</h3>
+                <p>An Uber costs $3.50 base plus $1.25 per mile.</p>
+                <p>Write the equation: y = <input type="text" id="uber-slope" style="width: 60px;"> x + <input type="text" id="uber-intercept" style="width: 60px;"></p>
+                <p>Cost for 12 miles? $<input type="number" id="uber-cost" style="width: 80px;"></p>
+                <button class="check-btn" onclick="checkUberProblem()">Check</button>
+                <div id="uber-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Scatter Plots -->
+        <div class="slide">
+            <h2>Scatter Plots: Where Data Points Mingle</h2>
+            
+            <div class="definition-box">
+                <strong>Scatter Plot:</strong> A graph showing individual data points for two variables. Each point represents one observation.
+            </div>
+
+            <h3>Reading Scatter Plots</h3>
+            <div class="example-box">
+                <h4>What to Look For:</h4>
+                <ul>
+                    <li><strong>Pattern:</strong> Do points form a line or look random?</li>
+                    <li><strong>Direction:</strong> As X increases, does Y increase (positive) or decrease (negative)?</li>
+                    <li><strong>Strength:</strong> Are points close to a line (strong) or scattered (weak)?</li>
+                    <li><strong>Outliers:</strong> Any rebel points doing their own thing?</li>
+                </ul>
+            </div>
+
+            <div class="funny-box">
+                "Scatter plots are like social media - some show clear relationships, others are just chaos!"
+            </div>
+
+            <div class="interactive-section">
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+                    <label>Relationship type:</label>
+                    <select id="correlation-type" onchange="generateScatterPlot()">
+                        <option value="strong-positive">Strong Positive</option>
+                        <option value="moderate-positive">Moderate Positive</option>
+                        <option value="weak-positive">Weak Positive</option>
+                        <option value="no-correlation">No Correlation</option>
+                        <option value="weak-negative">Weak Negative</option>
+                        <option value="moderate-negative">Moderate Negative</option>
+                        <option value="strong-negative">Strong Negative</option>
+                    </select>
+                    <button onclick="generateScatterPlot()">Generate</button>
+                </div>
+                <canvas id="scatter-plot" width="500" height="400" class="chart-canvas"></canvas>
+                <div id="scatter-description"></div>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice: Correlation Detective</h3>
+                <p>Hours of TV vs Physical fitness:</p>
+                <select id="tv-fitness">
+                    <option value="">Choose...</option>
+                    <option value="strong-negative">Strong Negative</option>
+                    <option value="moderate-negative">Moderate Negative</option>
+                    <option value="no-correlation">No Correlation</option>
+                    <option value="positive">Positive</option>
+                </select>
+                <p>Years of education vs Income:</p>
+                <select id="education-income">
+                    <option value="">Choose...</option>
+                    <option value="negative">Negative</option>
+                    <option value="no-correlation">No Correlation</option>
+                    <option value="moderate-positive">Moderate Positive</option>
+                    <option value="strong-positive">Strong Positive</option>
+                </select>
+                <button class="check-btn" onclick="checkCorrelationDetective()">Check</button>
+                <div id="correlation-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Variables -->
+        <div class="slide">
+            <h2>Independent vs Dependent Variables</h2>
+            
+            <div class="definition-box">
+                <strong>Independent Variable (X):</strong> The variable you control. The "cause".<br>
+                <strong>Dependent Variable (Y):</strong> The variable that responds. The "effect".
+            </div>
+
+            <div class="funny-box">
+                "Independent variables are like the friend who decides where to eat. Dependent variables just go along!"
+            </div>
+
+            <div class="example-box">
+                <h4>Easy Example: Coffee and Alertness</h4>
+                <ul>
+                    <li><strong>Independent (X):</strong> Cups of coffee</li>
+                    <li><strong>Dependent (Y):</strong> Alertness level</li>
+                    <li><strong>Why:</strong> You control coffee intake, it affects alertness</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h4>Medium Example: Exercise and Heart Rate</h4>
+                <ul>
+                    <li><strong>Independent (X):</strong> Exercise intensity</li>
+                    <li><strong>Dependent (Y):</strong> Heart rate</li>
+                    <li><strong>Why:</strong> You control exercise, it affects heart rate</li>
+                </ul>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice: Variable Identification</h3>
+                <p><strong>Scenario:</strong> Class size affects test scores.</p>
+                <p>Independent: <input type="text" id="scenario-a-x" placeholder="What do you control?"></p>
+                <p>Dependent: <input type="text" id="scenario-a-y" placeholder="What responds?"></p>
+                
+                <p><strong>Scenario:</strong> Advertising budget influences sales.</p>
+                <p>Independent: <input type="text" id="scenario-b-x" placeholder="What do you control?"></p>
+                <p>Dependent: <input type="text" id="scenario-b-y" placeholder="What responds?"></p>
+                
+                <button class="check-btn" onclick="checkVariableIdentification()">Check</button>
+                <div id="variable-identification-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Regression Equation -->
+        <div class="slide">
+            <h2>The Regression Equation</h2>
+            
+            <div class="definition-box">
+                <strong>Regression Equation:</strong> The "best-fit line" through data points, calculated to minimize distances from points to the line.
+            </div>
+
+            <h3>Standard Form: ŷ = a + bx</h3>
+            <div class="example-box">
+                <div class="equation-display">
+                    ŷ = a + bx
+                </div>
+                <ul>
+                    <li><strong>ŷ:</strong> Predicted value of y</li>
+                    <li><strong>a:</strong> Y-intercept</li>
+                    <li><strong>b:</strong> Slope</li>
+                    <li><strong>x:</strong> Independent variable</li>
+                </ul>
+            </div>
+
+            <div class="funny-box">
+                "The regression line is like a mediator - trying to make all data points the least unhappy!"
+            </div>
+
+            <div class="example-box">
+                <h4>Example: Study Hours vs Test Scores</h4>
+                <table class="data-table">
+                    <tr><th>Study Hours</th><th>Test Score</th></tr>
+                    <tr><td>2</td><td>65</td></tr>
+                    <tr><td>4</td><td>75</td></tr>
+                    <tr><td>6</td><td>85</td></tr>
+                    <tr><td>8</td><td>90</td></tr>
+                </table>
+                <p><strong>Regression Equation:</strong> ŷ = 53.75 + 5x</p>
+                <p>Each study hour adds 5 points to the score!</p>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice: Pizza Sales vs Temperature</h3>
+                <p>Pattern: 60°F→30 pizzas, 70°F→40 pizzas, 80°F→50 pizzas, 90°F→60 pizzas</p>
+                <p>Equation: ŷ = <input type="number" id="pizza-intercept" style="width: 80px;"> + <input type="number" id="pizza-slope" style="width: 80px;"> x</p>
+                <p>Prediction at 85°F: <input type="number" id="pizza-prediction" style="width: 80px;"> pizzas</p>
+                <button class="check-btn" onclick="checkPizzaRegression()">Check</button>
+                <div id="pizza-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Correlation Coefficient -->
+        <div class="slide">
+            <h2>Correlation Coefficient: The Love Meter</h2>
+            
+            <div class="definition-box">
+                <strong>Correlation Coefficient (r):</strong> A number between -1 and 1 measuring strength and direction of linear relationship. It's like a relationship status for your data!
+            </div>
+
+            <div class="funny-box">
+                "+1 means 'soulmates,' -1 means 'complete opposites but predictable,' 0 means 'it's complicated.'"
+            </div>
+
+            <div class="example-box">
+                <h4>The Correlation Scale:</h4>
+                <table class="data-table">
+                    <tr><th>r Value</th><th>Strength</th><th>Direction</th></tr>
+                    <tr><td>+0.8 to +1.0</td><td>Strong</td><td>Positive</td></tr>
+                    <tr><td>+0.5 to +0.8</td><td>Moderate</td><td>Positive</td></tr>
+                    <tr><td>+0.1 to +0.5</td><td>Weak</td><td>Positive</td></tr>
+                    <tr><td>-0.1 to +0.1</td><td>None</td><td>No relationship</td></tr>
+                    <tr><td>-0.5 to -0.1</td><td>Weak</td><td>Negative</td></tr>
+                    <tr><td>-0.8 to -0.5</td><td>Moderate</td><td>Negative</td></tr>
+                    <tr><td>-1.0 to -0.8</td><td>Strong</td><td>Negative</td></tr>
+                </table>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice: Correlation Interpretation</h3>
+                <p>r = 0.92 between sleep hours and test performance means:</p>
+                <textarea id="correlation-interpretation-1" placeholder="Describe this relationship..." rows="2"></textarea>
+                
+                <p>r = -0.87 between temperature and heating bills means:</p>
+                <textarea id="correlation-interpretation-2" placeholder="Describe this relationship..." rows="2"></textarea>
+                
+                <button class="check-btn" onclick="checkCorrelationInterpretation()">Check</button>
+                <div id="correlation-interpretation-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Testing Significance -->
+        <div class="slide">
+            <h2>Testing Significance: Is This Real?</h2>
+            
+            <div class="definition-box">
+                <strong>Significance Testing:</strong> Determining if observed correlation is due to real relationship or random chance. Like a lie detector for data!
+            </div>
+
+            <div class="funny-box">
+                "Testing significance' You need evidence!"
+            </div>
+
+            <div class="example-box">
+                <h4>The Process:</h4>
+                <ol>
+                    <li><strong>Hypotheses:</strong> H₀: ρ = 0 vs H₁: ρ ≠ 0</li>
+                    <li><strong>Significance level:</strong> Usually α = 0.05</li>
+                    <li><strong>Test statistic:</strong> t = r√(n-2) / √(1-r²)</li>
+                    <li><strong>Decision:</strong> Compare |t| to critical value</li>
+                </ol>
+            </div>
+
+            <div class="example-box">
+                <h4>Example:</h4>
+                <p>n = 20, r = 0.65</p>
+                <p>t = 0.65√18 / √(1-0.65²) = 3.63</p>
+                <p>Critical value ≈ 2.101</p>
+                <p>Since 3.63 > 2.101, correlation is significant!</p>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice: TV vs Grades</h3>
+                <p>n = 25, r = -0.42</p>
+                <p>Null hypothesis: <input type="text" id="hyp-null" placeholder="H₀: ?"></p>
+                <p>Test statistic: <input type="number" id="test-stat" step="0.01"></p>
+                <p>Significant at α = 0.05? 
+                <select id="significance-conclusion">
+                    <option value="">Choose...</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select></p>
+                <button class="check-btn" onclick="checkSignificanceTest()">Check</button>
+                <div id="significance-test-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Prediction -->
+        <div class="slide">
+            <h2>Prediction: Crystal Ball Math</h2>
+            
+            <div class="definition-box">
+                <strong>Prediction:</strong> Using regression equation to estimate Y for given X. Mathematical crystal ball based on patterns!
+            </div>
+
+            <div class="funny-box">
+                "Predictions work like weather forecasts - great for tomorrow, risky for next year!"
+            </div>
+
+            <div class="example-box">
+                <h4>Types of Prediction:</h4>
+                <ul>
+                    <li><strong>Interpolation:</strong> Within data range (more reliable)</li>
+                    <li><strong>Extrapolation:</strong> Outside data range (risky!)</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h4>Example: ŷ = 53.75 + 5x</h4>
+                <p><strong>Interpolation:</strong> 5 hours → ŷ = 53.75 + 5(5) = 78.75 points ✓</p>
+                <p><strong>Extrapolation:</strong> 15 hours → ŷ = 53.75 + 5(15) = 128.75 points ✗</p>
+                <p>(128.75 > 100, so this prediction is unrealistic!)</p>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice: Car Values</h3>
+                <p>Equation: ŷ = 25000 - 2500x (where x = age in years)</p>
+                <p>3-year-old car value: $<input type="number" id="car-value-3"></p>
+                <p>6-year-old car value: $<input type="number" id="car-value-6"></p>
+                <p>Age when car worth $0: <input type="number" id="car-age-zero"> years</p>
+                <p>Trust prediction for 15-year car?</p>
+                <textarea id="extrapolation-reasoning" placeholder="Why or why not?" rows="2"></textarea>
+                <button class="check-btn" onclick="checkPredictionPractice()">Check</button>
+                <div id="prediction-practice-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Final Quiz -->
+        <div class="slide">
+            <h2>Final Quiz: Regression Rockstar Test!</h2>
+            
+            <div class="funny-box">
+                "Time to prove you're not just another data point! You've got this! 🎸📊"
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 1: In y = -3x + 7, what happens when x increases by 1?</h4>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 1)">y increases by 3</div>
+                <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this, 1)">y decreases by 3</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 1)">y increases by 7</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 1)">y stays the same</div>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 2: Which r shows strongest relationship?</h4>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 2)">r = 0.65</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 2)">r = -0.23</div>
+                <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this, 2)">r = -0.91</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 2)">r = 0.8</div>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 3: Study time affects test scores. Which is dependent?</h4>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 3)">Study time</div>
+                <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this, 3)">Test scores</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 3)">Student age</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 3)">Both equally</div>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 4: Using ŷ = 20 + 4x, predict y when x = 5</h4>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 4)">24</div>
+                <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this, 4)">40</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 4)">100</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 4)">25</div>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 5: Which prediction type is more reliable?</h4>
+                <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this, 5)">Interpolation (within data range)</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 5)">Extrapolation (outside data range)</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 5)">Both equally reliable</div>
+                <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this, 5)">Neither is reliable</div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button onclick="submitQuiz()" class="nav-btn">Submit Quiz</button>
+                <div id="quiz-score"></div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Conclusion -->
+        <div class="slide">
+            <h2>Congratulations, Regression Rockstar!</h2>
+            
+            <div class="funny-box">
+                "You've survived the linear regression adventure! You can now predict the future... well, the linear parts of it!"
+            </div>
+
+            <div class="example-box">
+                <h3>Your New Statistical Superpowers:</h3>
+                <ul style="font-size: 1.1em; line-height: 2;">
+                    <li><strong>Linear Equations:</strong> Understanding y = mx + b</li>
+                    <li><strong>Scatter Plots:</strong> Reading data relationships</li>
+                    <li><strong>Variables:</strong> Knowing who's the boss</li>
+                    <li><strong>Regression:</strong> Finding best-fit lines</li>
+                    <li><strong>Correlation:</strong> Measuring data love</li>
+                    <li><strong>Significance:</strong> Testing if relationships are real</li>
+                    <li><strong>Prediction:</strong> Mathematical fortune telling</li>
+                </ul>
+            </div>
+
+            <div class="practice-box">
+                <h3>Where to Go From Here:</h3>
+                <ul>
+                    <li><strong>Multiple Regression:</strong> When one variable isn't enough</li>
+                    <li><strong>Non-linear Relationships:</strong> When life curves</li>
+                    <li><strong>Advanced Statistics:</strong> ANOVA and beyond</li>
+                    <li><strong>Real-world Applications:</strong> Business, science, life!</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0; font-size: 1.2em;">
+                <p><strong>Remember:</strong> Statistics is about thinking critically about relationships in data!</p>
+                <p><em>"May your correlations be significant and your predictions be accurate!"</em></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        // Global variables - Initialize immediately
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let quizAnswers = [];
+
+        console.log('Script starting - slides found:', slides.length);
+
+        // Core navigation functions
+        function showSlide(n) {
+            console.log('showSlide called with:', n);
+            
+            // Remove active from current slide
+            if (slides[currentSlide]) {
+                slides[currentSlide].classList.remove('active');
+            }
+            
+            // Update current slide
+            currentSlide = n;
+            
+            // Keep within bounds
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            
+            // Show new slide
+            if (slides[currentSlide]) {
+                slides[currentSlide].classList.add('active');
+            }
+            
+            updateProgress();
+            updateNavigation();
+            updateSlideCounter();
+            
+            console.log('Now showing slide:', currentSlide + 1);
+        }
+
+        function nextSlide() {
+            console.log('Next button clicked');
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            console.log('Previous button clicked');
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            const progressBar = document.getElementById('progress');
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (prevBtn) {
+                prevBtn.disabled = currentSlide === 0;
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+            }
+        }
+
+        function updateSlideCounter() {
+            const currentSlideSpan = document.getElementById('current-slide');
+            const totalSlidesSpan = document.getElementById('total-slides');
+            
+            if (currentSlideSpan) {
+                currentSlideSpan.textContent = currentSlide + 1;
+            }
+            if (totalSlidesSpan) {
+                totalSlidesSpan.textContent = totalSlides;
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            updateSlideCounter();
+            updateProgress();
+            updateNavigation();
+            updateLinearEquation();
+            generateScatterPlot();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // Interactive functions
+        function updateLinearEquation() {
+            const slope = parseFloat(document.getElementById('slope-input')?.value || 2);
+            const intercept = parseFloat(document.getElementById('intercept-input')?.value || 3);
+            
+            const equation = `y = ${slope}x ${intercept >= 0 ? '+' : ''} ${intercept}`;
+            const resultDiv = document.getElementById('equation-result');
+            if (resultDiv) {
+                resultDiv.textContent = equation;
+            }
+            
+            drawLinearGraph(slope, intercept);
+        }
+
+        function drawLinearGraph(slope, intercept) {
+            const canvas = document.getElementById('linear-graph');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(40, 40);
+            ctx.lineTo(40, canvas.height - 40);
+            ctx.lineTo(canvas.width - 40, canvas.height - 40);
+            ctx.stroke();
+            
+            // Draw line
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            const x1 = 0, x2 = 10;
+            const y1 = slope * x1 + intercept;
+            const y2 = slope * x2 + intercept;
+            
+            const canvasX1 = 40 + (x1 / 10) * (canvas.width - 80);
+            const canvasY1 = canvas.height - 40 - ((y1 + 10) / 20) * (canvas.height - 80);
+            const canvasX2 = 40 + (x2 / 10) * (canvas.width - 80);
+            const canvasY2 = canvas.height - 40 - ((y2 + 10) / 20) * (canvas.height - 80);
+            
+            ctx.moveTo(canvasX1, canvasY1);
+            ctx.lineTo(canvasX2, canvasY2);
+            ctx.stroke();
+        }
+
+        function generateScatterPlot() {
+            const type = document.getElementById('correlation-type')?.value || 'strong-positive';
+            const canvas = document.getElementById('scatter-plot');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, 50);
+            ctx.lineTo(50, canvas.height - 50);
+            ctx.lineTo(canvas.width - 50, canvas.height - 50);
+            ctx.stroke();
+            
+            // Generate and draw points
+            const points = generateCorrelationData(type, 30);
+            ctx.fillStyle = '#667eea';
+            points.forEach(point => {
+                const x = 50 + (point.x / 35) * (canvas.width - 100);
+                const y = canvas.height - 50 - (point.y / 35) * (canvas.height - 100);
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            updateScatterDescription(type);
+        }
+
+        function generateCorrelationData(type, numPoints) {
+            const points = [];
+            const correlations = {
+                'strong-positive': 0.9,
+                'moderate-positive': 0.6,
+                'weak-positive': 0.3,
+                'no-correlation': 0,
+                'weak-negative': -0.3,
+                'moderate-negative': -0.6,
+                'strong-negative': -0.9
+            };
+            
+            const correlation = correlations[type] || 0;
+            
+            for (let i = 0; i < numPoints; i++) {
+                const x = Math.random() * 30 + 5;
+                const baseY = 20 + correlation * (x - 17.5) * 0.5;
+                const noise = (Math.random() - 0.5) * (10 - Math.abs(correlation) * 8);
+                const y = Math.max(2, Math.min(33, baseY + noise));
+                points.push({x: x, y: y});
+            }
+            
+            return points;
+        }
+
+        function updateScatterDescription(type) {
+            const descriptions = {
+                'strong-positive': 'Strong positive correlation (r ≈ +0.9): Clear upward pattern.',
+                'moderate-positive': 'Moderate positive correlation (r ≈ +0.6): Upward trend with scatter.',
+                'weak-positive': 'Weak positive correlation (r ≈ +0.3): Slight upward trend.',
+                'no-correlation': 'No correlation (r ≈ 0): Random scatter.',
+                'weak-negative': 'Weak negative correlation (r ≈ -0.3): Slight downward trend.',
+                'moderate-negative': 'Moderate negative correlation (r ≈ -0.6): Downward trend.',
+                'strong-negative': 'Strong negative correlation (r ≈ -0.9): Clear downward pattern.'
+            };
+            
+            const descDiv = document.getElementById('scatter-description');
+            if (descDiv) {
+                descDiv.innerHTML = `<p style="margin-top: 15px; font-weight: bold;">${descriptions[type] || ''}</p>`;
+            }
+        }
+
+        // Practice problem functions
+        function checkUberProblem() {
+            const slope = document.getElementById('uber-slope')?.value.trim();
+            const intercept = document.getElementById('uber-intercept')?.value.trim();
+            const cost = parseFloat(document.getElementById('uber-cost')?.value);
+            
+            let feedback = '<div class="practice-feedback ';
+            
+            if (slope === '1.25' && intercept === '3.50' && Math.abs(cost - 18.50) < 0.01) {
+                feedback += 'correct-feedback">Perfect! y = 1.25x + 3.50, and 12 miles costs $18.50.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct: y = 1.25x + 3.50, 12 miles = $18.50 (3.50 + 1.25×12).</div>';
+            }
+            
+            const feedbackDiv = document.getElementById('uber-feedback');
+            if (feedbackDiv) {
+                feedbackDiv.innerHTML = feedback;
+            }
+        }
+
+        function checkCorrelationDetective() {
+            const tvFitness = document.getElementById('tv-fitness')?.value;
+            const educationIncome = document.getElementById('education-income')?.value;
+            
+            let feedback = '<div class="practice-feedback ';
+            
+            if (tvFitness.includes('negative') && educationIncome.includes('positive')) {
+                feedback += 'correct-feedback">Excellent! More TV = less fitness (negative), more education = higher income (positive).</div>';
+            } else {
+                feedback += 'incorrect-feedback">Expected: TV vs fitness = negative, education vs income = positive.</div>';
+            }
+            
+            const feedbackDiv = document.getElementById('correlation-feedback');
+            if (feedbackDiv) {
+                feedbackDiv.innerHTML = feedback;
+            }
+        }
+
+        function checkVariableIdentification() {
+            const aX = document.getElementById('scenario-a-x')?.value.toLowerCase() || '';
+            const aY = document.getElementById('scenario-a-y')?.value.toLowerCase() || '';
+            const bX = document.getElementById('scenario-b-x')?.value.toLowerCase() || '';
+            const bY = document.getElementById('scenario-b-y')?.value.toLowerCase() || '';
+            
+            let score = 0;
+            if (aX.includes('class') && aY.includes('test')) score++;
+            if (bX.includes('advertising') && bY.includes('sales')) score++;
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score === 2) {
+                feedback += 'correct-feedback">Perfect! Class size and advertising are independent; test scores and sales are dependent.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct: A) Independent: class size, Dependent: test scores. B) Independent: advertising, Dependent: sales.</div>';
+            }
+            
+            const feedbackDiv = document.getElementById('variable-identification-feedback');
+            if (feedbackDiv) {
+                feedbackDiv.innerHTML = feedback;
+            }
+        }
+
+        function checkPizzaRegression() {
+            const intercept = parseFloat(document.getElementById('pizza-intercept')?.value);
+            const slope = parseFloat(document.getElementById('pizza-slope')?.value);
+            const prediction = parseFloat(document.getElementById('pizza-prediction')?.value);
+            
+            let feedback = '<div class="practice-feedback ';
+            
+            if (Math.abs(intercept - (-30)) < 2 && Math.abs(slope - 1) < 0.2 && Math.abs(prediction - 55) < 2) {
+                feedback += 'correct-feedback">Excellent! ŷ = -30 + 1x, predicting 55 pizzas at 85°F.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct: ŷ = -30 + 1x (each degree adds 1 pizza), 85°F = 55 pizzas.</div>';
+            }
+            
+            const feedbackDiv = document.getElementById('pizza-feedback');
+            if (feedbackDiv) {
+                feedbackDiv.innerHTML = feedback;
+            }
+        }
+
+        function checkCorrelationInterpretation() {
+            const interp1 = document.getElementById('correlation-interpretation-1')?.value.toLowerCase() || '';
+            const interp2 = document.getElementById('correlation-interpretation-2')?.value.toLowerCase() || '';
+            
+            let score = 0;
+            if (interp1.includes('strong') && interp1.includes('positive')) score++;
+            if (interp2.includes('strong') && interp2.includes('negative')) score++;
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score >= 1) {
+                feedback += 'correct-feedback">Good! r=0.92 is strong positive, r=-0.87 is strong negative.</div>';
+            } else {
+                feedback += 'incorrect-feedback">r=0.92 is strong positive (more sleep → better performance), r=-0.87 is strong negative (higher temp → lower bills).</div>';
+            }
+            
+            const feedbackDiv = document.getElementById('correlation-interpretation-feedback');
+            if (feedbackDiv) {
+                feedbackDiv.innerHTML = feedback;
+            }
+        }
+
+        function checkSignificanceTest() {
+            const hypNull = document.getElementById('hyp-null')?.value || '';
+            const testStat = parseFloat(document.getElementById('test-stat')?.value);
+            const conclusion = document.getElementById('significance-conclusion')?.value;
+            
+            // t = -0.42 * sqrt(23) / sqrt(1 - 0.42^2) ≈ -2.22
+            let feedback = '<div class="practice-feedback ';
+            
+            if (hypNull.includes('0') && Math.abs(testStat - (-2.22)) < 0.5 && conclusion === 'yes') {
+                feedback += 'correct-feedback">Excellent! H₀: ρ = 0, t ≈ -2.22, and yes, it\'s significant.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct: H₀: ρ = 0, t ≈ -2.22, significant (|t| > critical value).</div>';
+            }
+            
+            const feedbackDiv = document.getElementById('significance-test-feedback');
+            if (feedbackDiv) {
+                feedbackDiv.innerHTML = feedback;
+            }
+        }
+
+        function checkPredictionPractice() {
+            const value3 = parseFloat(document.getElementById('car-value-3')?.value);
+            const value6 = parseFloat(document.getElementById('car-value-6')?.value);
+            const ageZero = parseFloat(document.getElementById('car-age-zero')?.value);
+            
+            let feedback = '<div class="practice-feedback ';
+            
+            if (Math.abs(value3 - 17500) < 500 && Math.abs(value6 - 10000) < 500 && Math.abs(ageZero - 10) < 1) {
+                feedback += 'correct-feedback">Great! 3-year: $17,500, 6-year: $10,000, worthless at 10 years. Extrapolation to 15 years is unreliable.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct: $17,500, $10,000, 10 years. Extrapolating to 15 years is risky.</div>';
+            }
+            
+            const feedbackDiv = document.getElementById('prediction-practice-feedback');
+            if (feedbackDiv) {
+                feedbackDiv.innerHTML = feedback;
+            }
+        }
+
+        // Quiz functions
+        function selectQuizOption(option, questionNum) {
+            const question = option.parentElement;
+            const options = question.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('correct', 'incorrect'));
+
+            quizAnswers[questionNum - 1] = option.dataset.correct === 'true';
+            
+            if (option.dataset.correct === 'true') {
+                option.classList.add('correct');
+            } else {
+                option.classList.add('incorrect');
+                options.forEach(opt => {
+                    if (opt.dataset.correct === 'true') opt.classList.add('correct');
+                });
+            }
+        }
+
+        function submitQuiz() {
+            const correctAnswers = quizAnswers.filter(answer => answer === true).length;
+            const score = Math.round((correctAnswers / 5) * 100);
+            
+            let message = '';
+            if (score >= 90) {
+                message = 'Outstanding! You\'re a regression rockstar!';
+            } else if (score >= 70) {
+                message = 'Great job! Solid understanding!';
+            } else {
+                message = 'Keep practicing! Review and try again!';
+            }
+
+            const scoreDiv = document.getElementById('quiz-score');
+            if (scoreDiv) {
+                scoreDiv.innerHTML = `
+                    <div class="practice-feedback ${score >= 70 ? 'correct' : 'incorrect'}-feedback">
+                        <h4>Quiz Results:</h4>
+                        <p><strong>Score:</strong> ${correctAnswers}/5 (${score}%)</p>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Test that script is working
+        console.log('Script loaded successfully. Navigation should work now.');
+    </script>
+</body>
+</html>
