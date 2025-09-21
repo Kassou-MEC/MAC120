@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Amazing World of Sampling & Data</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .slide {
+            display: none;
+            animation: slideIn 0.5s ease-in-out;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            min-height: 500px;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: bounce 1s ease-in-out;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin: 20px 0;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            font-size: 1.5em;
+            margin: 15px 0;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .nav-buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .fun-fact {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #ffc107;
+            position: relative;
+        }
+
+        .fun-fact::before {
+            content: "💡 Fun Fact:";
+            font-weight: bold;
+            color: #ff6b6b;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .definition {
+            background: #e8f5e9;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .definition strong {
+            color: #2e7d32;
+            font-size: 1.2em;
+        }
+
+        .interactive-demo {
+            background: #f0f4f8;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .data-point {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            margin: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .data-point:hover {
+            transform: scale(1.2);
+            background: #764ba2;
+        }
+
+        .data-point.selected {
+            background: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgb(26, 21, 21);
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+        }
+
+        .quiz-option.incorrect {
+            background: #ffcdd2;
+            border-color: #f44336;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin: 0 10px;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ffd166 0%, #ffd166 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 60%;
+            padding: 2px 5px;
+        }
+
+        #slide-counter {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .practice-area {
+            background: #fff;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 100px;
+        }
+
+        #final-score {
+            font-size: 3em;
+            color: #764ba2;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .celebration {
+            animation: celebrate 1s ease-in-out infinite;
+        }
+
+        @keyframes celebrate {
+            0%, 100% {
+                transform: rotate(-5deg);
+            }
+            50% {
+                transform: rotate(5deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="slide-counter">Slide 1 of 12</div>
+        
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active">
+            <h1 class="celebration">🎯 The Amazing World of Sampling & Data! 📊</h1>
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="font-size: 1.5em; color: #555;">Welcome to the most exciting statistics lesson of your life!</p>
+                <p style="margin-top: 30px; font-size: 1.2em;">Where we turn boring numbers into... slightly less boring numbers! 😄</p>
+                <div class="fun-fact">
+                    Did you know? 87.3% of statistics are made up on the spot! (Including this one... or is it?)
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: What is Statistics? -->
+        <div class="slide">
+            <h2>What is Statistics? 🤔</h2>
+            <div class="definition">
+                <strong>Statistics:</strong> The science of collecting, analyzing, interpreting, and presenting data. It's basically professional people-watching with numbers!
+            </div>
+            
+            <h3>Why should you care?</h3>
+            <ul>
+                <li>📰 Every news article uses statistics (sometimes badly!)</li>
+                <li>💰 Your salary negotiations need statistics</li>
+                <li>🎮 Video game developers use statistics to balance gameplay</li>
+                <li>🍕 Pizza companies use statistics to predict your cravings</li>
+            </ul>
+
+            <div class="example-box">
+                <strong>Easy Example:</strong> Counting how many coffees you drink per day ☕<br>
+                <strong>Medium Example:</strong> Finding the average test score in your class 📝<br>
+                <strong>Hard Example:</strong> Predicting election outcomes from poll samples 🗳️
+            </div>
+
+            <div class="fun-fact">
+                The word "statistics" comes from the Latin word "status" meaning "state." Originally, it was all about collecting data for governments. Now it's about collecting data on everything, including how long you scroll TikTok!
+            </div>
+        </div>
+
+        <!-- Slide 3: Population vs Sample -->
+        <div class="slide">
+            <h2>Population vs Sample: The Big Picture 🌍</h2>
+            
+            <div class="definition">
+                <strong>Population:</strong> Everyone or everything you want to study<br>
+                <strong>Sample:</strong> A subset of the population (because ain't nobody got time for everyone!)
+            </div>
+
+            <div class="interactive-demo">
+                <h3>Click to Sample! 🎲</h3>
+                <p>Population of 20 students - Click 5 to create a sample:</p>
+                <div id="population-demo">
+                    <!-- Will be filled by JavaScript -->
+                </div>
+                <p id="sample-result" style="margin-top: 20px; font-weight: bold;"></p>
+            </div>
+
+            <div class="example-box">
+                <strong>Easy:</strong> Tasting soup (sample) to check if the whole pot (population) needs salt<br>
+                <strong>Medium:</strong> Surveying 1000 voters to predict how millions will vote<br>
+                <strong>Hard:</strong> Testing 100 lightbulbs to estimate the quality of 10,000 bulbs
+            </div>
+
+            <div class="fun-fact">
+                If you tried to survey every person in the US about their favorite ice cream flavor, it would take you about 10 years working 24/7. That's a lot of melted ice cream! 🍦
+            </div>
+        </div>
+
+        <!-- Slide 4: Types of Data -->
+        <div class="slide">
+            <h2>Types of Data: The Data Zoo 🦁</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="definition">
+                    <strong>Qualitative (Categorical):</strong><br>
+                    Data that describes qualities<br>
+                    • Colors (red, blue, green)<br>
+                    • Pizza toppings 🍕<br>
+                    • Movie genres<br>
+                    • Your mood right now 😊
+                </div>
+                
+                <div class="definition">
+                    <strong>Quantitative (Numerical):</strong><br>
+                    Data you can count or measure<br>
+                    • Height (5'10")<br>
+                    • Temperature (72°F)<br>
+                    • Number of cats owned 🐱<br>
+                    • Hours of sleep (hopefully 8!)
+                </div>
+            </div>
+
+            <h3>Quantitative Data Subtypes:</h3>
+            <div class="example-box">
+                <strong>Discrete:</strong> Countable values (1, 2, 3 cats - you can't have 2.5 cats!)<br>
+                <strong>Continuous:</strong> Any value in a range (height can be 5.7892... feet)
+            </div>
+
+            <div class="practice-area">
+                <h3>Quick Practice! Classify these:</h3>
+                <p>1. Your shoe size: <span class="highlight">Quantitative Discrete</span></p>
+                <p>2. Your weight: <span class="highlight">Quantitative Continuous</span></p>
+                <p>3. Your favorite music genre: <span class="highlight">Qualitative</span></p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Sampling Methods -->
+        <div class="slide">
+            <h2>Sampling Methods: Choose Your Fighter! ⚔️</h2>
+            
+            <h3>1. Simple Random Sampling 🎲</h3>
+            <div class="example-box">
+                Everyone has an equal chance! Like pulling names from a hat.<br>
+                <strong>Example:</strong> Using a random number generator to pick lottery winners
+            </div>
+
+            <h3>2. Stratified Sampling 📚</h3>
+            <div class="example-box">
+                Divide into groups, then sample from each.<br>
+                <strong>Example:</strong> Survey 10% from each grade level (freshmen, sophomores, juniors, seniors)
+            </div>
+
+            <h3>3. Cluster Sampling 🏘️</h3>
+            <div class="example-box">
+                Pick random groups, survey everyone in those groups.<br>
+                <strong>Example:</strong> Randomly select 5 classrooms, survey all students in those rooms
+            </div>
+
+            <h3>4. Systematic Sampling 📏</h3>
+            <div class="example-box">
+                Pick every nth person.<br>
+                <strong>Example:</strong> Survey every 10th person entering a mall
+            </div>
+
+            <h3>5. Convenience Sampling 🛋️</h3>
+            <div class="example-box">
+                Use whoever's available (lazy but sometimes necessary!).<br>
+                <strong>Example:</strong> Surveying your friends about pizza preferences
+            </div>
+
+            <div class="fun-fact">
+                Most online polls use convenience sampling, which is why "Boaty McBoatface" almost became the name of a British research vessel!
+            </div>
+        </div>
+
+        <!-- Slide 6: Parameters vs Statistics -->
+        <div class="slide">
+            <h2>Parameters vs Statistics: The Name Game 🏷️</h2>
+            
+            <div class="definition">
+                <strong>Parameter:</strong> A number describing the entire POPULATION (starts with P!)<br>
+                <strong>Statistic:</strong> A number describing a SAMPLE (starts with S!)
+            </div>
+
+            <h3>Memory Trick! 🧠</h3>
+            <p style="font-size: 1.3em; text-align: center; color: #667eea;">
+                <strong>P</strong>arameter = <strong>P</strong>opulation<br>
+                <strong>S</strong>tatistic = <strong>S</strong>ample
+            </p>
+
+            <div class="example-box">
+                <strong>Scenario:</strong> Average GPA at your college<br>
+                • If we calculate using ALL students = Parameter (μ)<br>
+                • If we calculate using 100 students = Statistic (x̄)<br><br>
+                
+                <strong>Easy:</strong> Average height of your family (parameter if all included)<br>
+                <strong>Medium:</strong> Mean income of Americans (parameter) vs survey of 1000 Americans (statistic)<br>
+                <strong>Hard:</strong> True disease prevalence (parameter) vs clinical trial results (statistic)
+            </div>
+
+            <div class="fun-fact">
+                Statisticians use Greek letters for parameters (μ, σ, π) and Latin letters for statistics (x̄, s, p̂). It's like they're trying to make math sound fancy!
+            </div>
+        </div>
+
+        <!-- Slide 7: Variables -->
+        <div class="slide">
+            <h2>Variables: The Data Detectives 🕵️</h2>
+            
+            <div class="definition">
+                <strong>Variable:</strong> A characteristic that can vary from one individual to another
+            </div>
+
+            <h3>Types of Variables:</h3>
+            <div class="example-box">
+                <strong>Independent Variable:</strong> The cause (what you change)<br>
+                <strong>Dependent Variable:</strong> The effect (what you measure)<br><br>
+                
+                <strong>Example:</strong> Does coffee affect test scores?<br>
+                • Independent: Amount of coffee ☕<br>
+                • Dependent: Test score 📝
+            </div>
+
+            <div class="practice-area">
+                <h3>Identify the Variables!</h3>
+                <p><strong>Study:</strong> "Does exercise improve mood?"</p>
+                <p>Independent: <span class="highlight">Amount/type of exercise</span></p>
+                <p>Dependent: <span class="highlight">Mood score/happiness level</span></p>
+            </div>
+
+            <div class="fun-fact">
+                In the famous "correlation doesn't imply causation" example, ice cream sales and drowning deaths both increase in summer. The hidden variable? Temperature! 🌡️
+            </div>
+        </div>
+
+        <!-- Slide 8: Data Collection -->
+        <div class="slide">
+            <h2>Data Collection: The Hunt Begins! 🎯</h2>
+            
+            <h3>Good Data Collection Practices:</h3>
+            <ul>
+                <li>✅ Clear, unbiased questions</li>
+                <li>✅ Representative samples</li>
+                <li>✅ Consistent methodology</li>
+                <li>✅ Adequate sample size</li>
+                <li>✅ Proper documentation</li>
+            </ul>
+
+            <h3>Common Pitfalls to Avoid:</h3>
+            <div class="example-box">
+                <strong>Leading Questions:</strong> "Don't you agree that pizza is amazing?" 🍕<br>
+                <strong>Selection Bias:</strong> Surveying gym members about exercise habits 💪<br>
+                <strong>Response Bias:</strong> People lying about how much TV they watch 📺<br>
+                <strong>Volunteer Bias:</strong> Only passionate people respond to surveys
+            </div>
+
+            <div class="interactive-demo">
+                <h3>Spot the Bias!</h3>
+                <p>"To study student sleep habits, we survey students leaving the library at 2 AM"</p>
+                <p style="color: #f44336; font-weight: bold;">⚠️ BIAS ALERT: Sample not representative!</p>
+            </div>
+
+            <div class="fun-fact">
+                In 1936, a magazine predicted Landon would beat Roosevelt for president based on 2 million responses. They were wrong because they only surveyed wealthy people with phones and cars!
+            </div>
+        </div>
+
+        <!-- Slide 9: Practice Problems -->
+        <div class="slide">
+            <h2>Practice Time! Let's Get Our Hands Dirty 💪</h2>
+            
+            <div class="practice-area">
+                <h3>Problem 1: Identify the Sampling Method</h3>
+                <p>A researcher assigns numbers to all students, uses a computer to generate 50 random numbers, and surveys those students.</p>
+                <button onclick="showAnswer(1)">Show Answer</button>
+                <p id="answer1" style="display:none; color: #4caf50; font-weight: bold;">Simple Random Sampling! 🎲</p>
+            </div>
+
+            <div class="practice-area">
+                <h3>Problem 2: Population or Sample?</h3>
+                <p>A candy factory tests 100 chocolates from today's production of 10,000 chocolates.</p>
+                <button onclick="showAnswer(2)">Show Answer</button>
+                <p id="answer2" style="display:none; color: #4caf50; font-weight: bold;">Sample! The 100 chocolates are a sample of the 10,000 population 🍫</p>
+            </div>
+
+            <div class="practice-area">
+                <h3>Problem 3: What Type of Data?</h3>
+                <p>Recording the number of pets each student owns.</p>
+                <button onclick="showAnswer(3)">Show Answer</button>
+                <p id="answer3" style="display:none; color: #4caf50; font-weight: bold;">Quantitative Discrete! You can't have 2.5 pets 🐕</p>
+            </div>
+
+            <div class="practice-area">
+                <h3>Problem 4: Spot the Problem</h3>
+                <p>A TV station asks viewers to text their opinion on a political issue. They receive 5,000 responses.</p>
+                <button onclick="showAnswer(4)">Show Answer</button>
+                <p id="answer4" style="display:none; color: #4caf50; font-weight: bold;">Voluntary Response Bias! Only people with strong opinions will text 📱</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Real-World Applications -->
+        <div class="slide">
+            <h2>Real-World Magic! Where Statistics Save the Day 🦸‍♂️</h2>
+            
+            <h3>Statistics in Action:</h3>
+            
+            <div class="example-box">
+                <strong>🏥 Medicine:</strong><br>
+                Clinical trials use samples to test if new drugs work for entire populations
+            </div>
+
+            <div class="example-box">
+                <strong>🎬 Netflix:</strong><br>
+                Samples your viewing habits to recommend shows (and they're scarily accurate!)
+            </div>
+
+            <div class="example-box">
+                <strong>🏈 Sports:</strong><br>
+                Teams use player statistics to make draft picks and game strategies
+            </div>
+
+            <div class="example-box">
+                <strong>🌦️ Weather:</strong><br>
+                Meteorologists sample atmospheric data to predict tomorrow's weather
+            </div>
+
+            <div class="example-box">
+                <strong>🍔 Fast Food:</strong><br>
+                McDonald's samples customer preferences to decide new menu items
+            </div>
+
+            <div class="fun-fact">
+                Amazon uses statistics so well that they can predict what you'll buy before you know you want it. They've patented "anticipatory shipping" - sending products before you order them! 📦
+            </div>
+        </div>
+
+        <!-- Slide 11: Quiz Time! -->
+        <div class="slide">
+            <h2>🎯 Quiz Time! Test Your Knowledge!</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="quiz-progress" style="width: 0%;">0/5</div>
+            </div>
+            
+            <div id="quiz-container">
+                <!-- Quiz questions will be inserted here by JavaScript -->
+            </div>
+            
+            <div id="quiz-score" style="display: none;">
+                <div id="final-score"></div>
+                <div id="score-message" style="text-align: center; font-size: 1.5em; color: #667eea;"></div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Conclusion -->
+        <div class="slide">
+            <h1 class="celebration">🎉 Congratulations! You're Now a Data Wizard! 🧙‍♂️</h1>
+            
+            <h3>What You've Learned:</h3>
+            <ul style="font-size: 1.2em; line-height: 2;">
+                <li>✅ The difference between populations and samples</li>
+                <li>✅ Types of data (qualitative vs quantitative)</li>
+                <li>✅ Various sampling methods and when to use them</li>
+                <li>✅ The difference between parameters and statistics</li>
+                <li>✅ How to spot bias in data collection</li>
+                <li>✅ Real-world applications of statistics</li>
+            </ul>
+
+            <div class="fun-fact" style="background: #c8e6c9; border-left-color: #4caf50;">
+                <strong>Remember:</strong> 73% of people who understand statistics are 87% more likely to spot fake news, make better decisions, and impress at parties! (Disclaimer: These statistics are 100% made up, but the principle is 100% real!)
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <h2 style="border: none;">Keep Learning, Keep Questioning, Keep Sampling! 📊</h2>
+                <p style="font-size: 1.3em; margin-top: 20px;">Now go forth and collect data responsibly! 🚀</p>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button onclick="previousSlide()" id="prevBtn">⬅ Previous</button>
+            <button onclick="nextSlide()" id="nextBtn">Next ➡</button>
+            <button onclick="resetPresentation()" style="background: #ff6b6b;">🔄 Start Over</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let quizScore = 0;
+        let currentQuizQuestion = 0;
+        let selectedSamples = [];
+
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "You want to know the average height of all NBA players. Measuring all players would give you a:",
+                options: ["Sample", "Parameter", "Statistic", "Variable"],
+                correct: 1,
+                explanation: "Parameter - because you're measuring the entire population!"
+            },
+            {
+                question: "Which type of data is 'Eye Color'?",
+                options: ["Quantitative Discrete", "Quantitative Continuous", "Qualitative", "Parameter"],
+                correct: 2,
+                explanation: "Qualitative - eye color is a category, not a number!"
+            },
+            {
+                question: "Surveying every 5th customer entering a store is an example of:",
+                options: ["Random Sampling", "Systematic Sampling", "Cluster Sampling", "Convenience Sampling"],
+                correct: 1,
+                explanation: "Systematic - you're following a system (every 5th person)!"
+            },
+            {
+                question: "The number of cookies in a jar is what type of data?",
+                options: ["Qualitative", "Quantitative Continuous", "Quantitative Discrete", "Parameter"],
+                correct: 2,
+                explanation: "Quantitative Discrete - you can count cookies (1, 2, 3...) but not have 2.5 cookies in the jar!"
+            },
+            {
+                question: "Which sampling method would likely produce the MOST biased results?",
+                options: ["Simple Random", "Stratified", "Systematic", "Convenience"],
+                correct: 3,
+                explanation: "Convenience sampling often produces bias because it doesn't give everyone an equal chance!"
+            }
+        ];
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('slide-counter').textContent = `Slide ${currentSlide + 1} of ${totalSlides}`;
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            
+            // Initialize interactive elements for specific slides
+            if (currentSlide === 2) {
+                initializePopulationDemo();
+            } else if (currentSlide === 10) {
+                initializeQuiz();
+            }
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function resetPresentation() {
+            showSlide(0);
+            quizScore = 0;
+            currentQuizQuestion = 0;
+            selectedSamples = [];
+        }
+
+        function initializePopulationDemo() {
+            const demo = document.getElementById('population-demo');
+            if (demo && demo.children.length === 0) {
+                for (let i = 1; i <= 20; i++) {
+                    const point = document.createElement('div');
+                    point.className = 'data-point';
+                    point.textContent = i;
+                    point.onclick = () => selectSample(point, i);
+                    demo.appendChild(point);
+                }
+            }
+        }
+
+        function selectSample(element, number) {
+            if (selectedSamples.includes(number)) {
+                element.classList.remove('selected');
+                selectedSamples = selectedSamples.filter(n => n !== number);
+            } else if (selectedSamples.length < 5) {
+                element.classList.add('selected');
+                selectedSamples.push(number);
+            }
+            
+            const result = document.getElementById('sample-result');
+            if (selectedSamples.length === 5) {
+                result.textContent = `Great! Your sample is: {${selectedSamples.sort((a, b) => a - b).join(', ')}}. This represents 25% of the population!`;
+                result.style.color = '#4caf50';
+            } else {
+                result.textContent = `Select ${5 - selectedSamples.length} more student(s)`;
+                result.style.color = '#667eea';
+            }
+        }
+
+        function initializeQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            document.getElementById('quiz-score').style.display = 'none';
+            currentQuizQuestion = 0;
+            quizScore = 0;
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            const container = document.getElementById('quiz-container');
+            if (currentQuizQuestion >= quizQuestions.length) {
+                showQuizResults();
+                return;
+            }
+            
+            const q = quizQuestions[currentQuizQuestion];
+            container.innerHTML = `
+                <div class="quiz-question">
+                    <h3>Question ${currentQuizQuestion + 1} of ${quizQuestions.length}</h3>
+                    <p style="font-size: 1.2em; margin: 20px 0;">${q.question}</p>
+                    ${q.options.map((option, index) => `
+                        <button class="quiz-option" onclick="checkAnswer(${index})">${option}</button>
+                    `).join('')}
+                    <div id="explanation" style="margin-top: 20px; display: none;"></div>
+                </div>
+            `;
+            
+            updateQuizProgress();
+        }
+
+        function checkAnswer(selected) {
+            const q = quizQuestions[currentQuizQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            const explanation = document.getElementById('explanation');
+            
+            options.forEach((option, index) => {
+                option.disabled = true;
+                if (index === q.correct) {
+                    option.classList.add('correct');
+                } else if (index === selected && selected !== q.correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            if (selected === q.correct) {
+                quizScore++;
+                explanation.innerHTML = `<p style="color: #4caf50; font-weight: bold;">✅ Correct! ${q.explanation}</p>`;
+            } else {
+                explanation.innerHTML = `<p style="color: #f44336; font-weight: bold;">❌ Not quite! ${q.explanation}</p>`;
+            }
+            explanation.style.display = 'block';
+            
+            setTimeout(() => {
+                currentQuizQuestion++;
+                showQuizQuestion();
+            }, 3000);
+        }
+
+        function updateQuizProgress() {
+            const progress = document.getElementById('quiz-progress');
+            const percentage = (currentQuizQuestion / quizQuestions.length) * 100;
+            progress.style.width = percentage + '%';
+            progress.textContent = `${currentQuizQuestion}/${quizQuestions.length}`;
+        }
+
+        function showQuizResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('quiz-score').style.display = 'block';
+            
+            const finalScore = document.getElementById('final-score');
+            const message = document.getElementById('score-message');
+            
+            finalScore.textContent = `${quizScore} / ${quizQuestions.length}`;
+            
+            let emoji, text;
+            const percentage = (quizScore / quizQuestions.length) * 100;
+            
+            if (percentage === 100) {
+                emoji = "🏆";
+                text = "Perfect! You're a Statistics Master!";
+            } else if (percentage >= 80) {
+                emoji = "🌟";
+                text = "Excellent work! You really understand this!";
+            } else if (percentage >= 60) {
+                emoji = "👍";
+                text = "Good job! Keep practicing!";
+            } else {
+                emoji = "💪";
+                text = "Nice try! Review the slides and try again!";
+            }
+            
+            message.innerHTML = `${emoji} ${text}`;
+            
+            const progress = document.getElementById('quiz-progress');
+            progress.style.width = '100%';
+            progress.textContent = 'Complete!';
+        }
+
+        function showAnswer(num) {
+            document.getElementById(`answer${num}`).style.display = 'block';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
