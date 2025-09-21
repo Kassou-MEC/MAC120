@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descriptive Statistics Mastery: From Graphs to Insights!</title>
+    <title>Descriptive Statistics with Practice - Fixed Navigation</title>
     <style>
         * {
             margin: 0;
@@ -16,12 +16,14 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            padding-bottom: 100px; /* Space for navigation */
         }
 
         .slide {
@@ -32,6 +34,7 @@
             padding: 30px;
             display: none;
             animation: slideIn 0.5s ease-in-out;
+            min-height: 600px;
         }
 
         .slide.active {
@@ -43,25 +46,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes bounce {
-            0%, 100% {
-                transform: rotate(-5deg);
-            }
-            50% {
-                transform: rotate(5deg);
-            }
-        }
-
         h1 {
             color: #4a5568;
             text-align: center;
             margin-bottom: 30px;
             font-size: 2.5em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .bounce-title {
-            animation: bounce 1s ease-in-out infinite;
         }
 
         h2 {
@@ -79,36 +69,66 @@
         }
 
         .navigation {
-            text-align: center;
-            margin: 20px 0;
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
+            display: flex;
+            gap: 20px;
         }
 
         .nav-btn {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 12px 25px;
-            margin: 0 10px;
+            padding: 15px 30px;
             border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
         .nav-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .definition-box {
@@ -127,21 +147,22 @@
             margin: 15px 0;
         }
 
-        .fun-fact {
-            background: linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            font-style: italic;
-            position: relative;
+        .practice-box {
+            background: #fff5f5;
+            border: 2px solid #fed7d7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #f56565;
         }
 
-        .fun-fact::before {
-            content: "🤓";
-            font-size: 1.5em;
-            position: absolute;
-            top: -5px;
-            left: 10px;
+        .exercise-box {
+            background: #f0fff4;
+            border: 2px solid #c6f6d5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #48bb78;
         }
 
         .interactive-section {
@@ -149,6 +170,113 @@
             padding: 20px;
             border-radius: 10px;
             margin: 20px 0;
+        }
+
+        .calculator {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .calculator input, .calculator textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .calculator button, .practice-btn, .check-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        .check-btn {
+            background: #48bb78;
+        }
+
+        .hint-btn {
+            background: #ed8936;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 12px;
+        }
+
+        .chart-canvas {
+            border: 1px solid #ccc;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .stem-leaf {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .result {
+            font-weight: bold;
+            color: #2d3748;
+            margin: 10px 0;
+        }
+
+        .practice-input {
+            width: 200px;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .practice-feedback {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .correct-feedback {
+            background: #f0fff4;
+            border: 1px solid #68d391;
+            color: #22543d;
+        }
+
+        .incorrect-feedback {
+            background: #fff5f5;
+            border: 1px solid #f56565;
+            color: #742a2a;
         }
 
         .quiz-question {
@@ -185,92 +313,46 @@
             border-color: #f56565;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #e2e8f0;
+        .hint-box {
+            background: #fffbeb;
+            border: 1px solid #f6e05e;
             border-radius: 5px;
-            margin: 20px 0;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.3s ease;
-        }
-
-        .slide-counter {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.9);
             padding: 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            z-index: 1000;
-        }
-
-        .humor-box {
-            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            text-align: center;
-            font-style: italic;
-        }
-
-        .calculator {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .calculator input, .calculator textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 2px solid #e2e8f0;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .calculator button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        .result {
-            font-weight: bold;
-            color: #2d3748;
             margin: 10px 0;
+            display: none;
+        }
+
+        .solution-box {
+            background: #f0f8ff;
+            border: 1px solid #90cdf4;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            display: none;
         }
 
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
+                padding-bottom: 100px;
             }
             
             h1 {
                 font-size: 2em;
             }
             
-            h2 {
-                font-size: 1.5em;
-            }
-            
             .slide {
                 padding: 20px;
+            }
+
+            .navigation {
+                bottom: 10px;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 14px;
             }
         }
     </style>
@@ -281,140 +363,370 @@
     </div>
 
     <div class="slide-counter">
-        Slide <span id="current-slide">1</span> of <span id="total-slides">5</span>
+        Slide <span id="current-slide">1</span> of <span id="total-slides">10</span>
     </div>
 
     <div class="container">
-        <!-- Slide 1: Title -->
+        <!-- Slide 1: Introduction -->
         <div class="slide active">
-            <h1 class="bounce-title">📊 Descriptive Statistics Mastery</h1>
-            <h2 style="text-align: center; border: none;">From Graphs to Insights!</h2>
-            
-            <div class="humor-box">
-                "A picture is worth a thousand data points... and a lot less confusing than a spreadsheet!"
-            </div>
+            <h1>Complete Descriptive Statistics with Practice</h1>
+            <h2 style="text-align: center; border: none;">Master Data Analysis Through Extensive Practice</h2>
             
             <div style="text-align: center; font-size: 1.2em; margin: 30px 0;">
-                <p>Welcome to your journey through the visual world of descriptive statistics!</p>
-                <p>We'll master graphs, charts, and measures that turn raw data into meaningful insights.</p>
-                <p><strong>Warning:</strong> Side effects may include sudden clarity about your data and an irresistible urge to make charts!</p>
+                <p>Learn descriptive statistics through comprehensive instruction and hands-on practice exercises.</p>
+                <p>Each concept includes guided examples, practice problems, and detailed solutions.</p>
             </div>
 
             <div class="example-box">
-                <h3>What You'll Master Today:</h3>
+                <h3>Complete Course Includes:</h3>
                 <ul>
-                    <li>📈 Stem-and-Leaf Plots (the OG data visualization)</li>
-                    <li>📊 Bar Graphs, Histograms, and Line Graphs</li>
-                    <li>🔄 Frequency Polygons and Time Series</li>
-                    <li>🎯 Measures of Location (Mean, Median, Mode)</li>
-                    <li>📏 Percentiles and Quartiles Interpretation</li>
+                    <li><strong>Stem-and-Leaf Plots:</strong> Construction and interpretation with practice exercises</li>
+                    <li><strong>Bar Graphs:</strong> Creation and analysis with real-world examples</li>
+                    <li><strong>Histograms:</strong> Distribution analysis and shape interpretation</li>
+                    <li><strong>Line Graphs:</strong> Trend analysis and time series interpretation</li>
+                    <li><strong>Frequency Polygons:</strong> Construction and comparison techniques</li>
+                    <li><strong>Measures of Location:</strong> Mean, median, mode calculations and applications</li>
+                    <li><strong>Percentiles:</strong> Calculation and real-world interpretation</li>
+                    <li><strong>Quartiles:</strong> Five-number summary and outlier detection</li>
+                    <li><strong>Mixed Practice:</strong> Comprehensive real-world applications</li>
                 </ul>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice Structure:</h3>
+                <p><strong>Guided Practice:</strong> Step-by-step solutions with detailed explanations</p>
+                <p><strong>Independent Practice:</strong> Problems with hints and instant feedback</p>
+                <p><strong>Challenge Problems:</strong> Real-world applications and scenarios</p>
+                <p><strong>Mixed Review:</strong> Comprehensive assessment and integration</p>
             </div>
         </div>
 
         <!-- Slide 2: Stem-and-Leaf Plots -->
         <div class="slide">
-            <h2>🌱 Stem-and-Leaf Plots: The Original Data Art</h2>
+            <h2>Stem-and-Leaf Plots</h2>
             
             <div class="definition-box">
-                <strong>Stem-and-Leaf Plot:</strong> A data display that organizes numbers by splitting each value into a "stem" (leading digits) and "leaf" (trailing digit). Think of it as organized handwriting for your data!
+                <strong>Stem-and-Leaf Plot:</strong> A display that organizes data by separating each value into a "stem" (leading digits) and "leaf" (final digit). Shows both the shape of the distribution and the actual data values.
             </div>
 
-            <h3>How to Create a Stem-and-Leaf Plot:</h3>
+            <h3>Creating a Stem-and-Leaf Plot:</h3>
             <div class="example-box">
                 <h4>Example: Test Scores</h4>
-                <p><strong>Raw Data:</strong> 67, 72, 75, 78, 81, 83, 84, 87, 89, 91, 93, 95</p>
+                <p><strong>Raw Data:</strong> 67, 72, 75, 78, 81, 83, 84, 87, 89, 91, 93, 95, 98</p>
                 
-                <div style="font-family: 'Courier New', monospace; background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; white-space: pre-line; line-height: 1.4;">
+                <div class="stem-leaf">
 6 | 7
 7 | 2 5 8
 8 | 1 3 4 7 9
-9 | 1 3 5
+9 | 1 3 5 8
 
-Key: 6|7 = 67
+Key: 6|7 = 67 points
                 </div>
                 
-                <p><strong>What it shows:</strong> Most students scored in the 80s, with a nice spread across the 70s and 90s!</p>
-            </div>
-
-            <div class="humor-box">
-                "Stem-and-leaf plots: Because sometimes you need to see your data grow like a mathematical garden! 🌿"
-            </div>
-
-            <div class="interactive-section">
-                <h4>🎮 Interactive Stem-and-Leaf Creator</h4>
-                <p>Enter your data (separated by commas):</p>
-                <textarea id="stem-leaf-data" placeholder="e.g., 23, 45, 47, 52, 58, 61, 63, 67, 72, 75" rows="3"></textarea>
-                <button onclick="createStemLeaf()">Create Stem-and-Leaf Plot</button>
-                <div id="stem-leaf-result"></div>
-            </div>
-        </div>
-
-        <!-- Slide 3: Measures of Location -->
-        <div class="slide">
-            <h2>🎯 Measures of Location: Finding the Center</h2>
-            
-            <div class="definition-box">
-                <strong>Measures of Location:</strong> Statistics that describe where the "center" or "typical value" of a dataset lies. They help answer the question: "What's a representative value for this data?"
-            </div>
-
-            <h3>The Big Three:</h3>
-            <div class="example-box">
-                <h4>1. 📊 Mean (Arithmetic Average)</h4>
-                <p><strong>Formula:</strong> Sum of all values ÷ Number of values</p>
-                <p><strong>Best for:</strong> Symmetric data without extreme outliers</p>
-                <p><strong>Symbol:</strong> x̄ (x-bar) for sample, μ (mu) for population</p>
-            </div>
-
-            <div class="example-box">
-                <h4>2. 🏃‍♂️ Median (Middle Value)</h4>
-                <p><strong>Definition:</strong> The middle value when data is arranged in order</p>
-                <p><strong>Best for:</strong> Skewed data or data with outliers</p>
-                <p><strong>Also called:</strong> 50th percentile or Q2</p>
-            </div>
-
-            <div class="example-box">
-                <h4>3. 🎪 Mode (Most Frequent)</h4>
-                <p><strong>Definition:</strong> The value that appears most often</p>
-                <p><strong>Best for:</strong> Categorical data or finding the most common value</p>
-                <p><strong>Types:</strong> Unimodal (one mode), bimodal (two modes), multimodal (many modes)</p>
-            </div>
-
-            <div class="humor-box">
-                "Mean, median, and mode walk into a data set. The mean says 'I'm the average!' The median says 'I'm in the middle!' The mode says 'I'm popular!' 📊"
-            </div>
-
-            <div class="calculator">
-                <h4>🧮 Statistics Calculator</h4>
-                <p>Enter your data (numbers separated by commas):</p>
-                <input type="text" id="stats-data" placeholder="e.g., 10,12,14,16,18,20,22,24,26,28">
-                <button onclick="calculateStats()">Calculate Statistics</button>
-                <div id="stats-result"></div>
-            </div>
-        </div>
-
-        <!-- Slide 4: Percentiles -->
-        <div class="slide">
-            <h2>📏 Percentiles: Your Data's Report Card</h2>
-            
-            <div class="definition-box">
-                <strong>Percentile:</strong> A value below which a certain percentage of data falls. The 75th percentile means 75% of the data is below this value, and 25% is above it.
-            </div>
-
-            <h3>Understanding Percentiles:</h3>
-            <div class="example-box">
-                <h4>Test Score Example</h4>
-                <p>If your test score is in the 85th percentile:</p>
+                <p><strong>What it reveals:</strong></p>
                 <ul>
-                    <li>✅ You scored better than 85% of students</li>
-                    <li>📊 15% of students scored higher than you</li>
-                    <li>🎯 You're in the top 15% of performers</li>
+                    <li>Most students scored in the 80s and 90s</li>
+                    <li>Distribution is roughly symmetric</li>
+                    <li>No major gaps in the data</li>
+                    <li>Highest concentration in the 80s</li>
                 </ul>
             </div>
 
             <div class="interactive-section">
-                <h4>🎚️ Interactive Percentile Explorer</h4>
-                <p>Sample Data: Test scores from 60 to 100</p>
+                <h4>Create Your Own Stem-and-Leaf Plot</h4>
+                <p>Enter your data (separated by commas):</p>
+                <textarea id="stem-leaf-data" placeholder="e.g., 23, 45, 47, 52, 58, 61, 63, 67, 72, 75" rows="3"></textarea>
+                <button onclick="createStemLeaf()">Create Plot</button>
+                <div id="stem-leaf-result"></div>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice Problem 1</h3>
+                <p><strong>Data:</strong> Heights (inches): 58, 61, 63, 65, 67, 69, 71, 73, 75, 77</p>
+                <p>Create a stem-and-leaf plot for this data.</p>
+                <button class="hint-btn" onclick="showHint('hint1')">Show Hint</button>
+                <button class="check-btn" onclick="showSolution('solution1')">Show Solution</button>
+                
+                <div id="hint1" class="hint-box">
+                    <strong>Hint:</strong> Use the tens digit as the stem and the ones digit as the leaf. Remember to order the leaves from smallest to largest.
+                </div>
+                
+                <div id="solution1" class="solution-box">
+                    <strong>Solution:</strong>
+                    <div class="stem-leaf">
+5 | 8
+6 | 1 3 5 7 9
+7 | 1 3 5 7
+
+Key: 5|8 = 58 inches
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Bar Graphs -->
+        <div class="slide">
+            <h2>Bar Graphs</h2>
+            
+            <div class="definition-box">
+                <strong>Bar Graph:</strong> Uses rectangular bars to display the frequency or quantity of different categories. Bars are separated by spaces since categories are distinct and separate.
+            </div>
+
+            <h3>Key Characteristics:</h3>
+            <div class="example-box">
+                <ul>
+                    <li><strong>Categorical Data:</strong> Used for discrete categories (majors, colors, brands)</li>
+                    <li><strong>Separated Bars:</strong> Gaps between bars show categories are distinct</li>
+                    <li><strong>Any Orientation:</strong> Can be vertical or horizontal</li>
+                    <li><strong>Easy Comparison:</strong> Heights/lengths directly compare values</li>
+                </ul>
+            </div>
+
+            <h3>Example: Student Majors</h3>
+            <div class="example-box">
+                <canvas id="bar-chart-demo" width="600" height="300" class="chart-canvas"></canvas>
+                <p><strong>Analysis:</strong> Engineering has the highest enrollment, followed by Business, with Arts having the lowest.</p>
+            </div>
+
+            <div class="interactive-section">
+                <h4>Build Your Bar Graph</h4>
+                <p>Enter categories and values (format: Category:Value):</p>
+                <textarea id="bar-data" placeholder="Math:150, Science:200, English:175, History:125, Art:100" rows="3"></textarea>
+                <button onclick="generateBarChart()">Generate Bar Chart</button>
+                <div id="bar-chart-result"></div>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice Problem: Interpreting Bar Graphs</h3>
+                <p>A survey of 500 students asked about their favorite subject. The results were:</p>
+                <ul>
+                    <li>Math: 125 students</li>
+                    <li>Science: 150 students</li>
+                    <li>English: 100 students</li>
+                    <li>History: 75 students</li>
+                    <li>Art: 50 students</li>
+                </ul>
+                <p>a) Which subject is most popular? <input type="text" id="bar-q1a" class="practice-input"></p>
+                <p>b) How many more students prefer Science than Art? <input type="number" id="bar-q1b" class="practice-input"></p>
+                <p>c) What percentage of students chose Math? <input type="number" id="bar-q1c" class="practice-input">%</p>
+                <button class="check-btn" onclick="checkBarPractice1()">Check Answers</button>
+                <div id="bar-practice1-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Histograms -->
+        <div class="slide">
+            <h2>Histograms</h2>
+            
+            <div class="definition-box">
+                <strong>Histogram:</strong> Shows the distribution of continuous numerical data by grouping values into intervals (bins). Bars touch each other because the data is continuous.
+            </div>
+
+            <h3>Histogram vs Bar Graph:</h3>
+            <div class="example-box">
+                <table class="data-table">
+                    <tr>
+                        <th>Feature</th>
+                        <th>Histogram</th>
+                        <th>Bar Graph</th>
+                    </tr>
+                    <tr>
+                        <td>Data Type</td>
+                        <td>Continuous (height, weight, time)</td>
+                        <td>Categorical (names, types, groups)</td>
+                    </tr>
+                    <tr>
+                        <td>Bars</td>
+                        <td>Touch each other</td>
+                        <td>Separated by spaces</td>
+                    </tr>
+                    <tr>
+                        <td>X-axis</td>
+                        <td>Numerical intervals</td>
+                        <td>Category labels</td>
+                    </tr>
+                    <tr>
+                        <td>Purpose</td>
+                        <td>Show distribution shape</td>
+                        <td>Compare category amounts</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>Example: Student Heights Distribution</h3>
+            <div class="example-box">
+                <canvas id="histogram-demo" width="600" height="300" class="chart-canvas"></canvas>
+                <p><strong>Analysis:</strong> Heights follow a roughly normal distribution, centered around 170cm.</p>
+            </div>
+
+            <div class="interactive-section">
+                <h4>Create Your Histogram</h4>
+                <p>Enter numerical data:</p>
+                <textarea id="histogram-data" placeholder="65,67,69,71,73,75,77,79,81,83,85,87,89,91,93" rows="2"></textarea>
+                <p>Number of bins: <input type="number" id="bin-count" value="8" min="4" max="15" style="width: 80px;"></p>
+                <button onclick="generateHistogram()">Generate Histogram</button>
+                <div id="histogram-result"></div>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice Problem: Reading Histograms</h3>
+                <p>A histogram shows the distribution of test scores with these frequencies:</p>
+                <table class="data-table">
+                    <tr><th>Score Range</th><th>Frequency</th></tr>
+                    <tr><td>60-69</td><td>5</td></tr>
+                    <tr><td>70-79</td><td>12</td></tr>
+                    <tr><td>80-89</td><td>18</td></tr>
+                    <tr><td>90-99</td><td>10</td></tr>
+                </table>
+                
+                <p>a) How many students took the test? <input type="number" id="hist-q1a" class="practice-input"></p>
+                <p>b) Which score range has the most students? <input type="text" id="hist-q1b" class="practice-input"></p>
+                <p>c) What percentage scored 80 or above? <input type="number" id="hist-q1c" class="practice-input">%</p>
+                <button class="check-btn" onclick="checkHistPractice1()">Check Answers</button>
+                <div id="hist-practice1-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Line Graphs -->
+        <div class="slide">
+            <h2>Line Graphs</h2>
+            
+            <div class="definition-box">
+                <strong>Line Graph:</strong> Shows changes in data over time or across a continuous scale by connecting data points with lines. Ideal for showing trends, patterns, and relationships.
+            </div>
+
+            <h3>When to Use Line Graphs:</h3>
+            <div class="example-box">
+                <ul>
+                    <li><strong>Time Series Data:</strong> Stock prices, temperature over months</li>
+                    <li><strong>Continuous Relationships:</strong> Speed vs. time, height vs. age</li>
+                    <li><strong>Trend Analysis:</strong> Identifying increases, decreases, patterns</li>
+                    <li><strong>Multiple Series:</strong> Comparing different groups over time</li>
+                </ul>
+            </div>
+
+            <h3>Example: Monthly Sales Performance</h3>
+            <div class="example-box">
+                <canvas id="line-chart-demo" width="600" height="300" class="chart-canvas"></canvas>
+                <p><strong>Analysis:</strong> Sales show seasonal patterns with winter peaks and summer lows.</p>
+            </div>
+
+            <div class="interactive-section">
+                <h4>Create Your Line Graph</h4>
+                <p>Enter time series data (format: Label:Value):</p>
+                <textarea id="line-data" placeholder="Jan:120, Feb:135, Mar:145, Apr:130, May:125, Jun:115, Jul:110, Aug:120" rows="2"></textarea>
+                <button onclick="generateLineChart()">Generate Line Chart</button>
+                <div id="line-chart-result"></div>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice Problem: Trend Analysis</h3>
+                <p>The table shows a company's monthly profits:</p>
+                <table class="data-table">
+                    <tr><th>Month</th><th>Profit ($000)</th></tr>
+                    <tr><td>Jan</td><td>45</td></tr>
+                    <tr><td>Feb</td><td>52</td></tr>
+                    <tr><td>Mar</td><td>48</td></tr>
+                    <tr><td>Apr</td><td>58</td></tr>
+                    <tr><td>May</td><td>65</td></tr>
+                    <tr><td>Jun</td><td>72</td></tr>
+                </table>
+                
+                <p>a) What is the overall trend? 
+                <select id="line-q1a" class="practice-input">
+                    <option value="">Choose...</option>
+                    <option value="increasing">Increasing</option>
+                    <option value="decreasing">Decreasing</option>
+                    <option value="stable">Stable</option>
+                </select></p>
+                
+                <p>b) What was the profit increase from Jan to Jun? $<input type="number" id="line-q1b" class="practice-input">k</p>
+                
+                <button class="check-btn" onclick="checkLinePractice1()">Check Answers</button>
+                <div id="line-practice1-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Measures of Location -->
+        <div class="slide">
+            <h2>Measures of Location</h2>
+            
+            <div class="definition-box">
+                <strong>Measures of Location:</strong> Statistics that describe the center or typical value of a dataset. They answer: "What value represents this data best?"
+            </div>
+
+            <h3>The Three Key Measures:</h3>
+            
+            <div class="example-box">
+                <h4>Mean (Arithmetic Average)</h4>
+                <p><strong>Formula:</strong> x̄ = (Σx) / n</p>
+                <p><strong>When to use:</strong> Symmetric data without extreme outliers</p>
+                <p><strong>Example:</strong> Test scores: 85, 90, 78, 92, 88</p>
+                <p>Mean = (85 + 90 + 78 + 92 + 88) ÷ 5 = 433 ÷ 5 = 86.6</p>
+            </div>
+
+            <div class="example-box">
+                <h4>Median (Middle Value)</h4>
+                <p><strong>Process:</strong> Order data, find middle value</p>
+                <p><strong>When to use:</strong> Skewed data or data with outliers</p>
+                <p><strong>Example:</strong> Same scores ordered: 78, 85, 88, 90, 92</p>
+                <p>Median = 88 (middle value)</p>
+            </div>
+
+            <div class="example-box">
+                <h4>Mode (Most Frequent)</h4>
+                <p><strong>Definition:</strong> Value that appears most often</p>
+                <p><strong>When to use:</strong> Categorical data or finding most common value</p>
+                <p><strong>Example:</strong> Scores: 85, 88, 90, 88, 92, 85, 88</p>
+                <p>Mode = 88 (appears 3 times)</p>
+            </div>
+
+            <div class="calculator">
+                <h4>Calculate All Measures</h4>
+                <input type="text" id="location-data" placeholder="Enter data: 10,12,14,16,18,20,22,24,26,28">
+                <button onclick="calculateLocation()">Calculate Statistics</button>
+                <div id="location-result"></div>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice Problem: Basic Calculations</h3>
+                <p><strong>Data:</strong> Quiz scores: 7, 8, 6, 9, 8, 7, 10, 8, 9, 8</p>
+                
+                <p>Calculate by hand, then check your answers:</p>
+                <p>a) Mean: <input type="number" step="0.1" id="basic-mean" class="practice-input"></p>
+                <p>b) Median: <input type="number" step="0.1" id="basic-median" class="practice-input"></p>
+                <p>c) Mode: <input type="number" id="basic-mode" class="practice-input"></p>
+                
+                <button class="check-btn" onclick="checkBasicCalc()">Check Answers</button>
+                <button class="hint-btn" onclick="showHint('basic-hint')">Show Hint</button>
+                <div id="basic-feedback"></div>
+                
+                <div id="basic-hint" class="hint-box">
+                    <strong>Hint:</strong> First, order the data: 6, 7, 7, 8, 8, 8, 8, 9, 9, 10. For median with even number of values, average the two middle values.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Percentiles -->
+        <div class="slide">
+            <h2>Understanding Percentiles</h2>
+            
+            <div class="definition-box">
+                <strong>Percentile:</strong> A value below which a certain percentage of observations fall. The kth percentile means k% of the data is at or below that value.
+            </div>
+
+            <h3>Key Percentiles:</h3>
+            <div class="example-box">
+                <ul>
+                    <li><strong>25th percentile (Q1):</strong> 25% of data below, 75% above</li>
+                    <li><strong>50th percentile (Q2):</strong> Median - 50% below, 50% above</li>
+                    <li><strong>75th percentile (Q3):</strong> 75% of data below, 25% above</li>
+                    <li><strong>90th percentile:</strong> Top 10% of performers</li>
+                </ul>
+            </div>
+
+            <h3>Interactive Percentile Explorer:</h3>
+            <div class="interactive-section">
                 <div style="background: #e6fffa; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #38b2ac;">
                     <p>Selected Percentile: <span id="percentile-value">50</span>th</p>
                     <input type="range" id="percentile-slider" style="width: 100%; margin: 20px 0;" min="1" max="99" value="50" oninput="updatePercentile()">
@@ -422,62 +734,235 @@ Key: 6|7 = 67
                 </div>
             </div>
 
-            <h3>Special Percentiles (Quartiles):</h3>
-            <div class="example-box">
-                <ul>
-                    <li><strong>Q1 (25th percentile):</strong> First quartile - 25% below, 75% above</li>
-                    <li><strong>Q2 (50th percentile):</strong> Second quartile = MEDIAN - 50% below, 50% above</li>
-                    <li><strong>Q3 (75th percentile):</strong> Third quartile - 75% below, 25% above</li>
-                    <li><strong>IQR:</strong> Interquartile Range = Q3 - Q1 (middle 50% of data)</li>
-                </ul>
+            <div class="calculator">
+                <h4>Calculate Specific Percentiles</h4>
+                <input type="text" id="percentile-data" placeholder="Enter data: 45,52,58,61,67,73,78,82,89,95">
+                <p>Which percentile: <input type="number" id="percentile-target" value="75" min="1" max="99" style="width: 80px;"></p>
+                <button onclick="calculatePercentile()">Calculate</button>
+                <div id="percentile-calc-result"></div>
             </div>
 
-            <div class="fun-fact" style="margin-left: 30px;">
-                Percentiles are like a GPS for your data - they tell you exactly where you are in the distribution landscape!
+            <div class="practice-box">
+                <h3>Practice Problem: Interpretation</h3>
+                <p>Sarah scored in the 85th percentile on her SAT. There were 2000 students who took the test.</p>
+                
+                <p>a) What percentage of students scored lower than Sarah?</p>
+                <input type="number" id="perc-q1a" class="practice-input">%
+                
+                <p>b) How many students scored higher than Sarah?</p>
+                <input type="number" id="perc-q1b" class="practice-input"> students
+                
+                <button class="check-btn" onclick="checkPercPractice1()">Check Answers</button>
+                <div id="perc-practice1-feedback"></div>
             </div>
         </div>
 
-        <!-- Slide 5: Final Quiz -->
+        <!-- Slide 8: Quartiles -->
         <div class="slide">
-            <h2>🎓 Final Quiz: Test Your Mastery!</h2>
+            <h2>Quartiles and Five-Number Summary</h2>
             
-            <div id="final-quiz">
-                <div class="quiz-question">
-                    <h4>Question 1:</h4>
-                    <p>Which measure of center is most affected by extreme outliers?</p>
-                    <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this)">Mean</div>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Median</div>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Mode</div>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">All are equally affected</div>
-                </div>
-
-                <div class="quiz-question">
-                    <h4>Question 2:</h4>
-                    <p>If your test score is at the 85th percentile, this means:</p>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">You got 85% of the questions correct</div>
-                    <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this)">You scored better than 85% of test-takers</div>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">85% of students scored better than you</div>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Your score was 85 points</div>
-                </div>
-
-                <div class="quiz-question">
-                    <h4>Question 3:</h4>
-                    <p>In a stem-and-leaf plot, what does the entry "7|2 5 8" represent?</p>
-                    <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this)">The values 72, 75, and 78</div>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Seven values: 2, 5, and 8</div>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">The calculation 7 × (2 + 5 + 8)</div>
-                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Seven items in categories 2, 5, and 8</div>
-                </div>
+            <div class="definition-box">
+                <strong>Quartiles:</strong> Values that divide ordered data into four equal parts. They provide a comprehensive view of data distribution.
             </div>
 
-            <div style="text-align: center; margin: 20px 0;">
-                <button id="submit-quiz" class="nav-btn" onclick="submitQuiz()">Submit Quiz</button>
-                <div id="quiz-score" style="margin-top: 20px; font-size: 1.2em; font-weight: bold;"></div>
+            <h3>Five-Number Summary Components:</h3>
+            <div class="example-box">
+                <ol>
+                    <li><strong>Minimum:</strong> Smallest value</li>
+                    <li><strong>Q1 (First Quartile):</strong> 25th percentile</li>
+                    <li><strong>Median (Q2):</strong> 50th percentile</li>
+                    <li><strong>Q3 (Third Quartile):</strong> 75th percentile</li>
+                    <li><strong>Maximum:</strong> Largest value</li>
+                </ol>
+                <p><strong>IQR (Interquartile Range) = Q3 - Q1</strong> (measures spread of middle 50%)</p>
+            </div>
+
+            <h3>Step-by-Step Example:</h3>
+            <div class="example-box">
+                <p><strong>Data:</strong> 12, 15, 18, 20, 22, 25, 28, 30, 35, 40, 45</p>
+                <table class="data-table">
+                    <tr><th>Statistic</th><th>Value</th><th>Position</th><th>Interpretation</th></tr>
+                    <tr><td>Minimum</td><td>12</td><td>1st</td><td>Smallest value</td></tr>
+                    <tr><td>Q1</td><td>18</td><td>25th %ile</td><td>25% below this</td></tr>
+                    <tr><td>Median</td><td>25</td><td>50th %ile</td><td>Middle value</td></tr>
+                    <tr><td>Q3</td><td>35</td><td>75th %ile</td><td>75% below this</td></tr>
+                    <tr><td>Maximum</td><td>45</td><td>Last</td><td>Largest value</td></tr>
+                </table>
+                <p><strong>IQR = 35 - 18 = 17</strong></p>
+            </div>
+
+            <div class="calculator">
+                <h4>Calculate Five-Number Summary</h4>
+                <input type="text" id="quartile-data" placeholder="Enter data: 12,15,18,20,22,25,28,30,35,40,45">
+                <button onclick="calculateQuartiles()">Calculate Summary</button>
+                <div id="quartile-result"></div>
+            </div>
+
+            <div class="practice-box">
+                <h3>Practice Problem: Manual Calculation</h3>
+                <p><strong>Data:</strong> 8, 12, 15, 18, 20, 23, 25, 28, 30</p>
+                
+                <p>Calculate the five-number summary:</p>
+                <p>a) Minimum: <input type="number" id="quart-min" class="practice-input"></p>
+                <p>b) Q1: <input type="number" step="0.1" id="quart-q1" class="practice-input"></p>
+                <p>c) Median: <input type="number" step="0.1" id="quart-med" class="practice-input"></p>
+                <p>d) Q3: <input type="number" step="0.1" id="quart-q3" class="practice-input"></p>
+                <p>e) Maximum: <input type="number" id="quart-max" class="practice-input"></p>
+                
+                <button class="check-btn" onclick="checkQuartPractice1()">Check Answers</button>
+                <button class="hint-btn" onclick="showHint('quart-hint')">Show Method</button>
+                <div id="quart-practice1-feedback"></div>
+                
+                <div id="quart-hint" class="hint-box">
+                    <strong>Method:</strong> With n=9, median is 5th value (20). Q1 is median of first 4 values (13.5), Q3 is median of last 4 values (26.5).
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Mixed Practice -->
+        <div class="slide">
+            <h2>Mixed Practice Exercises</h2>
+
+            <div class="practice-box">
+                <h3>Problem 1: Choose the Right Graph</h3>
+                <p>For each scenario, select the most appropriate graph type:</p>
+                
+                <p>a) Showing how a stock price changed over 6 months</p>
+                <select id="mixed-1a" class="practice-input">
+                    <option value="">Choose...</option>
+                    <option value="line">Line Graph</option>
+                    <option value="bar">Bar Graph</option>
+                    <option value="histogram">Histogram</option>
+                    <option value="stem">Stem-and-Leaf</option>
+                </select>
+                
+                <p>b) Comparing the number of students in different majors</p>
+                <select id="mixed-1b" class="practice-input">
+                    <option value="">Choose...</option>
+                    <option value="line">Line Graph</option>
+                    <option value="bar">Bar Graph</option>
+                    <option value="histogram">Histogram</option>
+                    <option value="stem">Stem-and-Leaf</option>
+                </select>
+                
+                <p>c) Showing the distribution of test scores from 0-100</p>
+                <select id="mixed-1c" class="practice-input">
+                    <option value="">Choose...</option>
+                    <option value="line">Line Graph</option>
+                    <option value="bar">Bar Graph</option>
+                    <option value="histogram">Histogram</option>
+                    <option value="stem">Stem-and-Leaf</option>
+                </select>
+                
+                <button class="check-btn" onclick="checkMixed1()">Check Answers</button>
+                <div id="mixed-1-feedback"></div>
+            </div>
+
+            <div class="practice-box">
+                <h3>Problem 2: Comprehensive Data Analysis</h3>
+                <p><strong>Dataset:</strong> Hours of sleep per night for 15 college students:</p>
+                <p>6.5, 7.0, 5.5, 8.0, 7.5, 6.0, 9.0, 7.0, 8.5, 6.5, 7.5, 5.0, 8.0, 7.0, 6.5</p>
+                
+                <div class="calculator">
+                    <input type="text" id="sleep-data" value="6.5,7.0,5.5,8.0,7.5,6.0,9.0,7.0,8.5,6.5,7.5,5.0,8.0,7.0,6.5">
+                    <button onclick="calculateLocation('sleep-data', 'sleep-stats')">Calculate Statistics</button>
+                    <div id="sleep-stats"></div>
+                    <button onclick="calculateQuartiles('sleep-data', 'sleep-quartiles')">Calculate Quartiles</button>
+                    <div id="sleep-quartiles"></div>
+                </div>
+                
+                <p>Answer these questions:</p>
+                <p>a) What percentage of students sleep 7 hours or less? <input type="number" id="sleep-percent" class="practice-input">%</p>
+                <p>b) Which measure of center is most appropriate? <input type="text" id="sleep-measure" class="practice-input"></p>
+                
+                <button class="check-btn" onclick="checkSleepAnalysis()">Check Analysis</button>
+                <div id="sleep-feedback"></div>
+            </div>
+
+            <div class="exercise-box">
+                <h3>Challenge Problem: Real Estate Analysis</h3>
+                <p><strong>Scenario:</strong> Home prices in a neighborhood (thousands):</p>
+                <p>$180, $185, $190, $195, $200, $205, $210, $215, $220, $850</p>
+                
+                <div class="calculator">
+                    <input type="text" id="house-data" value="180,185,190,195,200,205,210,215,220,850">
+                    <button onclick="calculateLocation('house-data', 'house-result')">Calculate Statistics</button>
+                    <div id="house-result"></div>
+                </div>
+                
+                <p>a) Which measure best represents a "typical" house price? 
+                <select id="typical-measure" class="practice-input">
+                    <option value="">Choose...</option>
+                    <option value="mean">Mean</option>
+                    <option value="median">Median</option>
+                    <option value="mode">Mode</option>
+                </select></p>
+                
+                <p>b) Why is this measure better than the others?</p>
+                <textarea id="typical-reason" class="practice-input" placeholder="Explain your reasoning" style="width: 400px; height: 60px;"></textarea>
+                
+                <button class="check-btn" onclick="checkTypical()">Check Answer</button>
+                <div id="typical-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Final Assessment -->
+        <div class="slide">
+            <h2>Final Assessment</h2>
+
+            <div class="quiz-question">
+                <h3>Question 1: Graph Selection</h3>
+                <p>A researcher wants to show how average temperature has changed over the past 50 years. Which graph would be most appropriate?</p>
+                <div class="quiz-option" data-correct="true" onclick="selectFinalOption(this, 1)">Line graph</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 1)">Bar graph</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 1)">Histogram</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 1)">Stem-and-leaf plot</div>
+            </div>
+
+            <div class="quiz-question">
+                <h3>Question 2: Measures of Center</h3>
+                <p>A dataset has the values: 10, 12, 14, 16, 18, 20, 100. Which measure of center would be most affected by the outlier (100)?</p>
+                <div class="quiz-option" data-correct="true" onclick="selectFinalOption(this, 2)">Mean</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 2)">Median</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 2)">Mode</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 2)">They are all equally affected</div>
+            </div>
+
+            <div class="quiz-question">
+                <h3>Question 3: Percentile Interpretation</h3>
+                <p>If your exam score is at the 75th percentile, what does this mean?</p>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 3)">You got 75% of the questions correct</div>
+                <div class="quiz-option" data-correct="true" onclick="selectFinalOption(this, 3)">You scored better than 75% of students</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 3)">75% of students scored better than you</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 3)">Your score was 75 points</div>
+            </div>
+
+            <div class="quiz-question">
+                <h3>Question 4: Quartiles</h3>
+                <p>The IQR (Interquartile Range) represents:</p>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 4)">The range of all data</div>
+                <div class="quiz-option" data-correct="true" onclick="selectFinalOption(this, 4)">The spread of the middle 50% of data</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 4)">The difference between mean and median</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 4)">The most frequent range of values</div>
+            </div>
+
+            <div class="quiz-question">
+                <h3>Question 5: Histogram vs Bar Graph</h3>
+                <p>The main difference between a histogram and a bar graph is:</p>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 5)">Histograms use colors, bar graphs don't</div>
+                <div class="quiz-option" data-correct="true" onclick="selectFinalOption(this, 5)">Histogram bars touch, bar graph bars have gaps</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 5)">Histograms are always vertical</div>
+                <div class="quiz-option" data-correct="false" onclick="selectFinalOption(this, 5)">There is no difference</div>
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-                <h3>🎉 Congratulations!</h3>
-                <p>You've completed the Descriptive Statistics presentation!</p>
+                <button onclick="submitFinalAssessment()" class="nav-btn">Submit Assessment</button>
+                <div id="final-assessment-result"></div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <h3>Congratulations!</h3>
+                <p>You've completed the comprehensive descriptive statistics course!</p>
                 <p>You now have the tools to analyze and visualize data effectively.</p>
             </div>
         </div>
@@ -490,17 +975,26 @@ Key: 6|7 = 67
     </div>
 
     <script>
+        // Global variables
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
-        let quizAnswers = [];
+        let finalAssessmentAnswers = [null, null, null, null, null];
 
-        // Initialize
-        document.getElementById('total-slides').textContent = totalSlides;
-        updateProgress();
-        updateNavigation();
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            document.getElementById('total-slides').textContent = totalSlides;
+            updateProgress();
+            updateNavigation();
+            updateSlideCounter();
+            initializeCharts();
+            updatePercentile();
+        });
 
+        // Navigation functions
         function showSlide(n) {
+            console.log(`Showing slide ${n}`);
             slides[currentSlide].classList.remove('active');
             currentSlide = n;
             
@@ -511,18 +1005,17 @@ Key: 6|7 = 67
             updateProgress();
             updateNavigation();
             updateSlideCounter();
-            
-            // Initialize slide-specific features
-            if (currentSlide === 3) updatePercentile();
         }
 
         function nextSlide() {
+            console.log('Next slide clicked');
             if (currentSlide < totalSlides - 1) {
                 showSlide(currentSlide + 1);
             }
         }
 
         function previousSlide() {
+            console.log('Previous slide clicked');
             if (currentSlide > 0) {
                 showSlide(currentSlide - 1);
             }
@@ -534,8 +1027,11 @@ Key: 6|7 = 67
         }
 
         function updateNavigation() {
-            document.getElementById('prev-btn').disabled = currentSlide === 0;
-            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (prevBtn) prevBtn.disabled = currentSlide === 0;
+            if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
         }
 
         function updateSlideCounter() {
@@ -548,7 +1044,209 @@ Key: 6|7 = 67
             if (e.key === 'ArrowLeft') previousSlide();
         });
 
-        // Stem-and-leaf plot creator
+        // Helper functions
+        function showHint(hintId) {
+            const hint = document.getElementById(hintId);
+            if (hint) {
+                hint.style.display = hint.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function showSolution(solutionId) {
+            const solution = document.getElementById(solutionId);
+            if (solution) {
+                solution.style.display = solution.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        // Chart initialization
+        function initializeCharts() {
+            setTimeout(() => {
+                initializeBarChart();
+                initializeHistogram();
+                initializeLineChart();
+            }, 500);
+        }
+
+        function initializeBarChart() {
+            const canvas = document.getElementById('bar-chart-demo');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            const categories = ['Engineering', 'Business', 'Liberal Arts', 'Sciences'];
+            const values = [450, 380, 220, 340];
+            
+            drawBarChart(ctx, canvas, categories, values, 'Student Enrollment by Major');
+        }
+
+        function drawBarChart(ctx, canvas, labels, values, title) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const padding = 60;
+            const maxValue = Math.max(...values);
+            const barWidth = (canvas.width - 2 * padding) / labels.length;
+            const maxBarHeight = canvas.height - 2 * padding - 40;
+            
+            // Draw title
+            ctx.fillStyle = '#2d3748';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(title, canvas.width / 2, 25);
+            
+            // Draw bars
+            values.forEach((value, i) => {
+                const barHeight = (value / maxValue) * maxBarHeight;
+                const x = padding + i * barWidth + barWidth * 0.1;
+                const y = canvas.height - padding - barHeight;
+                
+                ctx.fillStyle = '#667eea';
+                ctx.fillRect(x, y, barWidth * 0.8, barHeight);
+                
+                // Value labels
+                ctx.fillStyle = '#2d3748';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(value, x + barWidth * 0.4, y - 5);
+                
+                // Category labels
+                ctx.fillText(labels[i], x + barWidth * 0.4, canvas.height - padding + 20);
+            });
+            
+            // Axes
+            ctx.strokeStyle = '#2d3748';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+        }
+
+        function initializeHistogram() {
+            const canvas = document.getElementById('histogram-demo');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            const heights = [155, 158, 162, 165, 167, 170, 172, 175, 178, 180, 182, 185];
+            const frequencies = [2, 3, 8, 12, 18, 22, 20, 15, 8, 4, 2, 1];
+            
+            drawHistogram(ctx, canvas, heights, frequencies, 'Distribution of Student Heights');
+        }
+
+        function drawHistogram(ctx, canvas, bins, frequencies, title) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const padding = 60;
+            const maxFreq = Math.max(...frequencies);
+            const barWidth = (canvas.width - 2 * padding) / bins.length;
+            const maxBarHeight = canvas.height - 2 * padding - 40;
+            
+            // Draw title
+            ctx.fillStyle = '#2d3748';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(title, canvas.width / 2, 25);
+            
+            // Draw histogram bars
+            frequencies.forEach((freq, i) => {
+                const barHeight = (freq / maxFreq) * maxBarHeight;
+                const x = padding + i * barWidth;
+                const y = canvas.height - padding - barHeight;
+                
+                ctx.fillStyle = '#667eea';
+                ctx.fillRect(x, y, barWidth, barHeight);
+                
+                // Frequency labels
+                ctx.fillStyle = '#2d3748';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(freq, x + barWidth/2, y - 5);
+                
+                // Bin labels
+                if (i % 2 === 0) {
+                    ctx.fillText(bins[i], x + barWidth/2, canvas.height - padding + 20);
+                }
+            });
+            
+            // Axes
+            ctx.strokeStyle = '#2d3748';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+        }
+
+        function initializeLineChart() {
+            const canvas = document.getElementById('line-chart-demo');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const sales = [450, 520, 480, 420, 350, 300, 280, 310, 380, 450, 580, 620];
+            
+            drawLineChart(ctx, canvas, months, sales, 'Monthly Sales Performance');
+        }
+
+        function drawLineChart(ctx, canvas, labels, values, title) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const padding = 60;
+            const plotWidth = canvas.width - 2 * padding;
+            const plotHeight = canvas.height - 2 * padding - 40;
+            const maxValue = Math.max(...values);
+            const minValue = Math.min(...values);
+            const valueRange = maxValue - minValue;
+            
+            // Draw title
+            ctx.fillStyle = '#2d3748';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(title, canvas.width / 2, 25);
+            
+            // Draw axes
+            ctx.strokeStyle = '#2d3748';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Plot line
+            ctx.strokeStyle = '#667eea';
+            ctx.fillStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            for (let i = 0; i < values.length; i++) {
+                const x = padding + (i / (values.length - 1)) * plotWidth;
+                const y = canvas.height - padding - ((values[i] - minValue) / valueRange) * plotHeight;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+                
+                // Draw data points
+                ctx.fillRect(x - 3, y - 3, 6, 6);
+                
+                // Labels
+                if (i % 2 === 0) {
+                    ctx.fillStyle = '#2d3748';
+                    ctx.font = '10px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(labels[i], x, canvas.height - padding + 20);
+                    ctx.fillStyle = '#667eea';
+                }
+            }
+            
+            ctx.stroke();
+        }
+
+        // Interactive Functions
         function createStemLeaf() {
             const input = document.getElementById('stem-leaf-data').value;
             const data = input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x)).sort((a, b) => a - b);
@@ -569,7 +1267,7 @@ Key: 6|7 = 67
                 stemLeafMap[stem].push(leaf);
             });
 
-            let result = '<div style="font-family: \'Courier New\', monospace; background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; white-space: pre-line; line-height: 1.4;">';
+            let result = '<div class="stem-leaf">';
             Object.keys(stemLeafMap).sort((a, b) => a - b).forEach(stem => {
                 const leaves = stemLeafMap[stem].sort((a, b) => a - b).join(' ');
                 result += `${stem} | ${leaves}\n`;
@@ -580,120 +1278,481 @@ Key: 6|7 = 67
             document.getElementById('stem-leaf-result').innerHTML = result;
         }
 
-        // Statistics calculator
-        function calculateStats() {
-            const input = document.getElementById('stats-data').value;
-            const data = input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x)).sort((a, b) => a - b);
-            
-            if (data.length === 0) {
-                document.getElementById('stats-result').innerHTML = '<p style="color: red;">Please enter valid numbers!</p>';
+        function generateBarChart() {
+            const input = document.getElementById('bar-data').value;
+            const pairs = input.split(',').map(pair => {
+                const [category, value] = pair.split(':');
+                return { category: category?.trim(), value: parseFloat(value?.trim()) };
+            }).filter(pair => pair.category && !isNaN(pair.value));
+
+            if (pairs.length === 0) {
+                document.getElementById('bar-chart-result').innerHTML = '<p style="color: red;">Please enter valid category:value pairs!</p>';
                 return;
             }
 
-            // Calculate mean
-            const mean = data.reduce((a, b) => a + b) / data.length;
+            const canvas = document.createElement('canvas');
+            canvas.width = 600;
+            canvas.height = 300;
+            canvas.className = 'chart-canvas';
+            const ctx = canvas.getContext('2d');
+
+            drawBarChart(ctx, canvas, 
+                pairs.map(p => p.category), 
+                pairs.map(p => p.value), 
+                'Your Custom Bar Chart'
+            );
+
+            document.getElementById('bar-chart-result').innerHTML = '';
+            document.getElementById('bar-chart-result').appendChild(canvas);
+        }
+
+        function generateHistogram() {
+            const input = document.getElementById('histogram-data').value;
+            const binCount = parseInt(document.getElementById('bin-count')?.value || 8);
+            const data = input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
             
-            // Calculate median
+            if (data.length === 0) {
+                document.getElementById('histogram-result').innerHTML = '<p style="color: red;">Please enter valid numbers!</p>';
+                return;
+            }
+
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            const binWidth = (max - min) / binCount;
+            const bins = Array(binCount).fill(0);
+            const binLabels = [];
+            
+            for (let i = 0; i < binCount; i++) {
+                binLabels.push((min + i * binWidth).toFixed(1));
+            }
+            
+            data.forEach(value => {
+                let binIndex = Math.floor((value - min) / binWidth);
+                if (binIndex === binCount) binIndex = binCount - 1;
+                bins[binIndex]++;
+            });
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 600;
+            canvas.height = 300;
+            canvas.className = 'chart-canvas';
+            const ctx = canvas.getContext('2d');
+            
+            drawHistogram(ctx, canvas, binLabels, bins, 'Your Custom Histogram');
+            
+            document.getElementById('histogram-result').innerHTML = '';
+            document.getElementById('histogram-result').appendChild(canvas);
+        }
+
+        function generateLineChart() {
+            const input = document.getElementById('line-data').value;
+            const pairs = input.split(',').map(pair => {
+                const [label, value] = pair.split(':');
+                return { label: label?.trim(), value: parseFloat(value?.trim()) };
+            }).filter(pair => pair.label && !isNaN(pair.value));
+
+            if (pairs.length === 0) {
+                document.getElementById('line-chart-result').innerHTML = '<p style="color: red;">Please enter valid label:value pairs!</p>';
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 600;
+            canvas.height = 300;
+            canvas.className = 'chart-canvas';
+            const ctx = canvas.getContext('2d');
+
+            drawLineChart(ctx, canvas, 
+                pairs.map(p => p.label), 
+                pairs.map(p => p.value), 
+                'Your Custom Line Chart'
+            );
+
+            document.getElementById('line-chart-result').innerHTML = '';
+            document.getElementById('line-chart-result').appendChild(canvas);
+        }
+
+        function calculateLocation(inputId = 'location-data', outputId = 'location-result') {
+            const input = document.getElementById(inputId).value;
+            const data = input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x)).sort((a, b) => a - b);
+            
+            if (data.length === 0) {
+                document.getElementById(outputId).innerHTML = '<p style="color: red;">Please enter valid numbers!</p>';
+                return;
+            }
+
+            const mean = data.reduce((a, b) => a + b) / data.length;
             const median = data.length % 2 === 0 
                 ? (data[data.length/2 - 1] + data[data.length/2]) / 2
                 : data[Math.floor(data.length/2)];
             
-            // Calculate mode
             const freq = {};
             data.forEach(x => freq[x] = (freq[x] || 0) + 1);
             const maxFreq = Math.max(...Object.values(freq));
             const modes = Object.keys(freq).filter(key => freq[key] === maxFreq);
             const mode = modes.length === data.length ? 'No mode' : modes.join(', ');
 
-            document.getElementById('stats-result').innerHTML = `
+            document.getElementById(outputId).innerHTML = `
                 <div class="result">
                     <h4>Statistical Summary:</h4>
-                    <p><strong>Mean:</strong> ${mean.toFixed(2)}</p>
-                    <p><strong>Median:</strong> ${median}</p>
-                    <p><strong>Mode:</strong> ${mode}</p>
+                    <table class="data-table">
+                        <tr><th>Measure</th><th>Value</th><th>Interpretation</th></tr>
+                        <tr><td>Mean</td><td>${mean.toFixed(2)}</td><td>Mathematical average</td></tr>
+                        <tr><td>Median</td><td>${median}</td><td>Middle value</td></tr>
+                        <tr><td>Mode</td><td>${mode}</td><td>Most frequent value(s)</td></tr>
+                    </table>
                     <p><strong>Range:</strong> ${data[data.length-1] - data[0]}</p>
                     <p><strong>Data sorted:</strong> ${data.join(', ')}</p>
                 </div>
             `;
         }
 
-        // Percentile slider
-        function updatePercentile() {
-            const percentile = document.getElementById('percentile-slider').value;
-            document.getElementById('percentile-value').textContent = percentile;
+        function calculateQuartiles(inputId = 'quartile-data', outputId = 'quartile-result') {
+            const input = document.getElementById(inputId).value;
+            const data = input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x)).sort((a, b) => a - b);
             
-            // Sample data: test scores from 60 to 100
+            if (data.length === 0) {
+                document.getElementById(outputId).innerHTML = '<p style="color: red;">Please enter valid numbers!</p>';
+                return;
+            }
+
+            function getPercentile(data, p) {
+                const position = (p / 100) * (data.length + 1) - 1;
+                if (position < 0) return data[0];
+                if (position >= data.length - 1) return data[data.length - 1];
+                
+                const lower = Math.floor(position);
+                const upper = Math.ceil(position);
+                if (lower === upper) {
+                    return data[lower];
+                } else {
+                    return data[lower] + (position - lower) * (data[upper] - data[lower]);
+                }
+            }
+            
+            const q1 = getPercentile(data, 25);
+            const q2 = getPercentile(data, 50);
+            const q3 = getPercentile(data, 75);
+            const iqr = q3 - q1;
+            
+            document.getElementById(outputId).innerHTML = `
+                <div class="result">
+                    <h4>Five-Number Summary:</h4>
+                    <table class="data-table">
+                        <tr><th>Statistic</th><th>Value</th><th>Percentile</th></tr>
+                        <tr><td>Minimum</td><td>${data[0]}</td><td>0th</td></tr>
+                        <tr><td>Q1</td><td>${q1.toFixed(2)}</td><td>25th</td></tr>
+                        <tr><td>Median (Q2)</td><td>${q2.toFixed(2)}</td><td>50th</td></tr>
+                        <tr><td>Q3</td><td>${q3.toFixed(2)}</td><td>75th</td></tr>
+                        <tr><td>Maximum</td><td>${data[data.length-1]}</td><td>100th</td></tr>
+                    </table>
+                    <p><strong>IQR:</strong> ${iqr.toFixed(2)}</p>
+                    <p><strong>Range:</strong> ${data[data.length-1] - data[0]}</p>
+                </div>
+            `;
+        }
+
+        function updatePercentile() {
+            const percentile = document.getElementById('percentile-slider')?.value || 50;
+            const percentileValueSpan = document.getElementById('percentile-value');
+            const explanationDiv = document.getElementById('percentile-explanation');
+            
+            if (percentileValueSpan) {
+                percentileValueSpan.textContent = percentile;
+            }
+            
             const sampleData = Array.from({length: 41}, (_, i) => 60 + i);
             const position = (percentile / 100) * (sampleData.length - 1);
             const value = sampleData[Math.round(position)];
             
-            const belowPercent = percentile;
-            const abovePercent = 100 - percentile;
+            if (explanationDiv) {
+                explanationDiv.innerHTML = `
+                    <p><strong>Score at ${percentile}th percentile:</strong> ${value}</p>
+                    <p><strong>Interpretation:</strong></p>
+                    <ul>
+                        <li>${percentile}% of students scored ${value} or below</li>
+                        <li>${100 - percentile}% of students scored above ${value}</li>
+                        <li>This student is in the top ${100 - percentile}% of performers</li>
+                    </ul>
+                `;
+            }
+        }
+
+        function calculatePercentile() {
+            const input = document.getElementById('percentile-data').value;
+            const target = parseInt(document.getElementById('percentile-target').value);
+            const data = input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x)).sort((a, b) => a - b);
             
-            document.getElementById('percentile-explanation').innerHTML = `
-                <p><strong>Score at ${percentile}th percentile:</strong> ${value}</p>
-                <p><strong>Interpretation:</strong></p>
-                <ul>
-                    <li>${belowPercent}% of students scored ${value} or below</li>
-                    <li>${abovePercent}% of students scored above ${value}</li>
-                    <li>This student is in the top ${abovePercent}% of performers</li>
-                </ul>
+            if (data.length === 0 || isNaN(target)) {
+                document.getElementById('percentile-calc-result').innerHTML = '<p style="color: red;">Please enter valid data and percentile!</p>';
+                return;
+            }
+
+            const position = (target / 100) * (data.length + 1) - 1;
+            let percentileValue;
+            
+            if (position < 0) {
+                percentileValue = data[0];
+            } else if (position >= data.length - 1) {
+                percentileValue = data[data.length - 1];
+            } else {
+                const lower = Math.floor(position);
+                const upper = Math.ceil(position);
+                if (lower === upper) {
+                    percentileValue = data[lower];
+                } else {
+                    percentileValue = data[lower] + (position - lower) * (data[upper] - data[lower]);
+                }
+            }
+
+            document.getElementById('percentile-calc-result').innerHTML = `
+                <div class="result">
+                    <h4>Percentile Calculation:</h4>
+                    <p><strong>${target}th Percentile Value:</strong> ${percentileValue.toFixed(2)}</p>
+                    <p><strong>Interpretation:</strong> ${target}% of values are at or below ${percentileValue.toFixed(2)}</p>
+                </div>
             `;
         }
 
-        // Quiz functionality
-        function selectQuizOption(option) {
-            // Clear previous selections in this question
+        // Practice Problem Functions
+        function checkBarPractice1() {
+            const answers = {
+                a: document.getElementById('bar-q1a').value.trim().toLowerCase(),
+                b: parseInt(document.getElementById('bar-q1b').value),
+                c: parseInt(document.getElementById('bar-q1c').value)
+            };
+            
+            let score = 0;
+            let feedback = '<div class="practice-feedback ';
+            
+            if (answers.a === 'science') score++;
+            if (answers.b === 100) score++; // 150 - 50 = 100
+            if (answers.c === 25) score++; // 125/500 * 100 = 25%
+            
+            if (score === 3) {
+                feedback += 'correct-feedback">Perfect! All answers correct: a) Science, b) 100 students, c) 25%</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct answers: a) Science (150 students), b) 100 more students prefer Science than Art, c) 25% chose Math (125/500 = 25%)</div>';
+            }
+            
+            document.getElementById('bar-practice1-feedback').innerHTML = feedback;
+        }
+
+        function checkHistPractice1() {
+            const answers = {
+                a: parseInt(document.getElementById('hist-q1a').value),
+                b: document.getElementById('hist-q1b').value.trim(),
+                c: parseInt(document.getElementById('hist-q1c').value)
+            };
+            
+            let score = 0;
+            if (answers.a === 45) score++; // 5+12+18+10 = 45
+            if (answers.b.includes('80-89') || answers.b.includes('80')) score++;
+            if (Math.abs(answers.c - 62) <= 2) score++; // (18+10)/45 * 100 = 62.22%
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score >= 2) {
+                feedback += 'correct-feedback">Good work! Correct answers: a) 45 students, b) 80-89 range, c) 62% scored 80+</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct answers: a) 45 students total, b) 80-89 has most students (18), c) 62% scored 80 or above</div>';
+            }
+            
+            document.getElementById('hist-practice1-feedback').innerHTML = feedback;
+        }
+
+        function checkLinePractice1() {
+            const answers = {
+                a: document.getElementById('line-q1a').value,
+                b: parseInt(document.getElementById('line-q1b').value)
+            };
+            
+            let score = 0;
+            if (answers.a === 'increasing') score++;
+            if (answers.b === 27) score++; // 72 - 45 = 27
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score >= 1) {
+                feedback += 'correct-feedback">Great analysis! The trend is increasing, and profit increased by $27k from Jan to Jun.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct answers: a) Increasing trend, b) $27k increase (72-45)</div>';
+            }
+            
+            document.getElementById('line-practice1-feedback').innerHTML = feedback;
+        }
+
+        function checkBasicCalc() {
+            const mean = parseFloat(document.getElementById('basic-mean').value);
+            const median = parseFloat(document.getElementById('basic-median').value);
+            const mode = parseInt(document.getElementById('basic-mode').value);
+            
+            // Data: 7, 8, 6, 9, 8, 7, 10, 8, 9, 8
+            // Sorted: 6, 7, 7, 8, 8, 8, 8, 9, 9, 10
+            // Mean = 80/10 = 8, Median = (8+8)/2 = 8, Mode = 8
+            
+            let score = 0;
+            if (Math.abs(mean - 8) < 0.1) score++;
+            if (Math.abs(median - 8) < 0.1) score++;
+            if (mode === 8) score++;
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score === 3) {
+                feedback += 'correct-feedback">Perfect! Mean = 8.0, Median = 8.0, Mode = 8</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct answers: Mean = 8.0 (80÷10), Median = 8.0 (average of 5th and 6th values), Mode = 8 (appears 4 times)</div>';
+            }
+            
+            document.getElementById('basic-feedback').innerHTML = feedback;
+        }
+
+        function checkPercPractice1() {
+            const answers = {
+                a: parseInt(document.getElementById('perc-q1a').value),
+                b: parseInt(document.getElementById('perc-q1b').value)
+            };
+            
+            let score = 0;
+            if (answers.a === 85) score++; // 85% scored lower
+            if (answers.b === 300) score++; // 15% of 2000 = 300
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score === 2) {
+                feedback += 'correct-feedback">Perfect! You understand percentile interpretation completely.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct answers: a) 85% scored lower, b) 300 students scored higher (15% of 2000)</div>';
+            }
+            
+            document.getElementById('perc-practice1-feedback').innerHTML = feedback;
+        }
+
+        function checkQuartPractice1() {
+            // Data: 8, 12, 15, 18, 20, 23, 25, 28, 30
+            const answers = {
+                min: parseInt(document.getElementById('quart-min').value),
+                q1: parseFloat(document.getElementById('quart-q1').value),
+                med: parseFloat(document.getElementById('quart-med').value),
+                q3: parseFloat(document.getElementById('quart-q3').value),
+                max: parseInt(document.getElementById('quart-max').value)
+            };
+            
+            let score = 0;
+            if (answers.min === 8) score++;
+            if (Math.abs(answers.q1 - 13.5) < 1) score++; // Q1 = (12+15)/2 = 13.5
+            if (Math.abs(answers.med - 20) < 1) score++; // Median = 20
+            if (Math.abs(answers.q3 - 26.5) < 1) score++; // Q3 = (25+28)/2 = 26.5
+            if (answers.max === 30) score++;
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score >= 4) {
+                feedback += 'correct-feedback">Excellent work! You correctly calculated the five-number summary.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct answers: Min=8, Q1=13.5, Median=20, Q3=26.5, Max=30</div>';
+            }
+            
+            document.getElementById('quart-practice1-feedback').innerHTML = feedback;
+        }
+
+        function checkMixed1() {
+            const answers = {
+                a: document.getElementById('mixed-1a').value,
+                b: document.getElementById('mixed-1b').value,
+                c: document.getElementById('mixed-1c').value
+            };
+            
+            let score = 0;
+            if (answers.a === 'line') score++; // Stock price over time = line graph
+            if (answers.b === 'bar') score++; // Comparing majors = bar graph
+            if (answers.c === 'histogram') score++; // Distribution of scores = histogram
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score === 3) {
+                feedback += 'correct-feedback">Perfect! You understand when to use each graph type.</div>';
+            } else {
+                feedback += 'incorrect-feedback">Correct answers: a) Line graph (time series), b) Bar graph (categories), c) Histogram (continuous distribution)</div>';
+            }
+            
+            document.getElementById('mixed-1-feedback').innerHTML = feedback;
+        }
+
+        function checkSleepAnalysis() {
+            const percentage = parseInt(document.getElementById('sleep-percent').value);
+            const measure = document.getElementById('sleep-measure').value.trim().toLowerCase();
+            
+            // Count values <= 7: 6.5, 7.0, 5.5, 6.0, 7.0, 6.5, 5.0, 7.0, 6.5 = 9 out of 15 = 60%
+            let score = 0;
+            if (Math.abs(percentage - 60) <= 5) score++;
+            if (measure.includes('median') || measure.includes('mean')) score++;
+            
+            let feedback = '<div class="practice-feedback ';
+            if (score >= 1) {
+                feedback += 'correct-feedback">Good analysis! About 60% sleep 7 hours or less, and median or mean are both reasonable choices.</div>';
+            } else {
+                feedback += 'incorrect-feedback">60% of students sleep 7 hours or less. Either median or mean could be appropriate measures of center.</div>';
+            }
+            
+            document.getElementById('sleep-feedback').innerHTML = feedback;
+        }
+
+        function checkTypical() {
+            const measure = document.getElementById('typical-measure').value;
+            const reason = document.getElementById('typical-reason').value.trim().toLowerCase();
+            
+            let feedback = '<div class="practice-feedback ';
+            
+            if (measure === 'median' && reason.includes('outlier')) {
+                feedback += 'correct-feedback">Excellent! The median ($202.5k) better represents typical prices because the mean ($284k) is inflated by the $850k outlier.</div>';
+            } else {
+                feedback += 'incorrect-feedback">The median is better because it\'s not affected by the $850k outlier house, while the mean is pulled up significantly.</div>';
+            }
+            
+            document.getElementById('typical-feedback').innerHTML = feedback;
+        }
+
+        function selectFinalOption(option, questionNum) {
             const question = option.parentElement;
             const options = question.querySelectorAll('.quiz-option');
-            options.forEach(opt => {
-                opt.classList.remove('correct', 'incorrect');
-            });
+            options.forEach(opt => opt.classList.remove('correct', 'incorrect'));
 
-            // Mark the selected option
+            finalAssessmentAnswers[questionNum - 1] = option.dataset.correct === 'true';
+            
             if (option.dataset.correct === 'true') {
                 option.classList.add('correct');
             } else {
                 option.classList.add('incorrect');
-                // Also show the correct answer
                 options.forEach(opt => {
-                    if (opt.dataset.correct === 'true') {
-                        opt.classList.add('correct');
-                    }
+                    if (opt.dataset.correct === 'true') opt.classList.add('correct');
                 });
             }
-
-            // Store the answer
-            const questionIndex = Array.from(question.parentElement.children).indexOf(question);
-            quizAnswers[questionIndex] = option.dataset.correct === 'true';
         }
 
-        function submitQuiz() {
-            const totalQuestions = document.querySelectorAll('.quiz-question').length;
-            const correctAnswers = quizAnswers.filter(answer => answer === true).length;
+        function submitFinalAssessment() {
+            const correctAnswers = finalAssessmentAnswers.filter(answer => answer === true).length;
+            const totalQuestions = finalAssessmentAnswers.length;
             const score = Math.round((correctAnswers / totalQuestions) * 100);
             
             let message = '';
+            let color = '';
             if (score >= 90) {
-                message = 'Excellent! You\'ve mastered descriptive statistics! 🌟';
+                message = 'Outstanding! You have mastered descriptive statistics!';
+                color = 'correct-feedback';
             } else if (score >= 70) {
-                message = 'Good job! You have a solid understanding! 👍';
+                message = 'Good work! You have a solid understanding of the concepts.';
+                color = 'correct-feedback';
             } else {
-                message = 'Keep studying! Review the concepts and try again! 📚';
+                message = 'Keep practicing! Review the concepts and try the exercises again.';
+                color = 'incorrect-feedback';
             }
 
-            document.getElementById('quiz-score').innerHTML = `
-                <p>Your Score: ${correctAnswers}/${totalQuestions} (${score}%)</p>
-                <p>${message}</p>
+            document.getElementById('final-assessment-result').innerHTML = `
+                <div class="practice-feedback ${color}">
+                    <h4>Assessment Results:</h4>
+                    <p><strong>Score:</strong> ${correctAnswers}/${totalQuestions} (${score}%)</p>
+                    <p>${message}</p>
+                </div>
             `;
         }
 
-        // Initialize percentile display
-        setTimeout(() => {
-            if (document.getElementById('percentile-slider')) {
-                updatePercentile();
-            }
-        }, 100);
+        // Test navigation on page load
+        console.log('Script loaded successfully');
     </script>
 </body>
 </html>
