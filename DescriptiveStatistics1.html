@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descriptive Statistics Mastery: From Graphs to Insights!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin: 20px 0;
+            padding: 30px;
+            display: none;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: rotate(-5deg);
+            }
+            50% {
+                transform: rotate(5deg);
+            }
+        }
+
+        h1 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .bounce-title {
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #4a5568;
+            margin: 20px 0 15px 0;
+            font-size: 1.3em;
+        }
+
+        .navigation {
+            text-align: center;
+            margin: 20px 0;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .fun-fact {
+            background: linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-style: italic;
+            position: relative;
+        }
+
+        .fun-fact::before {
+            content: "🤓";
+            font-size: 1.5em;
+            position: absolute;
+            top: -5px;
+            left: 10px;
+        }
+
+        .interactive-section {
+            background: #edf2f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #48bb78;
+        }
+
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f7fafc;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #e2e8f0;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #48bb78;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #f56565;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .humor-box {
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .calculator {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .calculator input, .calculator textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .calculator button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .result {
+            font-weight: bold;
+            color: #2d3748;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            .slide {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div class="slide-counter">
+        Slide <span id="current-slide">1</span> of <span id="total-slides">5</span>
+    </div>
+
+    <div class="container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1 class="bounce-title">📊 Descriptive Statistics Mastery</h1>
+            <h2 style="text-align: center; border: none;">From Graphs to Insights!</h2>
+            
+            <div class="humor-box">
+                "A picture is worth a thousand data points... and a lot less confusing than a spreadsheet!"
+            </div>
+            
+            <div style="text-align: center; font-size: 1.2em; margin: 30px 0;">
+                <p>Welcome to your journey through the visual world of descriptive statistics!</p>
+                <p>We'll master graphs, charts, and measures that turn raw data into meaningful insights.</p>
+                <p><strong>Warning:</strong> Side effects may include sudden clarity about your data and an irresistible urge to make charts!</p>
+            </div>
+
+            <div class="example-box">
+                <h3>What You'll Master Today:</h3>
+                <ul>
+                    <li>📈 Stem-and-Leaf Plots (the OG data visualization)</li>
+                    <li>📊 Bar Graphs, Histograms, and Line Graphs</li>
+                    <li>🔄 Frequency Polygons and Time Series</li>
+                    <li>🎯 Measures of Location (Mean, Median, Mode)</li>
+                    <li>📏 Percentiles and Quartiles Interpretation</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 2: Stem-and-Leaf Plots -->
+        <div class="slide">
+            <h2>🌱 Stem-and-Leaf Plots: The Original Data Art</h2>
+            
+            <div class="definition-box">
+                <strong>Stem-and-Leaf Plot:</strong> A data display that organizes numbers by splitting each value into a "stem" (leading digits) and "leaf" (trailing digit). Think of it as organized handwriting for your data!
+            </div>
+
+            <h3>How to Create a Stem-and-Leaf Plot:</h3>
+            <div class="example-box">
+                <h4>Example: Test Scores</h4>
+                <p><strong>Raw Data:</strong> 67, 72, 75, 78, 81, 83, 84, 87, 89, 91, 93, 95</p>
+                
+                <div style="font-family: 'Courier New', monospace; background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; white-space: pre-line; line-height: 1.4;">
+6 | 7
+7 | 2 5 8
+8 | 1 3 4 7 9
+9 | 1 3 5
+
+Key: 6|7 = 67
+                </div>
+                
+                <p><strong>What it shows:</strong> Most students scored in the 80s, with a nice spread across the 70s and 90s!</p>
+            </div>
+
+            <div class="humor-box">
+                "Stem-and-leaf plots: Because sometimes you need to see your data grow like a mathematical garden! 🌿"
+            </div>
+
+            <div class="interactive-section">
+                <h4>🎮 Interactive Stem-and-Leaf Creator</h4>
+                <p>Enter your data (separated by commas):</p>
+                <textarea id="stem-leaf-data" placeholder="e.g., 23, 45, 47, 52, 58, 61, 63, 67, 72, 75" rows="3"></textarea>
+                <button onclick="createStemLeaf()">Create Stem-and-Leaf Plot</button>
+                <div id="stem-leaf-result"></div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Measures of Location -->
+        <div class="slide">
+            <h2>🎯 Measures of Location: Finding the Center</h2>
+            
+            <div class="definition-box">
+                <strong>Measures of Location:</strong> Statistics that describe where the "center" or "typical value" of a dataset lies. They help answer the question: "What's a representative value for this data?"
+            </div>
+
+            <h3>The Big Three:</h3>
+            <div class="example-box">
+                <h4>1. 📊 Mean (Arithmetic Average)</h4>
+                <p><strong>Formula:</strong> Sum of all values ÷ Number of values</p>
+                <p><strong>Best for:</strong> Symmetric data without extreme outliers</p>
+                <p><strong>Symbol:</strong> x̄ (x-bar) for sample, μ (mu) for population</p>
+            </div>
+
+            <div class="example-box">
+                <h4>2. 🏃‍♂️ Median (Middle Value)</h4>
+                <p><strong>Definition:</strong> The middle value when data is arranged in order</p>
+                <p><strong>Best for:</strong> Skewed data or data with outliers</p>
+                <p><strong>Also called:</strong> 50th percentile or Q2</p>
+            </div>
+
+            <div class="example-box">
+                <h4>3. 🎪 Mode (Most Frequent)</h4>
+                <p><strong>Definition:</strong> The value that appears most often</p>
+                <p><strong>Best for:</strong> Categorical data or finding the most common value</p>
+                <p><strong>Types:</strong> Unimodal (one mode), bimodal (two modes), multimodal (many modes)</p>
+            </div>
+
+            <div class="humor-box">
+                "Mean, median, and mode walk into a data set. The mean says 'I'm the average!' The median says 'I'm in the middle!' The mode says 'I'm popular!' 📊"
+            </div>
+
+            <div class="calculator">
+                <h4>🧮 Statistics Calculator</h4>
+                <p>Enter your data (numbers separated by commas):</p>
+                <input type="text" id="stats-data" placeholder="e.g., 10,12,14,16,18,20,22,24,26,28">
+                <button onclick="calculateStats()">Calculate Statistics</button>
+                <div id="stats-result"></div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Percentiles -->
+        <div class="slide">
+            <h2>📏 Percentiles: Your Data's Report Card</h2>
+            
+            <div class="definition-box">
+                <strong>Percentile:</strong> A value below which a certain percentage of data falls. The 75th percentile means 75% of the data is below this value, and 25% is above it.
+            </div>
+
+            <h3>Understanding Percentiles:</h3>
+            <div class="example-box">
+                <h4>Test Score Example</h4>
+                <p>If your test score is in the 85th percentile:</p>
+                <ul>
+                    <li>✅ You scored better than 85% of students</li>
+                    <li>📊 15% of students scored higher than you</li>
+                    <li>🎯 You're in the top 15% of performers</li>
+                </ul>
+            </div>
+
+            <div class="interactive-section">
+                <h4>🎚️ Interactive Percentile Explorer</h4>
+                <p>Sample Data: Test scores from 60 to 100</p>
+                <div style="background: #e6fffa; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #38b2ac;">
+                    <p>Selected Percentile: <span id="percentile-value">50</span>th</p>
+                    <input type="range" id="percentile-slider" style="width: 100%; margin: 20px 0;" min="1" max="99" value="50" oninput="updatePercentile()">
+                    <div id="percentile-explanation"></div>
+                </div>
+            </div>
+
+            <h3>Special Percentiles (Quartiles):</h3>
+            <div class="example-box">
+                <ul>
+                    <li><strong>Q1 (25th percentile):</strong> First quartile - 25% below, 75% above</li>
+                    <li><strong>Q2 (50th percentile):</strong> Second quartile = MEDIAN - 50% below, 50% above</li>
+                    <li><strong>Q3 (75th percentile):</strong> Third quartile - 75% below, 25% above</li>
+                    <li><strong>IQR:</strong> Interquartile Range = Q3 - Q1 (middle 50% of data)</li>
+                </ul>
+            </div>
+
+            <div class="fun-fact" style="margin-left: 30px;">
+                Percentiles are like a GPS for your data - they tell you exactly where you are in the distribution landscape!
+            </div>
+        </div>
+
+        <!-- Slide 5: Final Quiz -->
+        <div class="slide">
+            <h2>🎓 Final Quiz: Test Your Mastery!</h2>
+            
+            <div id="final-quiz">
+                <div class="quiz-question">
+                    <h4>Question 1:</h4>
+                    <p>Which measure of center is most affected by extreme outliers?</p>
+                    <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this)">Mean</div>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Median</div>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Mode</div>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">All are equally affected</div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 2:</h4>
+                    <p>If your test score is at the 85th percentile, this means:</p>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">You got 85% of the questions correct</div>
+                    <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this)">You scored better than 85% of test-takers</div>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">85% of students scored better than you</div>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Your score was 85 points</div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 3:</h4>
+                    <p>In a stem-and-leaf plot, what does the entry "7|2 5 8" represent?</p>
+                    <div class="quiz-option" data-correct="true" onclick="selectQuizOption(this)">The values 72, 75, and 78</div>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Seven values: 2, 5, and 8</div>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">The calculation 7 × (2 + 5 + 8)</div>
+                    <div class="quiz-option" data-correct="false" onclick="selectQuizOption(this)">Seven items in categories 2, 5, and 8</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <button id="submit-quiz" class="nav-btn" onclick="submitQuiz()">Submit Quiz</button>
+                <div id="quiz-score" style="margin-top: 20px; font-size: 1.2em; font-weight: bold;"></div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <h3>🎉 Congratulations!</h3>
+                <p>You've completed the Descriptive Statistics presentation!</p>
+                <p>You now have the tools to analyze and visualize data effectively.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let quizAnswers = [];
+
+        // Initialize
+        document.getElementById('total-slides').textContent = totalSlides;
+        updateProgress();
+        updateNavigation();
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = n;
+            
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            
+            slides[currentSlide].classList.add('active');
+            updateProgress();
+            updateNavigation();
+            updateSlideCounter();
+            
+            // Initialize slide-specific features
+            if (currentSlide === 3) updatePercentile();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function updateNavigation() {
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function updateSlideCounter() {
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // Stem-and-leaf plot creator
+        function createStemLeaf() {
+            const input = document.getElementById('stem-leaf-data').value;
+            const data = input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x)).sort((a, b) => a - b);
+            
+            if (data.length === 0) {
+                document.getElementById('stem-leaf-result').innerHTML = '<p style="color: red;">Please enter valid numbers!</p>';
+                return;
+            }
+
+            const stemLeafMap = {};
+            
+            data.forEach(value => {
+                const stem = Math.floor(value / 10);
+                const leaf = value % 10;
+                if (!stemLeafMap[stem]) {
+                    stemLeafMap[stem] = [];
+                }
+                stemLeafMap[stem].push(leaf);
+            });
+
+            let result = '<div style="font-family: \'Courier New\', monospace; background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; white-space: pre-line; line-height: 1.4;">';
+            Object.keys(stemLeafMap).sort((a, b) => a - b).forEach(stem => {
+                const leaves = stemLeafMap[stem].sort((a, b) => a - b).join(' ');
+                result += `${stem} | ${leaves}\n`;
+            });
+            result += `\nKey: ${Object.keys(stemLeafMap)[0]}|${stemLeafMap[Object.keys(stemLeafMap)[0]][0]} = ${Object.keys(stemLeafMap)[0]}${stemLeafMap[Object.keys(stemLeafMap)[0]][0]}`;
+            result += '</div>';
+
+            document.getElementById('stem-leaf-result').innerHTML = result;
+        }
+
+        // Statistics calculator
+        function calculateStats() {
+            const input = document.getElementById('stats-data').value;
+            const data = input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x)).sort((a, b) => a - b);
+            
+            if (data.length === 0) {
+                document.getElementById('stats-result').innerHTML = '<p style="color: red;">Please enter valid numbers!</p>';
+                return;
+            }
+
+            // Calculate mean
+            const mean = data.reduce((a, b) => a + b) / data.length;
+            
+            // Calculate median
+            const median = data.length % 2 === 0 
+                ? (data[data.length/2 - 1] + data[data.length/2]) / 2
+                : data[Math.floor(data.length/2)];
+            
+            // Calculate mode
+            const freq = {};
+            data.forEach(x => freq[x] = (freq[x] || 0) + 1);
+            const maxFreq = Math.max(...Object.values(freq));
+            const modes = Object.keys(freq).filter(key => freq[key] === maxFreq);
+            const mode = modes.length === data.length ? 'No mode' : modes.join(', ');
+
+            document.getElementById('stats-result').innerHTML = `
+                <div class="result">
+                    <h4>Statistical Summary:</h4>
+                    <p><strong>Mean:</strong> ${mean.toFixed(2)}</p>
+                    <p><strong>Median:</strong> ${median}</p>
+                    <p><strong>Mode:</strong> ${mode}</p>
+                    <p><strong>Range:</strong> ${data[data.length-1] - data[0]}</p>
+                    <p><strong>Data sorted:</strong> ${data.join(', ')}</p>
+                </div>
+            `;
+        }
+
+        // Percentile slider
+        function updatePercentile() {
+            const percentile = document.getElementById('percentile-slider').value;
+            document.getElementById('percentile-value').textContent = percentile;
+            
+            // Sample data: test scores from 60 to 100
+            const sampleData = Array.from({length: 41}, (_, i) => 60 + i);
+            const position = (percentile / 100) * (sampleData.length - 1);
+            const value = sampleData[Math.round(position)];
+            
+            const belowPercent = percentile;
+            const abovePercent = 100 - percentile;
+            
+            document.getElementById('percentile-explanation').innerHTML = `
+                <p><strong>Score at ${percentile}th percentile:</strong> ${value}</p>
+                <p><strong>Interpretation:</strong></p>
+                <ul>
+                    <li>${belowPercent}% of students scored ${value} or below</li>
+                    <li>${abovePercent}% of students scored above ${value}</li>
+                    <li>This student is in the top ${abovePercent}% of performers</li>
+                </ul>
+            `;
+        }
+
+        // Quiz functionality
+        function selectQuizOption(option) {
+            // Clear previous selections in this question
+            const question = option.parentElement;
+            const options = question.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Mark the selected option
+            if (option.dataset.correct === 'true') {
+                option.classList.add('correct');
+            } else {
+                option.classList.add('incorrect');
+                // Also show the correct answer
+                options.forEach(opt => {
+                    if (opt.dataset.correct === 'true') {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            // Store the answer
+            const questionIndex = Array.from(question.parentElement.children).indexOf(question);
+            quizAnswers[questionIndex] = option.dataset.correct === 'true';
+        }
+
+        function submitQuiz() {
+            const totalQuestions = document.querySelectorAll('.quiz-question').length;
+            const correctAnswers = quizAnswers.filter(answer => answer === true).length;
+            const score = Math.round((correctAnswers / totalQuestions) * 100);
+            
+            let message = '';
+            if (score >= 90) {
+                message = 'Excellent! You\'ve mastered descriptive statistics! 🌟';
+            } else if (score >= 70) {
+                message = 'Good job! You have a solid understanding! 👍';
+            } else {
+                message = 'Keep studying! Review the concepts and try again! 📚';
+            }
+
+            document.getElementById('quiz-score').innerHTML = `
+                <p>Your Score: ${correctAnswers}/${totalQuestions} (${score}%)</p>
+                <p>${message}</p>
+            `;
+        }
+
+        // Initialize percentile display
+        setTimeout(() => {
+            if (document.getElementById('percentile-slider')) {
+                updatePercentile();
+            }
+        }, 100);
+    </script>
+</body>
+</html>
