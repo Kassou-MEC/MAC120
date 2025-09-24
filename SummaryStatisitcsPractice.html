@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAT 120 Summary Statistics? Practice</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #8e44ad;
+            padding-bottom: 15px;
+        }
+        
+        h2 {
+            color: #8e44ad;
+            margin: 25px 0 15px;
+            border-left: 5px solid #e74c3c;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #16a085;
+            margin: 20px 0 10px;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        
+        .exercise {
+            background: #e8f4f8;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #b3e0f2;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .data-table th, .data-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .data-table th {
+            background: #3498db;
+            color: white;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+            margin: 10px 5px 10px 0;
+        }
+        
+        button:hover {
+            background: #27ae60;
+        }
+        
+        .check-btn {
+            background: #3498db;
+        }
+        
+        .check-btn:hover {
+            background: #2980b9;
+        }
+        
+        .answer {
+            display: none;
+            background: #d5f4e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .incorrect {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .hint {
+            background: #fff9e6;
+            border-left: 5px solid #f39c12;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-style: italic;
+        }
+        
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            margin: 0 10px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: #2ecc71;
+            width: 0%;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MAT120 Khalid Kassou</h1>
+        <h1> Summary Statisitcs Practice</h1>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <!-- Question 1 Exercises -->
+        <div class="question" id="q1">
+            <h2>Question 1: Frequency Tables and Grouped Mean</h2>
+            <p><strong>Original Problem:</strong> Construct a frequency table for building age data and compute the mean using class midpoints.</p>
+            
+            <!-- Exercise 1.1 -->
+            <div class="exercise">
+                <h3>Exercise 1.1</h3>
+                <p>The ages (in years) of 25 cars in a parking lot are:</p>
+                <p>12, 15, 18, 22, 25, 8, 32, 36, 41, 45, 3, 28, 31, 19, 24, 37, 42, 47, 51, 55, 29, 33, 38, 44, 49</p>
+                <p>Construct a frequency table using 5 classes beginning with a lower cut point of 0.</p>
+                
+                <div class="input-group">
+                    <label for="q1a1-classes">Enter your frequency table (format: Class Range - Frequency, one per line):</label>
+                    <textarea id="q1a1-classes" rows="5" placeholder="0-10 - 2&#10;11-20 - 5&#10;..."></textarea>
+                </div>
+                
+                <button class="check-btn" onclick="checkQ1A1()">Check Answer</button>
+                <button onclick="toggleAnswer('q1a1-answer')">Show Solution</button>
+                
+                <div class="answer" id="q1a1-answer">
+                    <h4>Solution:</h4>
+                    <p>Classes: 0-10, 11-20, 21-30, 31-40, 41-50, 51-60</p>
+                    <table class="data-table">
+                        <tr><th>Class</th><th>Frequency</th></tr>
+                        <tr><td>0-10</td><td>2 (3, 8)</td></tr>
+                        <tr><td>11-20</td><td>4 (12, 15, 18, 19)</td></tr>
+                        <tr><td>21-30</td><td>5 (22, 25, 28, 29, 24)</td></tr>
+                        <tr><td>31-40</td><td>5 (32, 36, 31, 37, 33, 38)</td></tr>
+                        <tr><td>41-50</td><td>6 (41, 45, 42, 47, 44, 49)</td></tr>
+                        <tr><td>51-60</td><td>2 (51, 55)</td></tr>
+                    </table>
+                </div>
+                
+                <div id="q1a1-result" class="result"></div>
+            </div>
+            
+            <!-- Exercise 1.2 -->
+            <div class="exercise">
+                <h3>Exercise 1.2</h3>
+                <p>Using the frequency table from Exercise 1.1, calculate the mean age of the cars using class midpoints.</p>
+                
+                <div class="input-group">
+                    <label for="q1a2-mean">Calculated Mean:</label>
+                    <input type="number" id="q1a2-mean" step="0.01" placeholder="Enter your answer">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ1A2()">Check Answer</button>
+                <button onclick="toggleAnswer('q1a2-answer')">Show Solution</button>
+                
+                <div class="answer" id="q1a2-answer">
+                    <h4>Solution:</h4>
+                    <table class="data-table">
+                        <tr><th>Class</th><th>Midpoint</th><th>Frequency</th><th>Midpoint × Frequency</th></tr>
+                        <tr><td>0-10</td><td>5</td><td>2</td><td>10</td></tr>
+                        <tr><td>11-20</td><td>15.5</td><td>4</td><td>62</td></tr>
+                        <tr><td>21-30</td><td>25.5</td><td>5</td><td>127.5</td></tr>
+                        <tr><td>31-40</td><td>35.5</td><td>6</td><td>213</td></tr>
+                        <tr><td>41-50</td><td>45.5</td><td>6</td><td>273</td></tr>
+                        <tr><td>51-60</td><td>55.5</td><td>2</td><td>111</td></tr>
+                        <tr><td><strong>Total</strong></td><td></td><td><strong>25</strong></td><td><strong>796.5</strong></td></tr>
+                    </table>
+                    <p>Mean = 796.5 ÷ 25 = <strong>31.86 years</strong></p>
+                </div>
+                
+                <div id="q1a2-result" class="result"></div>
+            </div>
+            
+            <!-- Exercise 1.3 -->
+            <div class="exercise">
+                <h3>Exercise 1.3</h3>
+                <p>The following data represents the number of hours 30 students spent studying last week:</p>
+                <p>5, 8, 12, 15, 7, 10, 22, 18, 9, 14, 11, 6, 19, 13, 16, 20, 4, 17, 21, 8, 10, 12, 15, 7, 9, 14, 11, 13, 16, 18</p>
+                <p>Create a frequency table with 6 classes (starting at 0) and calculate the mean using midpoints.</p>
+                
+                <div class="input-group">
+                    <label for="q1a3-mean">Calculated Mean:</label>
+                    <input type="number" id="q1a3-mean" step="0.01" placeholder="Enter your answer">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ1A3()">Check Answer</button>
+                <button onclick="toggleAnswer('q1a3-answer')">Show Solution</button>
+                
+                <div class="answer" id="q1a3-answer">
+                    <h4>Solution:</h4>
+                    <p>Class width = (22-0)/6 ≈ 3.67, so use 4-hour intervals: 0-3, 4-7, 8-11, 12-15, 16-19, 20-23</p>
+                    <table class="data-table">
+                        <tr><th>Class</th><th>Midpoint</th><th>Frequency</th><th>Midpoint × Frequency</th></tr>
+                        <tr><td>0-3</td><td>1.5</td><td>0</td><td>0</td></tr>
+                        <tr><td>4-7</td><td>5.5</td><td>4 (4,5,6,7)</td><td>22</td></tr>
+                        <tr><td>8-11</td><td>9.5</td><td>8 (8,8,9,9,10,10,11,11)</td><td>76</td></tr>
+                        <tr><td>12-15</td><td>13.5</td><td>7 (12,12,13,13,14,14,15)</td><td>94.5</td></tr>
+                        <tr><td>16-19</td><td>17.5</td><td>7 (16,16,17,18,18,19)</td><td>122.5</td></tr>
+                        <tr><td>20-23</td><td>21.5</td><td>4 (20,21,22)</td><td>86</td></tr>
+                        <tr><td><strong>Total</strong></td><td></td><td><strong>30</strong></td><td><strong>400</strong></td></tr>
+                    </table>
+                    <p>Mean = 400 ÷ 30 = <strong>13.33 hours</strong></p>
+                </div>
+                
+                <div id="q1a3-result" class="result"></div>
+            </div>
+        </div>
+        
+        <!-- Question 2 Exercises -->
+        <div class="question" id="q2">
+            <h2>Question 2: Relative Frequency Tables</h2>
+            <p><strong>Original Problem:</strong> Complete a relative frequency table and answer questions about the data.</p>
+            
+            <!-- Exercise 2.1 -->
+            <div class="exercise">
+                <h3>Exercise 2.1</h3>
+                <p>The following relative frequency table shows the test score distribution for a sample of 50 students:</p>
+                <table class="data-table">
+                    <tr><th>Score</th><th>Relative Frequency</th></tr>
+                    <tr><td>50-59</td><td>0.12</td></tr>
+                    <tr><td>60-69</td><td>0.18</td></tr>
+                    <tr><td>70-79</td><td></td></tr>
+                    <tr><td>80-89</td><td>0.24</td></tr>
+                    <tr><td>90-99</td><td>0.16</td></tr>
+                </table>
+                <p>Find the missing relative frequency.</p>
+                
+                <div class="input-group">
+                    <label for="q2a1-frequency">Missing Relative Frequency:</label>
+                    <input type="number" id="q2a1-frequency" step="0.01" min="0" max="1" placeholder="Enter your answer">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ2A1()">Check Answer</button>
+                <button onclick="toggleAnswer('q2a1-answer')">Show Solution</button>
+                
+                <div class="answer" id="q2a1-answer">
+                    <h4>Solution:</h4>
+                    <p>Sum of known relative frequencies = 0.12 + 0.18 + 0.24 + 0.16 = 0.70</p>
+                    <p>Missing relative frequency = 1 - 0.70 = <strong>0.30</strong></p>
+                </div>
+                
+                <div id="q2a1-result" class="result"></div>
+            </div>
+            
+            <!-- Exercise 2.2 -->
+            <div class="exercise">
+                <h3>Exercise 2.2</h3>
+                <p>Using the completed table from Exercise 2.1:</p>
+                <p>a) How many students in the sample had a score of at least 70?</p>
+                <p>b) If there are 600 students total, estimate how many scored between 60 and 89.</p>
+                
+                <div class="input-group">
+                    <label for="q2a2a">a) Number of students with score ≥ 70:</label>
+                    <input type="number" id="q2a2a" placeholder="Enter your answer">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q2a2b">b) Estimated number of students with scores 60-89:</label>
+                    <input type="number" id="q2a2b" placeholder="Enter your answer">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ2A2()">Check Answer</button>
+                <button onclick="toggleAnswer('q2a2-answer')">Show Solution</button>
+                
+                <div class="answer" id="q2a2-answer">
+                    <h4>Solution:</h4>
+                    <p>a) Relative frequency for scores ≥ 70 = 0.30 + 0.24 + 0.16 = 0.70</p>
+                    <p>Number of students = 0.70 × 50 = <strong>35 students</strong></p>
+                    <p>b) Relative frequency for scores 60-89 = 0.18 + 0.30 + 0.24 = 0.72</p>
+                    <p>Estimated number = 0.72 × 600 = <strong>432 students</strong></p>
+                </div>
+                
+                <div id="q2a2-result" class="result"></div>
+            </div>
+            
+            <!-- Exercise 2.3 -->
+            <div class="exercise">
+                <h3>Exercise 2.3</h3>
+                <p>Determine the midpoints of the classes in the table and compute the average test score for the sample.</p>
+                
+                <div class="input-group">
+                    <label for="q2a3-mean">Calculated Mean Score:</label>
+                    <input type="number" id="q2a3-mean" step="0.01" placeholder="Enter your answer">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ2A3()">Check Answer</button>
+                <button onclick="toggleAnswer('q2a3-answer')">Show Solution</button>
+                
+                <div class="answer" id="q2a3-answer">
+                    <h4>Solution:</h4>
+                    <table class="data-table">
+                        <tr><th>Score</th><th>Midpoint</th><th>Relative Frequency</th><th>Midpoint × Rel Freq</th></tr>
+                        <tr><td>50-59</td><td>54.5</td><td>0.12</td><td>6.54</td></tr>
+                        <tr><td>60-69</td><td>64.5</td><td>0.18</td><td>11.61</td></tr>
+                        <tr><td>70-79</td><td>74.5</td><td>0.30</td><td>22.35</td></tr>
+                        <tr><td>80-89</td><td>84.5</td><td>0.24</td><td>20.28</td></tr>
+                        <tr><td>90-99</td><td>94.5</td><td>0.16</td><td>15.12</td></tr>
+                        <tr><td><strong>Total</strong></td><td></td><td><strong>1.00</strong></td><td><strong>75.90</strong></td></tr>
+                    </table>
+                    <p>Mean = <strong>75.90 points</strong></p>
+                </div>
+                
+                <div id="q2a3-result" class="result"></div>
+            </div>
+        </div>
+        
+        <!-- Question 3 Exercises -->
+        <div class="question" id="q3">
+            <h2>Question 3: Stem-and-Leaf Displays and Five-Number Summary</h2>
+            <p><strong>Original Problem:</strong> Interpret a stem-and-leaf display and calculate the five-number summary.</p>
+            
+            <!-- Exercise 3.1 -->
+            <div class="exercise">
+                <h3>Exercise 3.1</h3>
+                <p>Consider the following stem-and-leaf display:</p>
+                <table class="data-table">
+                    <tr><th>Stem</th><th>Leaf</th></tr>
+                    <tr><td>2</td><td>3 5 7</td></tr>
+                    <tr><td>3</td><td>1 2 4 6 8</td></tr>
+                    <tr><td>4</td><td>0 2 5 7 9</td></tr>
+                    <tr><td>5</td><td>1 3 6</td></tr>
+                </table>
+                <p>Write down the raw data represented by this display.</p>
+                
+                <div class="input-group">
+                    <label for="q3a1-data">Raw data (comma-separated):</label>
+                    <input type="text" id="q3a1-data" placeholder="Enter the data values">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ3A1()">Check Answer</button>
+                <button onclick="toggleAnswer('q3a1-answer')">Show Solution</button>
+                
+                <div class="answer" id="q3a1-answer">
+                    <h4>Solution:</h4>
+                    <p><strong>23, 25, 27, 31, 32, 34, 36, 38, 40, 42, 45, 47, 49, 51, 53, 56</strong></p>
+                </div>
+                
+                <div id="q3a1-result" class="result"></div>
+            </div>
+            
+            <!-- Exercise 3.2 -->
+            <div class="exercise">
+                <h3>Exercise 3.2</h3>
+                <p>Using the data from Exercise 3.1, obtain the five-number summary (Min, Q1, Q2, Q3, Max).</p>
+                
+                <div class="input-group">
+                    <label for="q3a2-min">Minimum:</label>
+                    <input type="number" id="q3a2-min" placeholder="Enter min value">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q3a2-q1">Q1 (First Quartile):</label>
+                    <input type="number" id="q3a2-q1" step="0.01" placeholder="Enter Q1 value">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q3a2-median">Median (Q2):</label>
+                    <input type="number" id="q3a2-median" step="0.01" placeholder="Enter median">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q3a2-q3">Q3 (Third Quartile):</label>
+                    <input type="number" id="q3a2-q3" step="0.01" placeholder="Enter Q3 value">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q3a2-max">Maximum:</label>
+                    <input type="number" id="q3a2-max" placeholder="Enter max value">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ3A2()">Check Answer</button>
+                <button onclick="toggleAnswer('q3a2-answer')">Show Solution</button>
+                
+                <div class="answer" id="q3a2-answer">
+                    <h4>Solution:</h4>
+                    <p>Data in order: 23, 25, 27, 31, 32, 34, 36, 38, 40, 42, 45, 47, 49, 51, 53, 56</p>
+                    <p>n = 16</p>
+                    <p>Min = <strong>23</strong></p>
+                    <p>Q1 position = (16+1)/4 = 4.25 → value between 4th and 5th: (31+32)/2 = <strong>31.5</strong></p>
+                    <p>Median (Q2) position = (16+1)/2 = 8.5 → value between 8th and 9th: (38+40)/2 = <strong>39</strong></p>
+                    <p>Q3 position = 3×(16+1)/4 = 12.75 → value between 12th and 13th: (47+49)/2 = <strong>48</strong></p>
+                    <p>Max = <strong>56</strong></p>
+                </div>
+                
+                <div id="q3a2-result" class="result"></div>
+            </div>
+            
+            <!-- Exercise 3.3 -->
+            <div class="exercise">
+                <h3>Exercise 3.3</h3>
+                <p>Consider this stem-and-leaf display of exam scores:</p>
+                <table class="data-table">
+                    <tr><th>Stem</th><th>Leaf</th></tr>
+                    <tr><td>5</td><td>6 8</td></tr>
+                    <tr><td>6</td><td>1 3 4 7 9</td></tr>
+                    <tr><td>7</td><td>0 2 5 5 8</td></tr>
+                    <tr><td>8</td><td>2 4 6 9</td></tr>
+                    <tr><td>9</td><td>1 3</td></tr>
+                </table>
+                <p>Find the five-number summary for this data.</p>
+                
+                <div class="input-group">
+                    <label for="q3a3-summary">Five-number summary (format: Min, Q1, Median, Q3, Max):</label>
+                    <input type="text" id="q3a3-summary" placeholder="Enter the five values separated by commas">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ3A3()">Check Answer</button>
+                <button onclick="toggleAnswer('q3a3-answer')">Show Solution</button>
+                
+                <div class="answer" id="q3a3-answer">
+                    <h4>Solution:</h4>
+                    <p>Data: 56, 58, 61, 63, 64, 67, 69, 70, 72, 75, 75, 78, 82, 84, 86, 89, 91, 93</p>
+                    <p>n = 18</p>
+                    <p>Min = <strong>56</strong></p>
+                    <p>Q1 position = (18+1)/4 = 4.75 → 5th value = <strong>64</strong></p>
+                    <p>Median (Q2) position = (18+1)/2 = 9.5 → average of 9th and 10th: (70+72)/2 = <strong>71</strong></p>
+                    <p>Q3 position = 3×(18+1)/4 = 14.25 → 15th value = <strong>86</strong></p>
+                    <p>Max = <strong>93</strong></p>
+                    <p>Five-number summary: <strong>56, 64, 71, 86, 93</strong></p>
+                </div>
+                
+                <div id="q3a3-result" class="result"></div>
+            </div>
+        </div>
+        
+        <!-- Question 4 Exercises -->
+        <div class="question" id="q4">
+            <h2>Question 4: Five-Number Summary and Box Plots</h2>
+            <p><strong>Original Problem:</strong> Calculate the five-number summary for a dataset.</p>
+            
+            <!-- Exercise 4.1 -->
+            <div class="exercise">
+                <h3>Exercise 4.1</h3>
+                <p>Consider the following data set representing the weights (in pounds) of 15 packages:</p>
+                <p>12, 15, 18, 20, 22, 24, 25, 26, 28, 30, 32, 35, 38, 40, 45</p>
+                <p>Obtain the five-number summary for this data.</p>
+                
+                <div class="input-group">
+                    <label for="q4a1-min">Minimum:</label>
+                    <input type="number" id="q4a1-min" placeholder="Enter min value">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q4a1-q1">Q1 (First Quartile):</label>
+                    <input type="number" id="q4a1-q1" step="0.01" placeholder="Enter Q1 value">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q4a1-median">Median (Q2):</label>
+                    <input type="number" id="q4a1-median" step="0.01" placeholder="Enter median">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q4a1-q3">Q3 (Third Quartile):</label>
+                    <input type="number" id="q4a1-q3" step="0.01" placeholder="Enter Q3 value">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q4a1-max">Maximum:</label>
+                    <input type="number" id="q4a1-max" placeholder="Enter max value">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ4A1()">Check Answer</button>
+                <button onclick="toggleAnswer('q4a1-answer')">Show Solution</button>
+                
+                <div class="answer" id="q4a1-answer">
+                    <h4>Solution:</h4>
+                    <p>Data is already ordered: 12, 15, 18, 20, 22, 24, 25, 26, 28, 30, 32, 35, 38, 40, 45</p>
+                    <p>n = 15</p>
+                    <p>Min = <strong>12</strong></p>
+                    <p>Q1 position = (15+1)/4 = 4 → 4th value = <strong>20</strong></p>
+                    <p>Median (Q2) position = (15+1)/2 = 8 → 8th value = <strong>26</strong></p>
+                    <p>Q3 position = 3×(15+1)/4 = 12 → 12th value = <strong>35</strong></p>
+                    <p>Max = <strong>45</strong></p>
+                </div>
+                
+                <div id="q4a1-result" class="result"></div>
+            </div>
+            
+            <!-- Exercise 4.2 -->
+            <div class="exercise">
+                <h3>Exercise 4.2</h3>
+                <p>The following data represents the number of minutes 20 customers waited in line:</p>
+                <p>5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38, 40, 42, 45, 48, 50, 55</p>
+                <p>Calculate the five-number summary for this data.</p>
+                
+                <div class="input-group">
+                    <label for="q4a2-summary">Five-number summary (format: Min, Q1, Median, Q3, Max):</label>
+                    <input type="text" id="q4a2-summary" placeholder="Enter the five values separated by commas">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ4A2()">Check Answer</button>
+                <button onclick="toggleAnswer('q4a2-answer')">Show Solution</button>
+                
+                <div class="answer" id="q4a2-answer">
+                    <h4>Solution:</h4>
+                    <p>Data is ordered: 5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38, 40, 42, 45, 48, 50, 55</p>
+                    <p>n = 20</p>
+                    <p>Min = <strong>5</strong></p>
+                    <p>Q1 position = (20+1)/4 = 5.25 → value between 5th and 6th: (15+18)/2 = <strong>16.5</strong></p>
+                    <p>Median (Q2) position = (20+1)/2 = 10.5 → value between 10th and 11th: (28+30)/2 = <strong>29</strong></p>
+                    <p>Q3 position = 3×(20+1)/4 = 15.75 → value between 15th and 16th: (40+42)/2 = <strong>41</strong></p>
+                    <p>Max = <strong>55</strong></p>
+                    <p>Five-number summary: <strong>5, 16.5, 29, 41, 55</strong></p>
+                </div>
+                
+                <div id="q4a2-result" class="result"></div>
+            </div>
+            
+            <!-- Exercise 4.3 -->
+            <div class="exercise">
+                <h3>Exercise 4.3</h3>
+                <p>Given the five-number summary for a dataset: Min=15, Q1=22, Median=30, Q3=38, Max=50</p>
+                <p>a) Calculate the Interquartile Range (IQR)</p>
+                <p>b) Identify any potential outliers using the 1.5×IQR rule</p>
+                
+                <div class="input-group">
+                    <label for="q4a3-iqr">a) IQR:</label>
+                    <input type="number" id="q4a3-iqr" step="0.01" placeholder="Enter IQR">
+                </div>
+                
+                <div class="input-group">
+                    <label for="q4a3-outliers">b) Potential outliers (if any):</label>
+                    <input type="text" id="q4a3-outliers" placeholder="Enter outlier values or 'none'">
+                </div>
+                
+                <button class="check-btn" onclick="checkQ4A3()">Check Answer</button>
+                <button onclick="toggleAnswer('q4a3-answer')">Show Solution</button>
+                
+                <div class="answer" id="q4a3-answer">
+                    <h4>Solution:</h4>
+                    <p>a) IQR = Q3 - Q1 = 38 - 22 = <strong>16</strong></p>
+                    <p>b) Lower fence = Q1 - 1.5×IQR = 22 - 1.5×16 = 22 - 24 = -2</p>
+                    <p>Upper fence = Q3 + 1.5×IQR = 38 + 1.5×16 = 38 + 24 = 62</p>
+                    <p>Since all values (15 to 50) are between -2 and 62, there are <strong>no outliers</strong>.</p>
+                </div>
+                
+                <div id="q4a3-result" class="result"></div>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button onclick="showQuestion('q1')">Question 1</button>
+            <button onclick="showQuestion('q2')">Question 2</button>
+            <button onclick="showQuestion('q3')">Question 3</button>
+            <button onclick="showQuestion('q4')">Question 4</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle answer visibility
+        function toggleAnswer(id) {
+            const answer = document.getElementById(id);
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+            } else {
+                answer.style.display = 'block';
+            }
+        }
+        
+        // Function to show specific question
+        function showQuestion(questionId) {
+            // Hide all questions
+            const questions = document.querySelectorAll('.question');
+            questions.forEach(q => {
+                q.style.display = 'none';
+            });
+            
+            // Show selected question
+            document.getElementById(questionId).style.display = 'block';
+            
+            // Update progress bar
+            updateProgressBar(questionId);
+        }
+        
+        // Function to update progress bar
+        function updateProgressBar(questionId) {
+            const progress = document.getElementById('progress');
+            let width = 0;
+            
+            switch(questionId) {
+                case 'q1': width = 25; break;
+                case 'q2': width = 50; break;
+                case 'q3': width = 75; break;
+                case 'q4': width = 100; break;
+            }
+            
+            progress.style.width = width + '%';
+        }
+        
+        // Check functions for each question
+        function checkQ1A1() {
+            const userAnswer = document.getElementById('q1a1-classes').value.toLowerCase();
+            const resultDiv = document.getElementById('q1a1-result');
+            
+            // This is a simplified check - in a real application, you'd want more sophisticated validation
+            if (userAnswer.includes('0-10') && userAnswer.includes('11-20') && 
+                userAnswer.includes('21-30') && userAnswer.includes('31-40') && 
+                userAnswer.includes('41-50') && userAnswer.includes('51-60')) {
+                resultDiv.innerHTML = '<p class="correct">Correct! Your frequency table matches the expected classes.</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Please check your class intervals. They should be: 0-10, 11-20, 21-30, 31-40, 41-50, 51-60</p>';
+            }
+        }
+        
+        function checkQ1A2() {
+            const userAnswer = parseFloat(document.getElementById('q1a2-mean').value);
+            const resultDiv = document.getElementById('q1a2-result');
+            
+            if (Math.abs(userAnswer - 31.86) < 0.1) {
+                resultDiv.innerHTML = '<p class="correct">Correct! The mean is approximately 31.86 years.</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Not quite. Check your calculations. Remember: Mean = (Sum of midpoint×frequency) / Total frequency</p>';
+            }
+        }
+        
+        function checkQ1A3() {
+            const userAnswer = parseFloat(document.getElementById('q1a3-mean').value);
+            const resultDiv = document.getElementById('q1a3-result');
+            
+            if (Math.abs(userAnswer - 13.33) < 0.1) {
+                resultDiv.innerHTML = '<p class="correct">Correct! The mean is approximately 13.33 hours.</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Not quite. Check your class intervals and calculations.</p>';
+            }
+        }
+        
+        function checkQ2A1() {
+            const userAnswer = parseFloat(document.getElementById('q2a1-frequency').value);
+            const resultDiv = document.getElementById('q2a1-result');
+            
+            if (Math.abs(userAnswer - 0.30) < 0.01) {
+                resultDiv.innerHTML = '<p class="correct">Correct! The missing relative frequency is 0.30.</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Not quite. Remember: The sum of all relative frequencies must equal 1.</p>';
+            }
+        }
+        
+        function checkQ2A2() {
+            const userAnswerA = parseInt(document.getElementById('q2a2a').value);
+            const userAnswerB = parseInt(document.getElementById('q2a2b').value);
+            const resultDiv = document.getElementById('q2a2-result');
+            
+            if (userAnswerA === 35 && userAnswerB === 432) {
+                resultDiv.innerHTML = '<p class="correct">Correct! a) 35 students, b) 432 students</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Please check your calculations. For part a: multiply relative frequency by sample size. For part b: multiply relative frequency by population size.</p>';
+            }
+        }
+        
+        function checkQ2A3() {
+            const userAnswer = parseFloat(document.getElementById('q2a3-mean').value);
+            const resultDiv = document.getElementById('q2a3-result');
+            
+            if (Math.abs(userAnswer - 75.90) < 0.1) {
+                resultDiv.innerHTML = '<p class="correct">Correct! The mean test score is 75.90.</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Not quite. Check your midpoint calculations and multiplication.</p>';
+            }
+        }
+        
+        function checkQ3A1() {
+            const userAnswer = document.getElementById('q3a1-data').value;
+            const resultDiv = document.getElementById('q3a1-result');
+            const expected = "23,25,27,31,32,34,36,38,40,42,45,47,49,51,53,56";
+            
+            // Normalize both strings for comparison
+            const normalizedUser = userAnswer.replace(/\s/g, '').toLowerCase();
+            const normalizedExpected = expected.replace(/\s/g, '').toLowerCase();
+            
+            if (normalizedUser === normalizedExpected) {
+                resultDiv.innerHTML = '<p class="correct">Correct! You have all the data values.</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Please check your values. Remember: stem represents tens digit, leaf represents ones digit.</p>';
+            }
+        }
+        
+        function checkQ3A2() {
+            const min = parseInt(document.getElementById('q3a2-min').value);
+            const q1 = parseFloat(document.getElementById('q3a2-q1').value);
+            const median = parseFloat(document.getElementById('q3a2-median').value);
+            const q3 = parseFloat(document.getElementById('q3a2-q3').value);
+            const max = parseInt(document.getElementById('q3a2-max').value);
+            const resultDiv = document.getElementById('q3a2-result');
+            
+            if (min === 23 && Math.abs(q1 - 31.5) < 0.1 && Math.abs(median - 39) < 0.1 && 
+                Math.abs(q3 - 48) < 0.1 && max === 56) {
+                resultDiv.innerHTML = '<p class="correct">Correct! Five-number summary: 23, 31.5, 39, 48, 56</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Please check your calculations. Remember positions: Q1 at (n+1)/4, Median at (n+1)/2, Q3 at 3×(n+1)/4</p>';
+            }
+        }
+        
+        function checkQ3A3() {
+            const userAnswer = document.getElementById('q3a3-summary').value.replace(/\s/g, '');
+            const resultDiv = document.getElementById('q3a3-result');
+            const expected = "56,64,71,86,93";
+            
+            if (userAnswer === expected) {
+                resultDiv.innerHTML = '<p class="correct">Correct! Five-number summary: 56, 64, 71, 86, 93</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Please check your values. The data has 18 values, so median is the average of the 9th and 10th values.</p>';
+            }
+        }
+        
+        function checkQ4A1() {
+            const min = parseInt(document.getElementById('q4a1-min').value);
+            const q1 = parseFloat(document.getElementById('q4a1-q1').value);
+            const median = parseFloat(document.getElementById('q4a1-median').value);
+            const q3 = parseFloat(document.getElementById('q4a1-q3').value);
+            const max = parseInt(document.getElementById('q4a1-max').value);
+            const resultDiv = document.getElementById('q4a1-result');
+            
+            if (min === 12 && q1 === 20 && median === 26 && q3 === 35 && max === 45) {
+                resultDiv.innerHTML = '<p class="correct">Correct! Five-number summary: 12, 20, 26, 35, 45</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Please check your calculations. With n=15, Q1 is at position 4, Median at position 8, Q3 at position 12.</p>';
+            }
+        }
+        
+        function checkQ4A2() {
+            const userAnswer = document.getElementById('q4a2-summary').value.replace(/\s/g, '');
+            const resultDiv = document.getElementById('q4a2-result');
+            const expected = "5,16.5,29,41,55";
+            
+            if (userAnswer === expected) {
+                resultDiv.innerHTML = '<p class="correct">Correct! Five-number summary: 5, 16.5, 29, 41, 55</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Please check your values. With n=20, Q1 is between positions 5 and 6, Median between 10 and 11, Q3 between 15 and 16.</p>';
+            }
+        }
+        
+        function checkQ4A3() {
+            const iqr = parseFloat(document.getElementById('q4a3-iqr').value);
+            const outliers = document.getElementById('q4a3-outliers').value.toLowerCase();
+            const resultDiv = document.getElementById('q4a3-result');
+            
+            if (Math.abs(iqr - 16) < 0.1 && (outliers.includes('none') || outliers.includes('no'))) {
+                resultDiv.innerHTML = '<p class="correct">Correct! IQR = 16, and there are no outliers.</p>';
+            } else {
+                resultDiv.innerHTML = '<p class="incorrect">Please check your calculations. IQR = Q3 - Q1. Outliers are values below Q1-1.5×IQR or above Q3+1.5×IQR.</p>';
+            }
+        }
+        
+        // Initialize by showing first question
+        window.onload = function() {
+            showQuestion('q1');
+        };
+    </script>
+</body>
+</html>
