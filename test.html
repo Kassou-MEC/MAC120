@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Central Tendency: Mean, Median, Mode — Interactive & Fun</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --card: #11172a;
+      --accent: #8ef0ff;
+      --accent2: #ffc857;
+      --text: #e9f2ff;
+      --muted: #b9c7e6;
+      --good: #7bd389;
+      --bad: #ff7b7b;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background: radial-gradient(1200px 600px at 10% 10%, #0f1526, var(--bg));
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      padding: 24px;
+      text-align: center;
+      border-bottom: 1px solid #1c2440;
+      background: linear-gradient(180deg, #10172d, #0c1224);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+      letter-spacing: 0.3px;
+    }
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+    }
+    nav {
+      background: var(--card);
+      border: 1px solid #1c2440;
+      border-radius: 14px;
+      padding: 14px;
+      height: calc(100vh - 140px);
+      position: sticky;
+      top: 110px;
+      overflow: auto;
+    }
+    nav h2 {
+      font-size: 1rem;
+      margin: 6px 0 8px;
+      color: var(--accent);
+    }
+    nav button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      margin: 6px 0;
+      border: 1px solid #253058;
+      background: #0d1326;
+      color: var(--text);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-size: 0.95rem;
+    }
+    nav button.active,
+    nav button:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px #19314f inset;
+      transform: translateY(-1px);
+    }
+    main {
+      background: var(--card);
+      border: 1px solid #1c2440;
+      border-radius: 14px;
+      padding: 18px;
+      min-height: 70vh;
+    }
+    section {
+      display: none;
+      animation: fade 200ms ease;
+    }
+    section.active {
+      display: block;
+    }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h3 {
+      margin: 8px 0 8px;
+      font-size: 1.3rem;
+    }
+    .card {
+      border: 1px solid #243155;
+      background: #0e162c;
+      border-radius: 12px;
+      padding: 14px;
+      margin: 12px 0;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .row3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .muted { color: var(--muted); }
+    .note { font-size: 0.95rem; color: var(--muted); }
+    .inline-code {
+      background: #0a1122;
+      border: 1px solid #1d2a4a;
+      padding: 3px 6px;
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color: var(--accent2);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      background: #0b1328;
+      border: 1px solid #243155;
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    label { font-weight: 600; font-size: 0.95rem; }
+    .btn {
+      padding: 10px 14px;
+      border: 1px solid #253058;
+      background: #111a33;
+      color: var(--text);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-weight: 600;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .success { color: var(--good); }
+    .error { color: var(--bad); }
+    .flex {
+      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    }
+    .pill {
+      display: inline-block; padding: 6px 10px; border-radius: 999px;
+      background: #0c1630; border: 1px solid #263559; color: var(--muted);
+      font-size: 0.85rem;
+    }
+    table {
+      width: 100%; border-collapse: collapse; margin: 8px 0;
+      border: 1px solid #263559; background: #0a1329;
+    }
+    th, td {
+      border: 1px solid #263559; padding: 8px; text-align: center;
+    }
+    th { background: #0f1a36; color: var(--accent); }
+    .footer-note {
+      margin-top: 18px; font-size: 0.9rem; color: var(--muted);
+    }
+    .example {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      background: #0a1225; border: 1px solid #213055; border-radius: 10px;
+      padding: 8px; margin-top: 6px; color: #d7e8ff;
+    }
+    .quiz-q { margin: 8px 0; padding: 8px; border: 1px dashed #2a3b65; border-radius: 10px; }
+    .badge {
+      font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: #0f1c3a; border: 1px solid #2a3d6f; color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Central Tendency Bootcamp: Mean • Median • Mode</h1>
+    <p>From easy peasy to “wait, that’s grouped data?” — with jokes, examples, and hands-on practice.</p>
+  </header>
+
+  <div class="container grid">
+    <nav>
+      <h2>Sections</h2>
+      <button data-target="intro" class="active">Intro & definitions</button>
+      <button data-target="raw">Raw data examples</button>
+      <button data-target="freq">Frequency tables</button>
+      <button data-target="grouped">Grouped (class intervals)</button>
+      <button data-target="practice">Practice exercises</button>
+      <button data-target="quiz">Mini quiz</button>
+      <button data-target="references">Reference cheatsheet</button>
+    </nav>
+
+    <main>
+      <!-- Intro -->
+      <section id="intro" class="active">
+        <h3>What are mean, median, and mode?</h3>
+        <div class="card">
+          <ul>
+            <li><span class="pill">Mean</span> The arithmetic average.
+              <span class="note">Add all values, divide by how many there are. Great for symmetric data, sensitive to outliers.</span>
+            </li>
+            <li><span class="pill">Median</span> The middle value when data are sorted.
+              <span class="note">Resistant to outliers; for even-sized data, it’s the average of the two middle values.</span>
+            </li>
+            <li><span class="pill">Mode</span> The most frequent value(s).
+              <span class="note">Useful for categorical data and for spotting the “popular kid” in your dataset.</span>
+            </li>
+          </ul>
+          <p class="footer-note">Yes, the mean notices when you add a huge outlier. The median just sips tea and stays calm.</p>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <div>
+              <label>Enter raw data (comma or space-separated)</label>
+              <textarea id="introData" rows="3" placeholder="e.g., 1, 2, 2, 3, 9"></textarea>
+              <div class="flex" style="margin-top:8px;">
+                <button class="btn" onclick="computeBasics('introData','introOut')">Compute</button>
+                <span class="badge">Interactive</span>
+              </div>
+              <div id="introOut" class="example"></div>
+            </div>
+            <div>
+              <p class="muted">Tip: Try adding an outlier like 999 to see how mean vs. median react.</p>
+              <p class="example">Example data: 10, 12, 13, 13, 14, 100</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Raw data -->
+      <section id="raw">
+        <h3>Raw data examples: easy → medium → spicy</h3>
+
+        <div class="card">
+          <h4>Easy example</h4>
+          <p>Data: <span class="inline-code">3, 4, 5, 5, 6</span></p>
+          <div class="example" id="rawEasy"></div>
+          <button class="btn" onclick="showPrecomputed('rawEasy',[3,4,5,5,6])">Show solution</button>
+        </div>
+
+        <div class="card">
+          <h4>Medium example with outlier</h4>
+          <p>Data: <span class="inline-code">12, 13, 13, 14, 50</span></p>
+          <div class="example" id="rawMed"></div>
+          <button class="btn" onclick="showPrecomputed('rawMed',[12,13,13,14,50])">Show solution</button>
+        </div>
+
+        <div class="card">
+          <h4>Spicy example (even count)</h4>
+          <p>Data: <span class="inline-code">7, 9, 10, 12, 12, 15</span></p>
+          <div class="example" id="rawHard"></div>
+          <button class="btn" onclick="showPrecomputed('rawHard',[7,9,10,12,12,15])">Show solution</button>
+        </div>
+
+        <div class="card">
+          <h4>Your turn</h4>
+          <label>Enter raw data</label>
+          <textarea id="rawUser" rows="3" placeholder="e.g., 4 4 5 9 10 12 12"></textarea>
+          <div class="flex" style="margin-top:8px;">
+            <button class="btn" onclick="computeBasics('rawUser','rawOut')">Compute</button>
+            <span class="badge">Challenge</span>
+          </div>
+          <div id="rawOut" class="example"></div>
+        </div>
+      </section>
+
+      <!-- Frequency table -->
+      <section id="freq">
+        <h3>Frequency tables: mean, median, and mode</h3>
+        <div class="card">
+          <p>When data repeat, we can store values and their frequencies. Let’s compute mean, median, and mode from a frequency table.</p>
+          <div class="row">
+            <div>
+              <label>Enter value–frequency pairs (value:freq per line)</label>
+              <textarea id="freqInput" rows="6" placeholder="e.g.
+2:3
+3:5
+5:2"></textarea>
+              <div class="flex" style="margin-top:8px;">
+                <button class="btn" onclick="computeFromFreqTable()">Compute</button>
+                <button class="btn" onclick="loadFreqExample()">Load example</button>
+              </div>
+            </div>
+            <div>
+              <div id="freqOut" class="example"></div>
+            </div>
+          </div>
+          <p class="note">Mean from frequency table:
+            <span class="inline-code">mean = Σ(x·f) / Σf</span>
+          </p>
+          <p class="note">Median: expand conceptually or use cumulative frequencies to find the middle position.</p>
+          <p class="note">Mode: value with highest frequency.</p>
+        </div>
+      </section>
+
+      <!-- Grouped / class intervals -->
+      <section id="grouped">
+        <h3>Grouped data (class intervals): formula toolkit</h3>
+
+        <div class="card">
+          <p>For data presented as classes (e.g., 10–20, 20–30, …) we estimate mean using midpoints. Median and mode use class-wise formulas.</p>
+          <div class="row">
+            <div>
+              <label>Enter class intervals and frequencies (lower-upper:freq per line)</label>
+              <textarea id="groupInput" rows="8" placeholder="e.g.
+10-20:4
+20-30:7
+30-40:5
+40-50:2"></textarea>
+              <div class="flex" style="margin-top:8px;">
+                <button class="btn" onclick="computeGrouped()">Compute</button>
+                <button class="btn" onclick="loadGroupedExample()">Load example</button>
+              </div>
+            </div>
+            <div>
+              <div class="card">
+                <h4>Formulas</h4>
+                <ul>
+                  <li><b>Mean (grouped):</b>
+                    <div class="example">Let midpoint \(m_i = (L_i + U_i)/2\). Mean = Σ(f_i·m_i) / Σf_i</div>
+                  </li>
+                  <li><b>Median (grouped):</b>
+                    <div class="example">Median = L + [ (N/2 − CF) / f ] · h
+                      <br>Where:
+                      <br>- L = lower limit of median class
+                      <br>- N = total frequency
+                      <br>- CF = cumulative frequency before median class
+                      <br>- f = frequency of median class
+                      <br>- h = class width (upper − lower)
+                    </div>
+                  </li>
+                  <li><b>Mode (grouped):</b>
+                    <div class="example">Mode = L + [ (f_m − f_1) / (2f_m − f_1 − f_2) ] · h
+                      <br>Where:
+                      <br>- L = lower limit of modal class
+                      <br>- f_m = frequency of modal class
+                      <br>- f_1 = frequency of preceding class
+                      <br>- f_2 = frequency of succeeding class
+                      <br>- h = class width
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div id="groupOut" class="example"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Worked example (harder)</h4>
+          <p>Classes & frequencies:</p>
+          <table>
+            <thead><tr><th>Class</th><th>Frequency</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>2</td></tr>
+              <tr><td>10–20</td><td>6</td></tr>
+              <tr><td>20–30</td><td>10</td></tr>
+              <tr><td>30–40</td><td>5</td></tr>
+              <tr><td>40–50</td><td>2</td></tr>
+            </tbody>
+          </table>
+          <button class="btn" onclick="showGroupedWorked()">Show step-by-step</button>
+          <div id="groupWorked" class="example"></div>
+        </div>
+      </section>
+
+      <!-- Practice exercises -->
+      <section id="practice">
+        <h3>Practice exercises</h3>
+
+        <div class="card">
+          <h4>Raw data drills</h4>
+          <ol>
+            <li><b>Easy:</b> Compute mean, median, mode for 2, 3, 3, 4, 5</li>
+            <li><b>Medium:</b> Compute mean, median, mode for 10, 10, 12, 15, 30</li>
+            <li><b>Hard:</b> Compute mean, median, mode for 5, 9, 11, 11, 12, 18, 100</li>
+          </ol>
+          <div class="flex">
+            <button class="btn" onclick="loadPracticeRaw(1)">Show Easy solution</button>
+            <button class="btn" onclick="loadPracticeRaw(2)">Show Medium solution</button>
+            <button class="btn" onclick="loadPracticeRaw(3)">Show Hard solution</button>
+          </div>
+          <div id="practiceRawOut" class="example"></div>
+        </div>
+
+        <div class="card">
+          <h4>Frequency table drills</h4>
+          <ol>
+            <li><b>Easy:</b> 1:2, 2:3, 3:1</li>
+            <li><b>Medium:</b> 2:5, 4:2, 5:3, 7:1</li>
+            <li><b>Hard:</b> 3:4, 6:5, 9:2, 12:1</li>
+          </ol>
+          <div class="flex">
+            <button class="btn" onclick="loadPracticeFreq(1)">Show Easy solution</button>
+            <button class="btn" onclick="loadPracticeFreq(2)">Show Medium solution</button>
+            <button class="btn" onclick="loadPracticeFreq(3)">Show Hard solution</button>
+          </div>
+          <div id="practiceFreqOut" class="example"></div>
+        </div>
+
+        <div class="card">
+          <h4>Grouped data drills</h4>
+          <ol>
+            <li><b>Easy:</b> 0–10:3, 10–20:5, 20–30:2</li>
+            <li><b>Medium:</b> 10–20:4, 20–30:7, 30–40:5, 40–50:2</li>
+            <li><b>Hard:</b> 5–15:2, 15–25:6, 25–35:9, 35–45:5, 45–55:3</li>
+          </ol>
+          <div class="flex">
+            <button class="btn" onclick="loadPracticeGrouped(1)">Show Easy solution</button>
+            <button class="btn" onclick="loadPracticeGrouped(2)">Show Medium solution</button>
+            <button class="btn" onclick="loadPracticeGrouped(3)">Show Hard solution</button>
+          </div>
+          <div id="practiceGroupedOut" class="example"></div>
+        </div>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz">
+        <h3>Mini quiz</h3>
+        <div class="card">
+          <div id="quizContainer"></div>
+          <div class="flex" style="margin-top:8px;">
+            <button class="btn" onclick="gradeQuiz()">Grade</button>
+            <button class="btn" onclick="resetQuiz()">Reset</button>
+            <span id="quizScore" class="pill"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reference -->
+      <section id="references">
+        <h3>Reference cheatsheet</h3>
+        <div class="card">
+          <div class="row3">
+            <div>
+              <h4>Mean</h4>
+              <ul>
+                <li><b>Raw:</b> Σx / n</li>
+                <li><b>Freq table:</b> Σ(x·f) / Σf</li>
+                <li><b>Grouped:</b> Σ(m·f) / Σf, where m = midpoint</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Median</h4>
+              <ul>
+                <li><b>Raw:</b> middle of sorted; if even, average of two middles</li>
+                <li><b>Freq:</b> use cumulative frequencies to find middle position</li>
+                <li><b>Grouped:</b> L + [ (N/2 − CF) / f ] · h</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Mode</h4>
+              <ul>
+                <li><b>Raw:</b> most frequent value(s)</li>
+                <li><b>Freq:</b> highest frequency</li>
+                <li><b>Grouped:</b> L + [ (f_m − f_1) / (2f_m − f_1 − f_2) ] · h</li>
+              </ul>
+            </div>
+          </div>
+          <p class="footer-note">If your dataset argues with you, let the median moderate the discussion.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Simple router
+    const buttons = document.querySelectorAll('nav button');
+    const sections = document.querySelectorAll('main section');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.getAttribute('data-target');
+        sections.forEach(s => s.classList.toggle('active', s.id === target));
+      });
+    });
+
+    // Utilities
+    function parseNumbers(str) {
+      if (!str) return [];
+      return str
+        .replace(/[,\s]+/g, ' ')
+        .trim()
+        .split(' ')
+        .filter(Boolean)
+        .map(Number)
+        .filter(n => Number.isFinite(n));
+    }
+    function mean(arr) {
+      if (arr.length === 0) return NaN;
+      return arr.reduce((a,b)=>a+b,0)/arr.length;
+    }
+    function median(arr) {
+      if (arr.length === 0) return NaN;
+      const s = [...arr].sort((a,b)=>a-b);
+      const n = s.length, mid = Math.floor(n/2);
+      return n % 2 ? s[mid] : (s[mid-1]+s[mid])/2;
+    }
+    function mode(arr) {
+      if (arr.length === 0) return null;
+      const freq = new Map();
+      arr.forEach(x => freq.set(x, (freq.get(x)||0)+1));
+      let max = 0;
+      freq.forEach(v => { if (v>max) max=v; });
+      const modes = [...freq.entries()].filter(([x,f])=>f===max).map(([x])=>x);
+      return { modes, count: max };
+    }
+    function fmt(x, digits=4) {
+      if (!Number.isFinite(x)) return String(x);
+      return Number(x.toFixed(digits));
+    }
+    function list(arr) { return arr.join(', '); }
+
+    // Interactive basics
+    function computeBasics(inputId, outId) {
+      const data = parseNumbers(document.getElementById(inputId).value);
+      const m = mean(data), med = median(data), mo = mode(data);
+      const out = document.getElementById(outId);
+      out.innerHTML =
+        `Data (sorted): [${list([...data].sort((a,b)=>a-b))}]<br>` +
+        `Mean: <b>${fmt(m)}</b><br>` +
+        `Median: <b>${fmt(med)}</b><br>` +
+        `Mode: <b>${mo.modes ? list(mo.modes) : '—'}</b> (freq ${mo.count ?? '—'})`;
+    }
+
+    function showPrecomputed(outId, data) {
+      const m = mean(data), med = median(data), mo = mode(data);
+      document.getElementById(outId).innerHTML =
+        `Data: [${list(data)}]<br>` +
+        `Mean = Σx/n = (${data.reduce((a,b)=>a+b,0)})/${data.length} = <b>${fmt(m)}</b><br>` +
+        `Median = <b>${fmt(med)}</b><br>` +
+        `Mode = <b>${list(mo.modes)}</b> (freq ${mo.count})`;
+    }
+
+    // Frequency table
+    function parseFreqPairs(str) {
+      const lines = str.trim().split('\n').filter(Boolean);
+      const pairs = [];
+      for (const line of lines) {
+        const m = line.trim().match(/^(-?\d+(?:\.\d+)?)[\s]*:[\s]*(-?\d+)$/);
+        if (!m) continue;
+        pairs.push({ x: Number(m[1]), f: Number(m[2]) });
+      }
+      return pairs;
+    }
+    function computeFromFreqTable() {
+      const txt = document.getElementById('freqInput').value;
+      const pairs = parseFreqPairs(txt);
+      if (pairs.length === 0) {
+        document.getElementById('freqOut').innerHTML = '<span class="error">No valid pairs found. Use value:freq per line.</span>';
+        return;
+      }
+      const totalF = pairs.reduce((a,p)=>a+p.f,0);
+      const sumXF = pairs.reduce((a,p)=>a+p.x*p.f,0);
+      const meanVal = sumXF / totalF;
+
+      // Build expanded array for median/mode conceptual
+      const expanded = [];
+      pairs.forEach(p => { for (let i=0;i<p.f;i++) expanded.push(p.x); });
+      expanded.sort((a,b)=>a-b);
+      const medVal = median(expanded);
+      const moVal = mode(expanded);
+
+      document.getElementById('freqOut').innerHTML =
+        `Pairs: ${pairs.map(p=>`(${p.x}:${p.f})`).join(' ')}<br>` +
+        `Σf = ${totalF}, Σ(x·f) = ${sumXF}<br>` +
+        `Mean = Σ(x·f)/Σf = <b>${fmt(meanVal)}</b><br>` +
+        `Median (via cumulative/expanded) = <b>${fmt(medVal)}</b><br>` +
+        `Mode = <b>${moVal.modes ? list(moVal.modes) : '—'}</b> (freq ${moVal.count ?? '—'})`;
+    }
+    function loadFreqExample() {
+      document.getElementById('freqInput').value = "2:3\n3:5\n5:2";
+      computeFromFreqTable();
+    }
+
+    // Grouped data
+    function parseGrouped(str) {
+      const lines = str.trim().split('\n').filter(Boolean);
+      const rows = [];
+      for (const line of lines) {
+        const m = line.trim().match(/^(-?\d+(?:\.\d+)?)\s*-\s*(-?\d+(?:\.\d+)?)\s*:\s*(-?\d+)$/);
+        if (!m) continue;
+        const L = Number(m[1]), U = Number(m[2]), f = Number(m[3]);
+        if (U <= L) continue;
+        rows.push({ L, U, f, h: U - L, m: (L+U)/2 });
+      }
+      return rows;
+    }
+    function computeGrouped() {
+      const txt = document.getElementById('groupInput').value;
+      const rows = parseGrouped(txt);
+      const out = document.getElementById('groupOut');
+      if (rows.length === 0) {
+        out.innerHTML = '<span class="error">No valid class entries. Use lower-upper:freq per line.</span>';
+        return;
+      }
+      const N = rows.reduce((a,r)=>a+r.f,0);
+      const sumMF = rows.reduce((a,r)=>a+r.m*r.f,0);
+      const meanVal = sumMF / N;
+
+      // Cumulative frequencies to locate median class
+      let cum = 0;
+      const cumList = rows.map(r => {
+        cum += r.f;
+        return cum;
+      });
+      const half = N / 2;
+      let idxMedian = cumList.findIndex(cf => cf >= half);
+      if (idxMedian < 0) idxMedian = rows.length - 1;
+      const rMed = rows[idxMedian];
+      const CF_before = idxMedian === 0 ? 0 : cumList[idxMedian-1];
+      const medianVal = rMed.L + ((half - CF_before) / rMed.f) * rMed.h;
+
+      // Modal class: highest frequency
+      let idxModal = 0;
+      rows.forEach((r,i) => { if (r.f > rows[idxModal].f) idxModal = i; });
+      const rMod = rows[idxModal];
+      const f_m = rMod.f;
+      const f_1 = idxModal > 0 ? rows[idxModal-1].f : 0;
+      const f_2 = idxModal < rows.length-1 ? rows[idxModal+1].f : 0;
+      const modeVal = rMod.L + ((f_m - f_1) / (2*f_m - f_1 - f_2)) * rMod.h;
+
+      out.innerHTML =
+        `Classes: ${rows.map(r=>`[${r.L}-${r.U}](${r.f})`).join(' ')}<br>` +
+        `N = ${N}, Σ(m·f) = ${fmt(sumMF)}<br>` +
+        `Mean (Σm·f/Σf) = <b>${fmt(meanVal)}</b><br>` +
+        `Median class = [${rMed.L}-${rMed.U}], CF_before = ${CF_before}, h = ${rMed.h}<br>` +
+        `Median = <b>${fmt(medianVal)}</b><br>` +
+        `Modal class = [${rMod.L}-${rMod.U}], f_m=${f_m}, f_1=${f_1}, f_2=${f_2}, h=${rMod.h}<br>` +
+        `Mode = <b>${fmt(modeVal)}</b>`;
+    }
+    function loadGroupedExample() {
+      document.getElementById('groupInput').value = "10-20:4\n20-30:7\n30-40:5\n40-50:2";
+      computeGrouped();
+    }
+    function showGroupedWorked() {
+      const rows = [
+        {L:0,U:10,f:2},{L:10,U:20,f:6},{L:20,U:30,f:10},{L:30,U:40,f:5},{L:40,U:50,f:2}
+      ].map(r => ({...r, h: r.U - r.L, m: (r.L + r.U)/2}));
+      const N = rows.reduce((a,r)=>a+r.f,0);
+      const sumMF = rows.reduce((a,r)=>a+r.m*r.f,0);
+      // Median class
+      let cum=0; const CF=[]; rows.forEach(r=>{cum+=r.f; CF.push(cum);});
+      const half = N/2;
+      const idxMedian = CF.findIndex(x=>x>=half);
+      const rMed = rows[idxMedian];
+      const CF_before = idxMedian===0?0:CF[idxMedian-1];
+      const medianVal = rMed.L + ((half - CF_before)/rMed.f) * rMed.h;
+      // Mode
+      let idxModal=0; rows.forEach((r,i)=>{if(r.f>rows[idxModal].f) idxModal=i;});
+      const rMod = rows[idxModal], f_m=rMod.f, f_1=idxModal>0?rows[idxModal-1].f:0, f_2=idxModal<rows.length-1?rows[idxModal+1].f:0;
+      const modeVal = rMod.L + ((f_m - f_1)/(2*f_m - f_1 - f_2)) * rMod.h;
+
+      document.getElementById('groupWorked').innerHTML =
+        `Midpoints m_i: ${rows.map(r=>fmt(r.m)).join(', ')}<br>` +
+        `Σ(m·f) = ${fmt(sumMF)}, N = ${N}<br>` +
+        `Mean = ${fmt(sumMF/N)}<br>` +
+        `Median class: [${rMed.L}-${rMed.U}], CF_before=${CF_before}, h=${rMed.h}<br>` +
+        `Median = ${fmt(medianVal)}<br>` +
+        `Modal class: [${rMod.L}-${rMod.U}], f_m=${f_m}, f_1=${f_1}, f_2=${f_2}, h=${rMod.h}<br>` +
+        `Mode = ${fmt(modeVal)}`;
+    }
+
+    // Practice solutions
+    function loadPracticeRaw(level) {
+      const sets = {
+        1: [2,3,3,4,5],
+        2: [10,10,12,15,30],
+        3: [5,9,11,11,12,18,100],
+      };
+      showPrecomputed('practiceRawOut', sets[level]);
+    }
+    function loadPracticeFreq(level) {
+      const pairsMap = {
+        1: [{x:1,f:2},{x:2,f:3},{x:3,f:1}],
+        2: [{x:2,f:5},{x:4,f:2},{x:5,f:3},{x:7,f:1}],
+        3: [{x:3,f:4},{x:6,f:5},{x:9,f:2},{x:12,f:1}],
+      };
+      const pairs = pairsMap[level];
+      const totalF = pairs.reduce((a,p)=>a+p.f,0);
+      const sumXF = pairs.reduce((a,p)=>a+p.x*p.f,0);
+      const expanded=[]; pairs.forEach(p=>{for(let i=0;i<p.f;i++) expanded.push(p.x);});
+      expanded.sort((a,b)=>a-b);
+      const medVal = median(expanded), mo = mode(expanded);
+      document.getElementById('practiceFreqOut').innerHTML =
+        `Pairs: ${pairs.map(p=>`(${p.x}:${p.f})`).join(' ')}<br>`+
+        `Mean = ${fmt(sumXF/totalF)}<br>`+
+        `Median = ${fmt(medVal)}<br>`+
+        `Mode = ${mo.modes ? list(mo.modes) : '—'} (freq ${mo.count ?? '—'})`;
+    }
+    function loadPracticeGrouped(level) {
+      const map = {
+        1: "0-10:3\n10-20:5\n20-30:2",
+        2: "10-20:4\n20-30:7\n30-40:5\n40-50:2",
+        3: "5-15:2\n15-25:6\n25-35:9\n35-45:5\n45-55:3",
+      };
+      document.getElementById('groupInput').value = map[level];
+      computeGrouped();
+      document.getElementById('practiceGroupedOut').innerHTML =
+        'Computed above in Grouped section. Scroll up to see the results for the loaded data.';
+    }
+
+    // Quiz
+    const quizData = [
+      {
+        q: "Which measure is most affected by outliers?",
+        options: ["Mean","Median","Mode","All equally"],
+        correct: 0
+      },
+      {
+        q: "For raw data with even number of points, the median is:",
+        options: ["The larger middle value","The smaller middle value","The average of the two middle values","Undefined"],
+        correct: 2
+      },
+      {
+        q: "Mean from a frequency table is computed as:",
+        options: ["Σx / n","Σ(x·f) / Σf","Σf / Σx","Σ(x + f) / Σf"],
+        correct: 1
+      },
+      {
+        q: "In grouped data, the midpoint of class [L–U] is:",
+        options: ["U − L","(L + U) / 2","(U − L) / 2","L · U"],
+        correct: 1
+      },
+      {
+        q: "Grouped median formula uses:",
+        options: ["Upper limit of modal class","Lower limit of median class, CF, f, h","Mean of midpoints","Total number of classes only"],
+        correct: 1
+      }
+    ];
+    function renderQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = '';
+      quizData.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-q';
+        div.innerHTML = `<b>Q${idx+1}.</b> ${item.q}<br>` +
+          item.options.map((opt, i) =>
+            `<label class="flex"><input type="radio" name="q${idx}" value="${i}"> ${opt}</label>`
+          ).join('');
+        container.appendChild(div);
+      });
+      document.getElementById('quizScore').textContent = '';
+    }
+    function gradeQuiz() {
+      let score = 0;
+      quizData.forEach((item, idx) => {
+        const sel = document.querySelector(`input[name="q${idx}"]:checked`);
+        const val = sel ? Number(sel.value) : -1;
+        if (val === item.correct) score++;
+      });
+      const msg = `Score: ${score}/${quizData.length} — ${score===quizData.length ? 'Flawless victory!' : score>=3 ? 'Nice job!' : 'Keep practicing!'}`
+      document.getElementById('quizScore').textContent = msg;
+    }
+    function resetQuiz() { renderQuiz(); }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
