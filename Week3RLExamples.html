@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics in Real Life - Interactive Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exercise {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .exercise h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .data-display {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .interactive-area {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .result {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .boxplot-container {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .boxplot {
+            width: 100%;
+            height: 200px;
+            margin: 20px 0;
+        }
+
+        .data-points {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .data-point {
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .tip {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .tip strong {
+            color: #1976d2;
+        }
+
+        .scenario {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .scenario h4 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-btn {
+                width: 200px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1> MAT120 Khalid kassou</h1>
+            <h1>📊 Statistics in Real Life</h1>
+            <p>Discover how statistics shape your daily experiences!</p>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn active" onclick="showSection('center')">📍 Center Measures</button>
+            <button class="nav-btn" onclick="showSection('spread')">📏 Spread Measures</button>
+            <button class="nav-btn" onclick="showSection('location')">📍 Data Location</button>
+            <button class="nav-btn" onclick="showSection('boxplot')">📦 Boxplot Interpretation</button>
+        </div>
+
+        <!-- CENTER MEASURES SECTION -->
+        <div id="center" class="section active">
+            <h2>📍 Measures of Center: Mean, Median, Mode</h2>
+            
+            <div class="exercise">
+                <h3>🎮 Gaming Hours Analysis</h3>
+                <div class="scenario">
+                    <h4>Scenario: Your Gaming Squad's Weekly Hours</h4>
+                    <p>You and your 9 friends track how many hours you each spend gaming per week. Understanding these measures helps you see typical gaming patterns in your group!</p>
+                </div>
+                
+                <div class="data-display">
+                    Gaming Hours per Week: <span id="gaming-data">12, 8, 15, 6, 22, 9, 11, 8, 14, 10</span>
+                </div>
+                
+                <div class="interactive-area">
+                    <button class="btn" onclick="calculateCenterMeasures('gaming')">Calculate Mean, Median & Mode</button>
+                    <div id="gaming-results"></div>
+                </div>
+                
+                <div class="tip">
+                    <strong>💡 Real-Life Application:</strong> Game companies use these statistics to understand player behavior, design gaming sessions, and create balanced gameplay experiences!
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>🛒 Online Shopping Analysis</h3>
+                <div class="scenario">
+                    <h4>Scenario: Monthly Shopping Expenses</h4>
+                    <p>Track your last 12 months of online shopping expenses. This helps you understand your spending patterns and budget better!</p>
+                </div>
+                
+                <div class="interactive-area">
+                    <div class="input-group">
+                        <label>Enter 12 monthly shopping amounts (separated by commas):</label>
+                        <input type="text" id="shopping-input" placeholder="e.g., 45, 67, 23, 89, 34, 56, 78, 45, 67, 89, 23, 45">
+                    </div>
+                    <button class="btn" onclick="calculateCustomCenter()">Analyze My Spending</button>
+                    <div id="shopping-results"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPREAD MEASURES SECTION -->
+        <div id="spread" class="section">
+            <h2>📏 Measures of Spread: Range & Standard Deviation</h2>
+            
+            <div class="exercise">
+                <h3>📱 Social Media Usage</h3>
+                <div class="scenario">
+                    <h4>Scenario: Daily Screen Time Analysis</h4>
+                    <p>Your phone tracks daily screen time. Understanding spread helps you see how consistent or variable your usage is!</p>
+                </div>
+                
+                <div class="data-display">
+                    Daily Screen Time (hours): <span id="screen-data">5.2, 3.8, 7.1, 4.5, 6.3, 2.9, 8.4, 5.7, 4.2, 6.8</span>
+                </div>
+                
+                <div class="interactive-area">
+                    <button class="btn" onclick="calculateSpreadMeasures('screen')">Calculate Range & Standard Deviation</button>
+                    <div id="screen-results"></div>
+                </div>
+                
+                <div class="tip">
+                    <strong>💡 Real-Life Application:</strong> App developers use spread measures to understand usage variability and create features like "screen time goals" and "usage reminders"!
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>🏃‍♂️ Fitness Tracking</h3>
+                <div class="scenario">
+                    <h4>Scenario: Daily Steps Challenge</h4>
+                    <p>You're doing a 2-week step challenge with friends. Analyzing the spread helps you understand consistency in your activity levels!</p>
+                </div>
+                
+                <div class="interactive-area">
+                    <div class="input-group">
+                        <label>Enter your daily steps for 14 days (separated by commas):</label>
+                        <input type="text" id="steps-input" placeholder="e.g., 8500, 12000, 6800, 9500, 11200, 7800, 10500...">
+                    </div>
+                    <button class="btn" onclick="calculateCustomSpread()">Analyze My Activity</button>
+                    <div id="steps-results"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOCATION MEASURES SECTION -->
+        <div id="location" class="section">
+            <h2>📍 Measures of Location: Quartiles, Percentiles, Five-Number Summary</h2>
+            
+            <div class="exercise">
+                <h3>🎯 Test Scores Analysis</h3>
+                <div class="scenario">
+                    <h4>Scenario: Class Performance on Recent Exam</h4>
+                    <p>Understanding where you rank among your classmates helps you gauge your performance and identify areas for improvement!</p>
+                </div>
+                
+                <div class="data-display">
+                    Class Test Scores (%): <span id="scores-data">78, 85, 92, 67, 88, 91, 73, 82, 89, 76, 94, 80, 86, 75, 90</span>
+                </div>
+                
+                <div class="interactive-area">
+                    <button class="btn" onclick="calculateLocationMeasures('scores')">Calculate Quartiles & Five-Number Summary</button>
+                    <div id="scores-results"></div>
+                </div>
+                
+                <div class="tip">
+                    <strong>💡 Real-Life Application:</strong> Schools use quartiles to identify students who need extra help (bottom 25%) or enrichment opportunities (top 25%)!
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>💰 Part-time Job Earnings</h3>
+                <div class="scenario">
+                    <h4>Scenario: Weekly Earnings Comparison</h4>
+                    <p>Compare your weekly earnings with other students in your area to understand the job market and negotiate fair wages!</p>
+                </div>
+                
+                <div class="interactive-area">
+                    <div class="input-group">
+                        <label>Enter weekly earnings data (separated by commas):</label>
+                        <input type="text" id="earnings-input" placeholder="e.g., 120, 150, 95, 180, 110, 200, 85, 160...">
+                    </div>
+                    <div class="input-group">
+                        <label>Your weekly earnings:</label>
+                        <input type="number" id="my-earnings" placeholder="e.g., 145">
+                    </div>
+                    <button class="btn" onclick="calculateCustomLocation()">Find My Percentile</button>
+                    <div id="earnings-results"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOXPLOT SECTION -->
+        <div id="boxplot" class="section">
+            <h2>📦 Boxplot Interpretation: Understanding Distribution Shapes</h2>
+            
+            <div class="exercise">
+                <h3>🎵 Music Streaming Analysis</h3>
+                <div class="scenario">
+                    <h4>Scenario: Song Play Counts Analysis</h4>
+                    <p>Your favorite playlist has songs with different popularity levels. Boxplots help you understand the distribution of play counts!</p>
+                </div>
+                
+                <div class="interactive-area">
+                    <div class="input-group">
+                        <label>Select a dataset to visualize:</label>
+                        <select id="dataset-select" onchange="updateBoxplot()">
+                            <option value="playlist1">My Pop Playlist (Balanced)</option>
+                            <option value="playlist2">Indie Discoveries (Right Skewed)</option>
+                            <option value="playlist3">Classic Hits (Left Skewed)</option>
+                            <option value="playlist4">Mixed Genres (Multiple Peaks)</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="generateBoxplot()">Generate Boxplot</button>
+                    
+                    <div class="boxplot-container">
+                        <canvas id="boxplot-canvas" class="boxplot"></canvas>
+                        <div id="boxplot-analysis"></div>
+                    </div>
+                </div>
+                
+                <div class="tip">
+                    <strong>💡 Real-Life Application:</strong> Music streaming services use boxplots to understand listening patterns, recommend songs, and identify trending tracks across different demographics!
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>🚗 Commute Time Analysis</h3>
+                <div class="scenario">
+                    <h4>Scenario: Daily Commute Patterns</h4>
+                    <p>Understanding your commute time distribution helps you plan better and identify unusual days!</p>
+                </div>
+                
+                <div class="interactive-area">
+                    <div class="input-group">
+                        <label>Enter your commute times in minutes (separated by commas):</label>
+                        <input type="text" id="commute-input" placeholder="e.g., 25, 30, 28, 45, 22, 35, 40, 26, 32, 38...">
+                    </div>
+                    <button class="btn" onclick="analyzeCommute()">Analyze My Commute</button>
+                    <div id="commute-results"></div>
+                    <canvas id="commute-boxplot" class="boxplot" style="display: none;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample datasets
+        const datasets = {
+            playlist1: [1200, 1800, 2200, 1900, 2100, 1700, 2000, 1600, 2300, 1850], // Balanced
+            playlist2: [500, 600, 700, 800, 900, 1000, 1500, 2000, 3000, 5000], // Right skewed
+            playlist3: [5000, 4800, 4500, 4200, 3800, 3500, 2000, 1500, 1000, 800], // Left skewed
+            playlist4: [1000, 1100, 1200, 2800, 2900, 3000, 4800, 4900, 5000, 1050] // Bimodal
+        };
+
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all nav buttons
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function calculateCenterMeasures(type) {
+            const data = [12, 8, 15, 6, 22, 9, 11, 8, 14, 10];
+            const sorted = [...data].sort((a, b) => a - b);
+            
+            // Mean
+            const mean = data.reduce((sum, val) => sum + val, 0) / data.length;
+            
+            // Median
+            const median = sorted.length % 2 === 0 
+                ? (sorted[sorted.length/2 - 1] + sorted[sorted.length/2]) / 2
+                : sorted[Math.floor(sorted.length/2)];
+            
+            // Mode
+            const frequency = {};
+            data.forEach(val => frequency[val] = (frequency[val] || 0) + 1);
+            const maxFreq = Math.max(...Object.values(frequency));
+            const modes = Object.keys(frequency).filter(val => frequency[val] === maxFreq);
+            
+            const resultsDiv = document.getElementById(`${type}-results`);
+            resultsDiv.innerHTML = `
+                <div class="result">
+                    <strong>📊 Results:</strong><br>
+                    🎯 <strong>Mean:</strong> ${mean.toFixed(2)} hours/week - The average gaming time<br>
+                    📍 <strong>Median:</strong> ${median} hours/week - The middle value when sorted<br>
+                    🔄 <strong>Mode:</strong> ${modes.length > 1 ? modes.join(', ') : modes[0]} hours/week - Most common gaming time(s)<br><br>
+                    
+                    <strong>💭 What this tells us:</strong><br>
+                    • Your group averages ${mean.toFixed(2)} hours of gaming per week<br>
+                    • Half of your friends game ${median} hours or less<br>
+                    • The most common gaming time is ${modes[0]} hours<br>
+                    ${mean > median ? '• The mean is higher than median, suggesting some heavy gamers in your group!' : ''}
+                </div>
+            `;
+        }
+
+        function calculateCustomCenter() {
+            const input = document.getElementById('shopping-input').value;
+            if (!input.trim()) {
+                alert('Please enter shopping amounts!');
+                return;
+            }
+            
+            const data = input.split(',').map(val => parseFloat(val.trim())).filter(val => !isNaN(val));
+            if (data.length === 0) {
+                alert('Please enter valid numbers!');
+                return;
+            }
+            
+            const sorted = [...data].sort((a, b) => a - b);
+            
+            // Mean
+            const mean = data.reduce((sum, val) => sum + val, 0) / data.length;
+            
+            // Median
+            const median = sorted.length % 2 === 0 
+                ? (sorted[sorted.length/2 - 1] + sorted[sorted.length/2]) / 2
+                : sorted[Math.floor(sorted.length/2)];
+            
+            // Mode
+            const frequency = {};
+            data.forEach(val => frequency[val] = (frequency[val] || 0) + 1);
+            const maxFreq = Math.max(...Object.values(frequency));
+            const modes = Object.keys(frequency).filter(val => frequency[val] === maxFreq);
+            
+            const resultsDiv = document.getElementById('shopping-results');
+            resultsDiv.innerHTML = `
+                <div class="result">
+                    <strong>🛒 Your Shopping Analysis:</strong><br>
+                    💰 <strong>Average Monthly Spending:</strong> $${mean.toFixed(2)}<br>
+                    📍 <strong>Median Spending:</strong> $${median}<br>
+                    🔄 <strong>Most Common Amount:</strong> $${modes.length > 1 ? modes.join(', $') : modes[0]}<br><br>
+                    
+                    <strong>💡 Budget Insights:</strong><br>
+                    • You typically spend around $${median} per month<br>
+                    • Your annual shopping budget should be around $${(mean * 12).toFixed(2)}<br>
+                    ${mean > median ? '• You have some high-spending months - consider budget alerts!' : '• Your spending is fairly consistent'}
+                </div>
+            `;
+        }
+
+        function calculateSpreadMeasures(type) {
+            const data = [5.2, 3.8, 7.1, 4.5, 6.3, 2.9, 8.4, 5.7, 4.2, 6.8];
+            const sorted = [...data].sort((a, b) => a - b);
+            
+            // Range
+            const range = sorted[sorted.length - 1] - sorted[0];
+            
+            // Standard Deviation
+            const mean = data.reduce((sum, val) => sum + val, 0) / data.length;
+            const variance = data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / data.length;
+            const stdDev = Math.sqrt(variance);
+            
+            const resultsDiv = document.getElementById(`${type}-results`);
+            resultsDiv.innerHTML = `
+                <div class="result">
+                    <strong>📱 Screen Time Analysis:</strong><br>
+                    📏 <strong>Range:</strong> ${range.toFixed(2)} hours - Difference between highest and lowest usage<br>
+                    📊 <strong>Standard Deviation:</strong> ${stdDev.toFixed(2)} hours - Measure of consistency<br>
+                    🎯 <strong>Average:</strong> ${mean.toFixed(2)} hours/day<br><br>
+                    
+                    <strong>📈 What this means:</strong><br>
+                    • Your screen time varies by ${range.toFixed(2)} hours between days<br>
+                    • Most days you'll be within ${stdDev.toFixed(2)} hours of your ${mean.toFixed(2)}-hour average<br>
+                    ${stdDev > 1.5 ? '• Your usage is quite variable - consider setting consistent limits!' : '• You have relatively consistent usage patterns'}
+                </div>
+            `;
+        }
+
+        function calculateCustomSpread() {
+            const input = document.getElementById('steps-input').value;
+            if (!input.trim()) {
+                alert('Please enter your daily steps!');
+                return;
+            }
+            
+            const data = input.split(',').map(val => parseFloat(val.trim())).filter(val => !isNaN(val));
+            if (data.length === 0) {
+                alert('Please enter valid numbers!');
+                return;
+            }
+            
+            const sorted = [...data].sort((a, b) => a - b);
+            
+            // Range
+            const range = sorted[sorted.length - 1] - sorted[0];
+            
+            // Standard Deviation
+            const mean = data.reduce((sum, val) => sum + val, 0) / data.length;
+            const variance = data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / data.length;
+            const stdDev = Math.sqrt(variance);
+            
+            const resultsDiv = document.getElementById('steps-results');
+            resultsDiv.innerHTML = `
+                <div class="result">
+                    <strong>🏃‍♂️ Your Activity Analysis:</strong><br>
+                    📏 <strong>Range:</strong> ${Math.round(range)} steps - Your most vs least active days<br>
+                    📊 <strong>Standard Deviation:</strong> ${Math.round(stdDev)} steps - Consistency measure<br>
+                    🎯 <strong>Daily Average:</strong> ${Math.round(mean)} steps<br><br>
+                    
+                    <strong>🎯 Fitness Insights:</strong><br>
+                    • Your activity level varies by ${Math.round(range)} steps<br>
+                    • Most days you'll walk ${Math.round(mean - stdDev)} - ${Math.round(mean + stdDev)} steps<br>
+                    ${mean >= 10000 ? '• Great job! You consistently meet the 10,000 step goal!' : '• Try to aim for 10,000 steps daily for better health'}
+                    ${stdDev < mean * 0.2 ? '<br>• You have excellent consistency in your activity levels!' : '<br>• Consider setting a consistent daily step goal'}
+                </div>
+            `;
+        }
+
+        function calculateLocationMeasures(type) {
+            const data = [78, 85, 92, 67, 88, 91, 73, 82, 89, 76, 94, 80, 86, 75, 90];
+            const sorted = [...data].sort((a, b) => a - b);
+            
+            // Five number summary
+            const min = sorted[0];
+            const max = sorted[sorted.length - 1];
+            
+            const q1Index = Math.floor(sorted.length * 0.25);
+            const q1 = sorted[q1Index];
+            
+            const q2Index = Math.floor(sorted.length * 0.5);
+            const q2 = sorted.length % 2 === 0 
+                ? (sorted[q2Index - 1] + sorted[q2Index]) / 2 
+                : sorted[q2Index];
+            
+            const q3Index = Math.floor(sorted.length * 0.75);
+            const q3 = sorted[q3Index];
+            
+            const resultsDiv = document.getElementById(`${type}-results`);
+            resultsDiv.innerHTML = `
+                <div class="result">
+                    <strong>🎯 Five-Number Summary:</strong><br>
+                    📉 <strong>Minimum:</strong> ${min}% - Lowest score<br>
+                    📊 <strong>Q1 (25th percentile):</strong> ${q1}% - Bottom quarter<br>
+                    📍 <strong>Q2 (Median):</strong> ${q2}% - Middle score<br>
+                    📈 <strong>Q3 (75th percentile):</strong> ${q3}% - Top quarter<br>
+                    📊 <strong>Maximum:</strong> ${max}% - Highest score<br><br>
+                    
+                    <strong>📚 Class Performance Insights:</strong><br>
+                    • 25% of students scored ${q1}% or below<br>
+                    • 50% of students scored ${q2}% or below<br>
+                    • 75% of students scored ${q3}% or below<br>
+                    • The middle 50% scored between ${q1}% and ${q3}%<br>
+                    ${q2 >= 80 ? '• The class performed well overall!' : '• There might be room for improvement in understanding the material'}
+                </div>
+            `;
+        }
+
+        function calculateCustomLocation() {
+            const input = document.getElementById('earnings-input').value;
+            const myEarnings = parseFloat(document.getElementById('my-earnings').value);
+            
+            if (!input.trim() || isNaN(myEarnings)) {
+                alert('Please enter both earnings data and your earnings!');
+                return;
+            }
+            
+            const data = input.split(',').map(val => parseFloat(val.trim())).filter(val => !isNaN(val));
+            if (data.length === 0) {
+                alert('Please enter valid earnings data!');
+                return;
+            }
+            
+            // Add user's earnings to dataset
+            const allData = [...data, myEarnings];
+            const sorted = [...allData].sort((a, b) => a - b);
+            
+            // Find user's percentile
+            const userRank = sorted.indexOf(myEarnings) + 1;
+            const percentile = (userRank / sorted.length) * 100;
+            
+            // Calculate quartiles
+            const q1 = sorted[Math.floor(sorted.length * 0.25)];
+            const q2 = sorted[Math.floor(sorted.length * 0.5)];
+            const q3 = sorted[Math.floor(sorted.length * 0.75)];
+            
+            const resultsDiv = document.getElementById('earnings-results');
+            resultsDiv.innerHTML = `
+                <div class="result">
+                    <strong>💰 Your Earnings Analysis:</strong><br>
+                    🎯 <strong>Your Percentile:</strong> ${Math.round(percentile)}th percentile<br>
+                    📊 <strong>This means:</strong> You earn more than ${Math.round(percentile)}% of the group<br><br>
+                    
+                    <strong>📈 Comparison with Others:</strong><br>
+                    • Bottom 25% earn: $${Math.min(...sorted)} - $${q1}<br>
+                    • Middle 50% earn: $${q1} - $${q3}<br>
+                    • Top 25% earn: $${q3} - $${Math.max(...sorted)}<br>
+                    • Median earnings: $${q2}<br><br>
+                    
+                    <strong>💡 Career Insight:</strong><br>
+                    ${percentile >= 75 ? '🌟 You\'re in the top 25% - great earning potential!' : 
+                      percentile >= 50 ? '👍 You\'re earning above average - good job!' :
+                      percentile >= 25 ? '📈 You\'re earning average wages - room to grow!' :
+                      '💪 Consider exploring higher-paying opportunities or skill development!'}
+                </div>
+            `;
+        }
+
+        function updateBoxplot() {
+            // This function is called when dataset selection changes
+        }
+
+        function generateBoxplot() {
+            const select = document.getElementById('dataset-select');
+            const selectedDataset = select.value;
+            const data = datasets[selectedDataset];
+            const sorted = [...data].sort((a, b) => a - b);
+            
+            // Calculate five number summary
+            const min = sorted[0];
+            const q1 = sorted[Math.floor(sorted.length * 0.25)];
+            const median = sorted[Math.floor(sorted.length * 0.5)];
+            const q3 = sorted[Math.floor(sorted.length * 0.75)];
+            const max = sorted[sorted.length - 1];
+            
+            // Draw boxplot
+            const canvas = document.getElementById('boxplot-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Set up drawing parameters
+            const padding = 40;
+            const plotWidth = canvas.width - 2 * padding;
+            const plotHeight = canvas.height - 2 * padding;
+            const dataMin = Math.min(...sorted);
+            const dataMax = Math.max(...sorted);
+            
+            // Scale function
+            const scale = (value) => padding + ((value - dataMin) / (dataMax - dataMin)) * plotWidth;
+            const centerY = canvas.height / 2;
+            
+            // Draw boxplot
+            ctx.strokeStyle = '#667eea';
+            ctx.fillStyle = '#e8f4fd';
+            ctx.lineWidth = 2;
+            
+            // Box
+            const boxLeft = scale(q1);
+            const boxRight = scale(q3);
+            const boxTop = centerY - 30;
+            const boxBottom = centerY + 30;
+            
+            ctx.fillRect(boxLeft, boxTop, boxRight - boxLeft, 60);
+            ctx.strokeRect(boxLeft, boxTop, boxRight - boxLeft, 60);
+            
+            // Median line
+            ctx.beginPath();
+            ctx.moveTo(scale(median), boxTop);
+            ctx.lineTo(scale(median), boxBottom);
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Whiskers
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 2;
+            
+            // Left whisker
+            ctx.beginPath();
+            ctx.moveTo(scale(min), centerY);
+            ctx.lineTo(boxLeft, centerY);
+            ctx.moveTo(scale(min), centerY - 15);
+            ctx.lineTo(scale(min), centerY + 15);
+            ctx.stroke();
+            
+            // Right whisker
+            ctx.beginPath();
+            ctx.moveTo(boxRight, centerY);
+            ctx.lineTo(scale(max), centerY);
+            ctx.moveTo(scale(max), centerY - 15);
+            ctx.lineTo(scale(max), centerY + 15);
+            ctx.stroke();
+            
+            // Labels
+            ctx.fillStyle = '#333';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(min.toString(), scale(min), centerY + 45);
+            ctx.fillText(q1.toString(), scale(q1), centerY + 45);
+            ctx.fillText(median.toString(), scale(median), centerY - 40);
+            ctx.fillText(q3.toString(), scale(q3), centerY + 45);
+            ctx.fillText(max.toString(), scale(max), centerY + 45);
+            
+            // Analysis
+            const analysisDiv = document.getElementById('boxplot-analysis');
+            let shapeDescription = '';
+            
+            if (median - q1 > q3 - median) {
+                shapeDescription = 'Left-skewed (longer tail on the left)';
+            } else if (median - q1 < q3 - median) {
+                shapeDescription = 'Right-skewed (longer tail on the right)';
+            } else {
+                shapeDescription = 'Roughly symmetric';
+            }
+            
+            analysisDiv.innerHTML = `
+                <div class="result">
+                    <strong>📊 Distribution Analysis:</strong><br>
+                    📍 <strong>Shape:</strong> ${shapeDescription}<br>
+                    📏 <strong>IQR:</strong> ${q3 - q1} (middle 50% spread)<br>
+                    🎯 <strong>Median:</strong> ${median} plays<br><br>
+                    
+                    <strong>🎵 What this tells us:</strong><br>
+                    ${selectedDataset === 'playlist1' ? '• Balanced popularity - no major hits or flops' :
+                      selectedDataset === 'playlist2' ? '• Most songs have low plays, with a few viral hits' :
+                      selectedDataset === 'playlist3' ? '• Mostly popular songs with a few hidden gems' :
+                      '• Two groups of songs - mainstream hits and indie favorites'}
+                </div>
+            `;
+        }
+
+        function analyzeCommute() {
+            const input = document.getElementById('commute-input').value;
+            if (!input.trim()) {
+                alert('Please enter your commute times!');
+                return;
+            }
+            
+            const data = input.split(',').map(val => parseFloat(val.trim())).filter(val => !isNaN(val));
+            if (data.length === 0) {
+                alert('Please enter valid commute times!');
+                return;
+            }
+            
+            const sorted = [...data].sort((a, b) => a - b);
+            
+            // Five number summary
+            const min = sorted[0];
+            const q1 = sorted[Math.floor(sorted.length * 0.25)];
+            const median = sorted[Math.floor(sorted.length * 0.5)];
+            const q3 = sorted[Math.floor(sorted.length * 0.75)];
+            const max = sorted[sorted.length - 1];
+            
+            const resultsDiv = document.getElementById('commute-results');
+            
+            let shapeDescription = '';
+            if (median - q1 > q3 - median) {
+                shapeDescription = 'Left-skewed - you have some unusually quick commutes';
+            } else if (median - q1 < q3 - median) {
+                shapeDescription = 'Right-skewed - you have some unusually long commutes (traffic jams?)';
+            } else {
+                shapeDescription = 'Symmetric - fairly consistent commute times';
+            }
+            
+            resultsDiv.innerHTML = `
+                <div class="result">
+                    <strong>🚗 Your Commute Analysis:</strong><br>
+                    ⚡ <strong>Fastest:</strong> ${min} minutes<br>
+                    🐌 <strong>Slowest:</strong> ${max} minutes<br>
+                    🎯 <strong>Typical:</strong> ${median} minutes (median)<br>
+                    📊 <strong>IQR:</strong> ${q3 - q1} minutes (middle 50% variation)<br><br>
+                    
+                    <strong>📈 Pattern Analysis:</strong><br>
+                    • ${shapeDescription}<br>
+                    • Plan for ${Math.round(q3)} minutes to be on time 75% of days<br>
+                    • Your commute varies by ${max - min} minutes between best and worst days<br>
+                    ${max - median > 10 ? '• Consider checking traffic apps on days with unusual delays!' : '• Your commute is fairly predictable'}
+                </div>
+            `;
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Statistics presentation loaded!');
+        });
+    </script>
+</body>
+</html>
