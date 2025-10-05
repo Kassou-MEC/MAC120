@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negative Correlation Practice Problems</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .info-banner {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .info-banner h3 {
+            color: #fc466b;
+            margin-bottom: 15px;
+        }
+
+        .correlation-scale {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .scale-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .strong-neg {
+            border-color: #dc3545;
+        }
+
+        .moderate-neg {
+            border-color: #fd7e14;
+        }
+
+        .weak-neg {
+            border-color: #ffc107;
+        }
+
+        .problem-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .problem-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #fc466b;
+        }
+
+        .problem-number {
+            background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .problem-title {
+            flex: 1;
+        }
+
+        .problem-title h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .correlation-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .strong-negative {
+            background: #dc3545;
+            color: white;
+        }
+
+        .moderate-negative {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .weak-negative {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .problem-title .emoji {
+            font-size: 1.5em;
+        }
+
+        .section {
+            margin: 20px 0;
+        }
+
+        .section h3 {
+            color: #fc466b;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        th {
+            background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: #f1f3f5;
+        }
+
+        .info-box {
+            background: #ffe5e5;
+            border-left: 4px solid #fc466b;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .info-box strong {
+            color: #fc466b;
+        }
+
+        .questions {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .questions h3 {
+            color: #f59e0b;
+            margin-bottom: 15px;
+        }
+
+        .question {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .question strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .toggle-btn {
+            background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(252, 70, 107, 0.4);
+        }
+
+        .answer {
+            display: none;
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .answer.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answer h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .answer-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        footer p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .problem-card {
+                padding: 20px;
+            }
+
+            .problem-title h2 {
+                font-size: 1.4em;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            .correlation-scale {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📉 Negative Correlation Practice</h1>
+            <p>When One Goes Up, The Other Goes Down!</p>
+        </header>
+
+        <div class="info-banner">
+            <h3>Understanding Negative Correlation</h3>
+            <p>A <strong>negative correlation</strong> means that as one variable increases, the other variable tends to decrease. The correlation coefficient (r) ranges from -1 to 0.</p>
+            
+            <div class="correlation-scale">
+                <div class="scale-item strong-neg">
+                    <strong>Strong Negative</strong><br>
+                    r = -0.8 to -1.0<br>
+                    Very predictable inverse relationship
+                </div>
+                <div class="scale-item moderate-neg">
+                    <strong>Moderate Negative</strong><br>
+                    r = -0.5 to -0.8<br>
+                    Noticeable inverse relationship
+                </div>
+                <div class="scale-item weak-neg">
+                    <strong>Weak Negative</strong><br>
+                    r = -0.1 to -0.5<br>
+                    Slight inverse relationship
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 1: Car Depreciation - Strong Negative -->
+        <div class="problem-card">
+            <div class="problem-header">
+                <div class="problem-number">1</div>
+                <div class="problem-title">
+                    <h2><span class="emoji">🚗</span> Car Value: Age vs Price</h2>
+                    <span class="correlation-badge strong-negative">Strong Negative Correlation</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <p><strong>Background:</strong> A used car dealer tracks the relationship between car age and resale value for a popular sedan model to price inventory accurately.</p>
+            </div>
+
+            <div class="section">
+                <h3>Data Collected:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Car</th>
+                            <th>Age (years) - x</th>
+                            <th>Price ($1000s) - y</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>1</td><td>28</td></tr>
+                        <tr><td>2</td><td>2</td><td>24</td></tr>
+                        <tr><td>3</td><td>3</td><td>21</td></tr>
+                        <tr><td>4</td><td>4</td><td>18</td></tr>
+                        <tr><td>5</td><td>5</td><td>15</td></tr>
+                        <tr><td>6</td><td>6</td><td>13</td></tr>
+                        <tr><td>7</td><td>7</td><td>10</td></tr>
+                        <tr><td>8</td><td>8</td><td>8</td></tr>
+                        <tr><td>9</td><td>9</td><td>6</td></tr>
+                        <tr><td>10</td><td>10</td><td>4</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <strong>Given Information:</strong><br>
+                • Regression equation: <strong>ŷ = 31.27 - 2.71x</strong><br>
+                • Correlation coefficient: <strong>r = -0.989</strong><br>
+                • Sample size: n = 10<br>
+                • Critical t-value at α = 0.05: <strong>±2.306</strong>
+            </div>
+
+            <div class="questions">
+                <h3>Questions:</h3>
+                <div class="question">
+                    <strong>1. Variable Identification:</strong>
+                    Which is the independent variable? Why does it make sense in this context?
+                </div>
+                <div class="question">
+                    <strong>2. Interpret the Slope:</strong>
+                    What does the slope of -2.71 tell us about car depreciation?
+                </div>
+                <div class="question">
+                    <strong>3. Correlation Strength:</strong>
+                    With r = -0.989, describe the strength and direction of this relationship.
+                </div>
+                <div class="question">
+                    <strong>4. Test Significance:</strong>
+                    Calculate t = r√(n-2) / √(1-r²). Is the correlation significant?
+                </div>
+                <div class="question">
+                    <strong>5. Prediction:</strong>
+                    What would be the expected price of a 6.5-year-old car?
+                </div>
+                <div class="question">
+                    <strong>6. Business Decision:</strong>
+                    Should the dealer stock 15-year-old cars? Use the model to explain.
+                </div>
+            </div>
+
+            <button class="toggle-btn" onclick="toggleAnswer('answer1')">Show/Hide Answers</button>
+            <div class="answer" id="answer1">
+                <h4>Solutions:</h4>
+                <div class="answer-item">
+                    <strong>1. Variables:</strong> Independent variable (x) = Car age; Dependent variable (y) = Price. Age determines value, not the other way around. As time passes, cars depreciate.
+                </div>
+                <div class="answer-item">
+                    <strong>2. Slope:</strong> The slope of -2.71 means for every additional year of age, the car loses approximately $2,710 in value. The negative sign indicates depreciation.
+                </div>
+                <div class="answer-item">
+                    <strong>3. Correlation:</strong> r = -0.989 indicates a very strong negative relationship. As car age increases, price decreases in a highly predictable pattern.
+                </div>
+                <div class="answer-item">
+                    <strong>4. Significance Test:</strong><br>
+                    t = -0.989√8 / √(1-(-0.989)²) = -0.989(2.828) / √0.0219 = -2.797 / 0.148 ≈ -18.90<br>
+                    Since |-18.90| > 2.306, the correlation is highly significant!
+                </div>
+                <div class="answer-item">
+                    <strong>5. Prediction:</strong> ŷ = 31.27 - 2.71(6.5) = 31.27 - 17.615 = $13,655 (reliable, within data range)
+                </div>
+                <div class="answer-item">
+                    <strong>6. Business Decision:</strong> ŷ = 31.27 - 2.71(15) = 31.27 - 40.65 = -$9,380. This gives a negative price, which is impossible! This shows the linear model breaks down for very old cars. Beyond the data range, cars reach a minimum value and may even increase in value as classics. Don't use this model for 15-year-old cars.
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2: Heating Costs - Strong Negative -->
+        <div class="problem-card">
+            <div class="problem-header">
+                <div class="problem-number">2</div>
+                <div class="problem-title">
+                    <h2><span class="emoji">🌡️</span> Energy Bill: Temperature vs Heating Cost</h2>
+                    <span class="correlation-badge strong-negative">Strong Negative Correlation</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <p><strong>Background:</strong> A homeowner analyzes monthly outdoor temperature and heating bills to understand energy costs and plan budgets.</p>
+            </div>
+
+            <div class="section">
+                <h3>Data Collected:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Avg Temperature (°F) - x</th>
+                            <th>Heating Bill ($) - y</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>25</td><td>285</td></tr>
+                        <tr><td>2</td><td>30</td><td>250</td></tr>
+                        <tr><td>3</td><td>35</td><td>220</td></tr>
+                        <tr><td>4</td><td>40</td><td>185</td></tr>
+                        <tr><td>5</td><td>45</td><td>155</td></tr>
+                        <tr><td>6</td><td>50</td><td>120</td></tr>
+                        <tr><td>7</td><td>55</td><td>90</td></tr>
+                        <tr><td>8</td><td>60</td><td>60</td></tr>
+                        <tr><td>9</td><td>65</td><td>35</td></tr>
+                        <tr><td>10</td><td>70</td><td>15</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <strong>Given Information:</strong><br>
+                • Regression equation: <strong>ŷ = 480.91 - 6.85x</strong><br>
+                • Correlation coefficient: <strong>r = -0.996</strong><br>
+                • Sample size: n = 10<br>
+                • Critical t-value at α = 0.05: <strong>±2.306</strong>
+            </div>
+
+            <div class="questions">
+                <h3>Questions:</h3>
+                <div class="question">
+                    <strong>1. Slope Interpretation:</strong>
+                    What does the negative slope of -6.85 mean for homeowners?
+                </div>
+                <div class="question">
+                    <strong>2. Y-intercept Meaning:</strong>
+                    What does 480.91 represent? Is it realistic?
+                </div>
+                <div class="question">
+                    <strong>3. Correlation Analysis:</strong>
+                    Interpret r = -0.996 in context of energy usage.
+                </div>
+                <div class="question">
+                    <strong>4. Significance Testing:</strong>
+                    Test if the correlation is statistically significant at α = 0.05.
+                </div>
+                <div class="question">
+                    <strong>5. Budget Planning:</strong>
+                    If the average temperature next month is expected to be 38°F, what should the homeowner budget?
+                </div>
+                <div class="question">
+                    <strong>6. Summer Heating:</strong>
+                    Would you use this model to predict heating costs at 85°F? Explain.
+                </div>
+            </div>
+
+            <button class="toggle-btn" onclick="toggleAnswer('answer2')">Show/Hide Answers</button>
+            <div class="answer" id="answer2">
+                <h4>Solutions:</h4>
+                <div class="answer-item">
+                    <strong>1. Slope:</strong> For every 1°F increase in outdoor temperature, heating costs decrease by approximately $6.85. Warmer weather means less heating needed.
+                </div>
+                <div class="answer-item">
+                    <strong>2. Y-intercept:</strong> $480.91 would be the heating cost at 0°F. This is extrapolation beyond our data, but represents extremely cold conditions requiring maximum heating. It's theoretically reasonable but outside our data range.
+                </div>
+                <div class="answer-item">
+                    <strong>3. Correlation:</strong> r = -0.996 shows an extremely strong negative relationship. Temperature is an excellent predictor of heating costs - as temperature rises, heating bills reliably decrease.
+                </div>
+                <div class="answer-item">
+                    <strong>4. Significance:</strong><br>
+                    t = -0.996√8 / √(1-(-0.996)²) = -0.996(2.828) / √0.0080 = -2.817 / 0.089 ≈ -31.65<br>
+                    Since |-31.65| > 2.306, the correlation is extraordinarily significant!
+                </div>
+                <div class="answer-item">
+                    <strong>5. Budget Planning:</strong> ŷ = 480.91 - 6.85(38) = 480.91 - 260.30 = $220.61. Budget around $220-225 for heating (reliable prediction within data range).
+                </div>
+                <div class="answer-item">
+                    <strong>6. Summer Heating:</strong> ŷ = 480.91 - 6.85(85) = 480.91 - 582.25 = -$101.34. A negative heating bill is impossible! In reality, at 85°F, heating wouldn't be used at all (cost would be $0 or minimal baseline). This shows the linear model doesn't apply to summer temperatures - there's a floor effect at $0.
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 3: Phone Battery - Moderate Negative -->
+        <div class="problem-card">
+            <div class="problem-header">
+                <div class="problem-number">3</div>
+                <div class="problem-title">
+                    <h2><span class="emoji">📱</span> Smartphone: Screen Time vs Battery Life</h2>
+                    <span class="correlation-badge moderate-negative">Moderate Negative Correlation</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <p><strong>Background:</strong> A tech reviewer tests how daily screen time affects battery life percentage remaining at the end of the day for a new smartphone model.</p>
+            </div>
+
+            <div class="section">
+                <h3>Data Collected:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Screen Time (hours) - x</th>
+                            <th>Battery Remaining (%) - y</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>2</td><td>75</td></tr>
+                        <tr><td>2</td><td>3</td><td>68</td></tr>
+                        <tr><td>3</td><td>4</td><td>62</td></tr>
+                        <tr><td>4</td><td>3.5</td><td>65</td></tr>
+                        <tr><td>5</td><td>5</td><td>55</td></tr>
+                        <tr><td>6</td><td>6</td><td>48</td></tr>
+                        <tr><td>7</td><td>4.5</td><td>58</td></tr>
+                        <tr><td>8</td><td>7</td><td>40</td></tr>
+                        <tr><td>9</td><td>5.5</td><td>52</td></tr>
+                        <tr><td>10</td><td>8</td><td>35</td></tr>
+                        <tr><td>11</td><td>6.5</td><td>45</td></tr>
+                        <tr><td>12</td><td>7.5</td><td>38</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <strong>Given Information:</strong><br>
+                • Regression equation: <strong>ŷ = 87.23 - 6.42x</strong><br>
+                • Correlation coefficient: <strong>r = -0.952</strong><br>
+                • Sample size: n = 12<br>
+                • Critical t-value at α = 0.05: <strong>±2.228</strong>
+            </div>
+
+            <div class="questions">
+                <h3>Questions:</h3>
+                <div class="question">
+                    <strong>1. Rate of Drain:</strong>
+                    What does the slope of -6.42 tell us about battery consumption?
+                </div>
+                <div class="question">
+                    <strong>2. Full Charge Interpretation:</strong>
+                    What does the y-intercept suggest about battery life with zero screen time?
+                </div>
+                <div class="question">
+                    <strong>3. Correlation Classification:</strong>
+                    How would you classify r = -0.952? Is it strong or moderate?
+                </div>
+                <div class="question">
+                    <strong>4. Statistical Test:</strong>
+                    Verify whether this correlation is statistically significant.
+                </div>
+                <div class="question">
+                    <strong>5. Usage Planning:</strong>
+                    If a user wants at least 50% battery at day's end, what's the maximum screen time?
+                </div>
+                <div class="question">
+                    <strong>6. Heavy User Prediction:</strong>
+                    Is predicting battery life for 12 hours of screen time reliable?
+                </div>
+            </div>
+
+            <button class="toggle-btn" onclick="toggleAnswer('answer3')">Show/Hide Answers</button>
+            <div class="answer" id="answer3">
+                <h4>Solutions:</h4>
+                <div class="answer-item">
+                    <strong>1. Rate of Drain:</strong> Each hour of screen time reduces battery life by approximately 6.42%. The negative slope confirms that more usage depletes the battery.
+                </div>
+                <div class="answer-item">
+                    <strong>2. Y-intercept:</strong> 87.23% would be the remaining battery with zero screen time. This accounts for background processes, standby drain, and other apps. It's realistic that even with no active use, the battery doesn't stay at 100%.
+                </div>
+                <div class="answer-item">
+                    <strong>3. Correlation:</strong> r = -0.952 is a strong negative correlation (very close to -1.0). While technically in the "strong" range (-0.8 to -1.0), it's on the stronger end, showing screen time is a very good predictor of battery drain.
+                </div>
+                <div class="answer-item">
+                    <strong>4. Significance:</strong><br>
+                    t = -0.952√10 / √(1-(-0.952)²) = -0.952(3.162) / √0.0938 = -3.010 / 0.306 ≈ -9.84<br>
+                    Since |-9.84| > 2.228, the correlation is highly significant!
+                </div>
+                <div class="answer-item">
+                    <strong>5. Usage Planning:</strong> 50 = 87.23 - 6.42x → x = (87.23 - 50) / 6.42 = 37.23 / 6.42 ≈ 5.8 hours. Keep screen time under 5.8 hours to maintain 50% battery.
+                </div>
+                <div class="answer-item">
+                    <strong>6. Heavy User:</strong> ŷ = 87.23 - 6.42(12) = 87.23 - 77.04 = 10.19%. This is extrapolation (beyond 8 hours in our data), and while the number is positive and possible, 12 hours of continuous screen time is extreme and might involve charging during the day, making this prediction less reliable. The phone might also enter power-saving modes that change the relationship.
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 4: Exercise & Stress - Moderate Negative -->
+        <div class="problem-card">
+            <div class="problem-header">
+                <div class="problem-number">4</div>
+                <div class="problem-title">
+                    <h2><span class="emoji">🧘</span> Wellness: Exercise vs Stress Level</h2>
+                    <span class="correlation-badge moderate-negative">Moderate Negative Correlation</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <p><strong>Background:</strong> A wellness coach tracks clients' weekly exercise hours and self-reported stress levels (scale 1-10) to demonstrate the benefits of physical activity.</p>
+            </div>
+
+            <div class="section">
+                <h3>Data Collected:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Exercise Hours/Week - x</th>
+                            <th>Stress Level (1-10) - y</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>1</td><td>8.5</td></tr>
+                        <tr><td>2</td><td>2</td><td>7.8</td></tr>
+                        <tr><td>3</td><td>3</td><td>7.2</td></tr>
+                        <tr><td>4</td><td>2.5</td><td>7.5</td></tr>
+                        <tr><td>5</td><td>4</td><td>6.5</td></tr>
+                        <tr><td>6</td><td>5</td><td>5.8</td></tr>
+                        <tr><td>7</td><td>3.5</td><td>6.9</td></tr>
+                        <tr><td>8</td><td>6</td><td>5.2</td></tr>
+                        <tr><td>9</td><td>4.5</td><td>6.3</td></tr>
+                        <tr><td>10</td><td>7</td><td>4.5</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <strong>Given Information:</strong><br>
+                • Regression equation: <strong>ŷ = 9.05 - 0.63x</strong><br>
+                • Correlation coefficient: <strong>r = -0.876</strong><br>
+                • Sample size: n = 10<br>
+                • Critical t-value at α = 0.05: <strong>±2.306</strong>
+            </div>
+
+            <div class="questions">
+                <h3>Questions:</h3>
+                <div class="question">
+                    <strong>1. Exercise Impact:</strong>
+                    What does the slope of -0.63 indicate about exercise and stress?
+                </div>
+                <div class="question">
+                    <strong>2. No Exercise Scenario:</strong>
+                    What stress level does the y-intercept predict for someone who doesn't exercise?
+                </div>
+                <div class="question">
