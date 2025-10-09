@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discrete Probability Distributions - Interactive Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: #e9ecef;
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .definition-box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .definition-box strong {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .example-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .formula {
+            background: #e7f3ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .exercise {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .exercise h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .show-answer-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .show-answer-btn:hover {
+            background: #218838;
+        }
+
+        .answer {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border: 2px solid #28a745;
+        }
+
+        .quiz-question {
+            background: #e7e7ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        .quiz-options {
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .quiz-option input {
+            margin-right: 10px;
+        }
+
+        .submit-quiz-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .submit-quiz-btn:hover {
+            background: #764ba2;
+        }
+
+        .quiz-result {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+
+        .quiz-result.show {
+            display: block;
+        }
+
+        .correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .calculator {
+            background: #e7f3ff;
+            border: 2px solid #667eea;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .calc-input-group {
+            margin: 15px 0;
+        }
+
+        .calc-input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+
+        .calc-input {
+            width: 100%;
+            max-width: 200px;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .calc-btn {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+
+        .calc-btn:hover {
+            background: #667eea;
+        }
+
+        .calc-result {
+            background: #d4edda;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            display: none;
+            border: 2px solid #28a745;
+        }
+
+        .calc-result.show {
+            display: block;
+        }
+
+        ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .note-box {
+            background: #cfe2ff;
+            border-left: 5px solid #0d6efd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .step {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 MAT120 Prof. Khalid Kassou</h1>
+            <h1>📊 Discrete Probability Distributions</h1>
+            <p class="subtitle">Probability Distribution Functions & Binomial Distribution</p>
+        </div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection('intro')">Introduction</button>
+            <button class="nav-btn" onclick="showSection('pdf')">PDF</button>
+            <button class="nav-btn" onclick="showSection('expected')">Expected Value</button>
+            <button class="nav-btn" onclick="showSection('binomial')">Binomial Dist</button>
+            <button class="nav-btn" onclick="showSection('calculators')">Calculators</button>
+            <button class="nav-btn" onclick="showSection('exercises')">Practice</button>
+            <button class="nav-btn" onclick="showSection('quiz')">Quiz</button>
+        </div>
+
+        <div class="content">
+            <!-- Introduction Section -->
+            <div id="intro" class="section active">
+                <h2>Introduction to Discrete Random Variables</h2>
+
+                <div class="definition-box">
+                    <p><strong>Random Variable:</strong> A variable whose value is determined by the outcome of a random experiment.</p>
+                    <p style="margin-top: 10px;">Usually denoted by capital letters: X, Y, Z</p>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Discrete Random Variable:</strong> A random variable that can take on a countable number of distinct values.</p>
+                    <p style="margin-top: 10px;"><strong>Examples:</strong></p>
+                    <ul>
+                        <li>Number of heads in 3 coin flips: X = {0, 1, 2, 3}</li>
+                        <li>Number of defective items in a batch: X = {0, 1, 2, ...}</li>
+                        <li>Number of students absent from class: X = {0, 1, 2, ..., n}</li>
+                    </ul>
+                </div>
+
+                <div class="note-box">
+                    <p><strong>Discrete vs Continuous:</strong></p>
+                    <p><strong>Discrete:</strong> Countable values (0, 1, 2, 3, ...) - can list all possible values</p>
+                    <p><strong>Continuous:</strong> Infinite values in an interval (height, weight, time) - cannot list all values</p>
+                </div>
+
+                <h3>Why Study Probability Distributions?</h3>
+                <div class="example-box">
+                    <p>Probability distributions allow us to:</p>
+                    <ul>
+                        <li>Describe the behavior of random variables</li>
+                        <li>Calculate probabilities for specific outcomes</li>
+                        <li>Find expected values and measure variability</li>
+                        <li>Make predictions and informed decisions</li>
+                        <li>Model real-world random phenomena</li>
+                    </ul>
+                </div>
+
+                <h3>Simple Example: Rolling a Die</h3>
+                <div class="example-box">
+                    <h4>Let X = the number shown on a fair die</h4>
+                    <p><strong>Possible values:</strong> X = {1, 2, 3, 4, 5, 6}</p>
+                    <p><strong>Probability for each value:</strong></p>
+                    <table>
+                        <tr>
+                            <th>x</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                        </tr>
+                        <tr>
+                            <td><strong>P(X = x)</strong></td>
+                            <td>1/6</td>
+                            <td>1/6</td>
+                            <td>1/6</td>
+                            <td>1/6</td>
+                            <td>1/6</td>
+                            <td>1/6</td>
+                        </tr>
+                    </table>
+                    <p><strong>Explanation:</strong> Since the die is fair, each outcome has an equal probability of 1/6. This table shows the complete probability distribution for X.</p>
+                </div>
+            </div>
+
+            <!-- PDF Section -->
+            <div id="pdf" class="section">
+                <h2>Probability Distribution Function (PDF)</h2>
+
+                <div class="definition-box">
+                    <p><strong>Probability Distribution Function (PDF):</strong> A function that gives the probability that a discrete random variable equals a specific value.</p>
+                    <p style="margin-top: 10px;">Notation: P(X = x) or f(x)</p>
+                    <p style="margin-top: 10px;"><strong>Properties:</strong></p>
+                    <ul>
+                        <li>0 ≤ P(X = x) ≤ 1 for all x</li>
+                        <li>Σ P(X = x) = 1 (sum of all probabilities equals 1)</li>
+                    </ul>
+                </div>
+
+                <h3>Example 1: Simple PDF (Easy)</h3>
+                <div class="example-box">
+                    <h4>Number of Heads in Two Coin Flips</h4>
+                    <p><strong>Experiment:</strong> Flip a fair coin twice</p>
+                    <p><strong>Random Variable X:</strong> Number of heads</p>
+                    <p><strong>Sample Space:</strong> {HH, HT, TH, TT}</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Finding the PDF:</strong></p>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>List all possible values:</strong> X = {0, 1, 2}
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Count outcomes for each value:</strong>
+                        <ul style="margin-left: 40px;">
+                            <li>X = 0 (no heads): TT → 1 outcome</li>
+                            <li>X = 1 (one head): HT, TH → 2 outcomes</li>
+                            <li>X = 2 (two heads): HH → 1 outcome</li>
+                        </ul>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Calculate probabilities:</strong>
+                    </div>
+
+                    <table>
+                        <tr>
+                            <th>x</th>
+                            <th>P(X = x)</th>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>1/4 = 0.25</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2/4 = 0.50</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>1/4 = 0.25</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Verification:</strong> Sum = 0.25 + 0.50 + 0.25 = 1.00 ✓</p>
+                </div>
+
+                <h3>Example 2: Custom PDF (Medium)</h3>
+                <div class="example-box">
+                    <h4>Customers at a Store</h4>
+                    <p>A small store tracked the number of customers entering per hour during slow periods:</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Customers (x)</th>
+                            <th>Frequency</th>
+                            <th>P(X = x)</th>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>10</td>
+                            <td>10/50 = 0.20</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>15</td>
+                            <td>15/50 = 0.30</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>12</td>
+                            <td>12/50 = 0.24</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>8</td>
+                            <td>8/50 = 0.16</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>5/50 = 0.10</td>
+                        </tr>
+                    </table>
+
+                    <p style="margin-top: 15px;"><strong>Questions:</strong></p>
+                    
+                    <p><strong>a) P(X = 2):</strong> What's the probability exactly 2 customers arrive?</p>
+                    <div class="formula">P(X = 2) = 0.24 or 24%</div>
+
+                    <p><strong>b) P(X ≤ 1):</strong> What's the probability at most 1 customer arrives?</p>
+                    <div class="formula">P(X ≤ 1) = P(X=0) + P(X=1) = 0.20 + 0.30 = 0.50 or 50%</div>
+
+                    <p><strong>c) P(X > 2):</strong> What's the probability more than 2 customers arrive?</p>
+                    <div class="formula">P(X > 2) = P(X=3) + P(X=4) = 0.16 + 0.10 = 0.26 or 26%</div>
+                </div>
+
+                <h3>Example 3: PDF from Formula (Hard)</h3>
+                <div class="example-box">
+                    <h4>PDF Given by Formula</h4>
+                    <p>Suppose X has the PDF: P(X = x) = cx² for x = 1, 2, 3 and c is a constant.</p>
+                    
+                    <p><strong>Find the value of c:</strong></p>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Use the property that Σ P(X = x) = 1:</strong>
+                        <div class="formula">c(1²) + c(2²) + c(3²) = 1</div>
+                        <div class="formula">c(1) + c(4) + c(9) = 1</div>
+                        <div class="formula">14c = 1</div>
+                        <div class="formula">c = 1/14</div>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Complete probability distribution:</strong>
+                    </div>
+
+                    <table>
+                        <tr>
+                            <th>x</th>
+                            <th>P(X = x)</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>(1/14)(1) = 1/14 ≈ 0.071</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>(1/14)(4) = 4/14 ≈ 0.286</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>(1/14)(9) = 9/14 ≈ 0.643</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Explanation:</strong> Higher values of X are more likely in this distribution. This could model situations where larger outcomes are favored.</p>
+                </div>
+            </div>
+
+            <!-- Expected Value Section -->
+            <div id="expected" class="section">
+                <h2>Expected Value and Standard Deviation</h2>
+
+                <div class="definition-box">
+                    <p><strong>Expected Value E(X) or μ:</strong> The long-run average value of the random variable. Also called the mean.</p>
+                    <div class="formula">E(X) = μ = Σ [x · P(X = x)]</div>
+                    <p style="margin-top: 10px;">Multiply each value by its probability and sum them all.</p>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Variance Var(X) or σ²:</strong> Measures the spread of the distribution.</p>
+                    <div class="formula">Var(X) = σ² = Σ [(x - μ)² · P(X = x)]</div>
+                    <p style="margin-top: 10px;">Or equivalently:</p>
+                    <div class="formula">Var(X) = E(X²) - [E(X)]²</div>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Standard Deviation σ:</strong> The square root of variance.</p>
+                    <div class="formula">σ = √Var(X)</div>
+                    <p style="margin-top: 10px;">Measures typical deviation from the mean in the same units as X.</p>
+                </div>
+
+                <h3>Example 1: Expected Value (Easy)</h3>
+                <div class="example-box">
+                    <h4>Insurance Payout</h4>
+                    <p>An insurance company has the following payout distribution:</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Payout (x)</th>
+                            <th>P(X = x)</th>
+                        </tr>
+                        <tr>
+                            <td>$0</td>
+                            <td>0.90</td>
+                        </tr>
+                        <tr>
+                            <td>$1,000</td>
+                            <td>0.08</td>
+                        </tr>
+                        <tr>
+                            <td>$5,000</td>
+                            <td>0.02</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Find the expected payout:</strong></p>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Apply the formula:</strong>
+                        <div class="formula">E(X) = (0)(0.90) + (1000)(0.08) + (5000)(0.02)</div>
+                        <div class="formula">E(X) = 0 + 80 + 100 = $180</div>
+                    </div>
+
+                    <p><strong>Interpretation:</strong> On average, the insurance company pays out $180 per policy. This is what they should charge (plus profit) for the policy to break even.</p>
+                </div>
+
+                <h3>Example 2: Complete Calculation (Medium)</h3>
+                <div class="example-box">
+                    <h4>Number of Sales Per Day</h4>
+                    <p>A salesperson has the following daily sales distribution:</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Sales (x)</th>
+                            <th>P(X = x)</th>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>0.10</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>0.30</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>0.40</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>0.20</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Calculate E(X), Var(X), and σ:</strong></p>
+
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Expected Value:</strong>
+                        <div class="formula">E(X) = (0)(0.10) + (1)(0.30) + (2)(0.40) + (3)(0.20)</div>
+                        <div class="formula">E(X) = 0 + 0.30 + 0.80 + 0.60 = 1.70 sales</div>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Calculate E(X²):</strong>
+                        <div class="formula">E(X²) = (0²)(0.10) + (1²)(0.30) + (2²)(0.40) + (3²)(0.20)</div>
+                        <div class="formula">E(X²) = 0 + 0.30 + 1.60 + 1.80 = 3.70</div>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Variance:</strong>
+                        <div class="formula">Var(X) = E(X²) - [E(X)]² = 3.70 - (1.70)² = 3.70 - 2.89 = 0.81</div>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Standard Deviation:</strong>
+                        <div class="formula">σ = √0.81 = 0.90 sales</div>
+                    </div>
+
+                    <p><strong>Interpretation:</strong> On average, the salesperson makes 1.70 sales per day, with a typical deviation of 0.90 sales from this average.</p>
+                </div>
+
+                <h3>Example 3: Decision Making (Hard)</h3>
+                <div class="example-box">
+                    <h4>Investment Decision</h4>
+                    <p>Compare two investments:</p>
+                    
+                    <p><strong>Investment A:</strong></p>
+                    <table>
+                        <tr>
+                            <th>Return</th>
+                            <th>Probability</th>
+                        </tr>
+                        <tr><td>-$1,000</td><td>0.20</td></tr>
+                        <tr><td>$0</td><td>0.30</td></tr>
+                        <tr><td>$2,000</td><td>0.50</td></tr>
+                    </table>
+
+                    <p><strong>Investment B:</strong></p>
+                    <table>
+                        <tr>
+                            <th>Return</th>
+                            <th>Probability</th>
+                        </tr>
+                        <tr><td>-$500</td><td>0.30</td></tr>
+                        <tr><td>$500</td><td>0.40</td></tr>
+                        <tr><td>$1,500</td><td>0.30</td></tr>
+                    </table>
+
+                    <p><strong>Analysis:</strong></p>
+
+                    <p><strong>Investment A:</strong></p>
+                    <div class="formula">E(A) = (-1000)(0.20) + (0)(0.30) + (2000)(0.50) = $800</div>
+                    <div class="formula">E(A²) = (1000000)(0.20) + (0)(0.30) + (4000000)(0.50) = 2,200,000</div>
+                    <div class="formula">Var(A) = 2,200,000 - (800)² = 1,560,000</div>
+                    <div class="formula">σ_A = √1,560,000 ≈ $1,249</div>
+
+                    <p><strong>Investment B:</strong></p>
+                    <div class="formula">E(B) = (-500)(0.30) + (500)(0.40) + (1500)(0.30) = $500</div>
+                    <div class="formula">E(B²) = (250000)(0.30) + (250000)(0.40) + (2250000)(0.30) = 850,000</div>
+                    <div class="formula">Var(B) = 850,000 - (500)² = 600,000</div>
+                    <div class="formula">σ_B = √600,000 ≈ $775</div>
+
+                    <p><strong>Conclusion:</strong></p>
+                    <ul>
+                        <li>Investment A has higher expected return ($800 vs $500)</li>
+                        <li>Investment A has higher risk (σ = $1,249 vs $775)</li>
+                        <li>Investment B is less risky but lower expected return</li>
+                        <li>Choice depends on risk tolerance!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Binomial Distribution Section -->
+            <div id="binomial" class="section">
+                <h2>Binomial Distribution</h2>
+
+                <div class="definition-box">
+                    <p><strong>Binomial Distribution:</strong> Models the number of successes in a fixed number of independent trials, where each trial has only two possible outcomes (success or failure) and the probability of success is constant.</p>
+                </div>
+
+                <div class="note-box">
+                    <p><strong>Four Requirements for Binomial Distribution:</strong></p>
+                    <ol style="margin-left: 20px; line-height: 2;">
+                        <li><strong>Fixed number of trials (n):</strong> The number of trials is determined in advance</li>
+                        <li><strong>Two outcomes:</strong> Each trial results in success or failure</li>
+                        <li><strong>Independent trials:</strong> The outcome of one trial doesn't affect others</li>
+                        <li><strong>Constant probability (p):</strong> Probability of success is the same for each trial</li>
+                    </ol>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Notation:</strong></p>
+                    <ul>
+                        <li><strong>n</strong> = number of trials</li>
+                        <li><strong>p</strong> = probability of success on each trial</li>
+                        <li><strong>q = 1 - p</strong> = probability of failure</li>
+                        <li><strong>X</strong> = number of successes (X can be 0, 1, 2, ..., n)</li>
+                    </ul>
+                    <p style="margin-top: 15px;">We write: <strong>X ~ B(n, p)</strong></p>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Binomial Probability Formula:</strong></p>
+                    <div class="formula">P(X = k) = C(n,k) · p^k · q^(n-k)</div>
+                    <p style="margin-top: 10px;">Where C(n,k) = n! / (k!(n-k)!) is the number of combinations</p>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Mean and Standard Deviation:</strong></p>
+                    <div class="formula">μ = E(X) = n · p</div>
+                    <div class="formula">σ² = Var(X) = n · p · q</div>
+                    <div class="formula">σ = √(n · p · q)</div>
+                </div>
+
+                <h3>Example 1: Basic Binomial (Easy)</h3>
+                <div class="example-box">
+                    <h4>Coin Flipping</h4>
+                    <p><strong>Question:</strong> A fair coin is flipped 5 times. What is the probability of getting exactly 3 heads?</p>
+
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Identify parameters:</strong>
+                        <ul style="margin-left: 40px;">
+                            <li>n = 5 (number of flips)</li>
+                            <li>p = 0.5 (probability of heads)</li>
+                            <li>q = 0.5 (probability of tails)</li>
+                            <li>k = 3 (we want exactly 3 heads)</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Check binomial conditions:</strong>
+                        <ul style="margin-left: 40px;">
+                            <li>✓ Fixed trials: 5 flips</li>
+                            <li>✓ Two outcomes: heads or tails</li>
+                            <li>✓ Independent: each flip independent</li>
+                            <li>✓ Constant p: always 0.5</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Apply formula:</strong>
+                        <div class="formula">P(X = 3) = C(5,3) · (0.5)³ · (0.5)²</div>
+                        <div class="formula">C(5,3) = 5!/(3!·2!) = 120/(6·2) = 10</div>
+                        <div class="formula">P(X = 3) = 10 · 0.125 · 0.25 = 10 · 0.03125 = 0.3125</div>
+                    </div>
+
+                    <p><strong>Answer:</strong> The probability is 0.3125 or 31.25%</p>
+                    <p><strong>Interpretation:</strong> If you flip 5 coins many times, about 31.25% of the time you'll get exactly 3 heads.</p>
+                </div>
+
+                <h3>Example 2: Multiple Choice Test (Medium)</h3>
+                <div class="example-box">
+                    <h4>Guessing on a Test</h4>
+                    <p><strong>Scenario:</strong> A student guesses on a 10-question multiple choice test where each question has 4 options.</p>
+
+                    <p><strong>Parameters:</strong></p>
+                    <ul>
+                        <li>n = 10 questions</li>
+                        <li>p = 1/4 = 0.25 (probability of guessing correctly)</li>
+                        <li>q = 3/4 = 0.75</li>
+                    </ul>
+
+                    <p><strong>Question a) Probability of getting exactly 5 correct:</strong></p>
+                    <div class="formula">P(X = 5) = C(10,5) · (0.25)⁵ · (0.75)⁵</div>
+                    <div class="formula">C(10,5) = 252</div>
+                    <div class="formula">P(X = 5) = 252 · 0.000977 · 0.237 ≈ 0.0584 or 5.84%</div>
+
+                    <p><strong>Question b) Probability of passing (≥6 correct):</strong></p>
+                    <div class="formula">P(X ≥ 6) = P(X=6) + P(X=7) + P(X=8) + P(X=9) + P(X=10)</div>
+                    <p>Calculating each:</p>
+                    <ul style="margin-left: 20px;">
+                        <li>P(X=6) = C(10,6)·(0.25)⁶·(0.75)⁴ ≈ 0.0162</li>
+                        <li>P(X=7) = C(10,7)·(0.25)⁷·(0.75)³ ≈ 0.0031</li>
+                        <li>P(X=8) = C(10,8)·(0.25)⁸·(0.75)² ≈ 0.0004</li>
+                        <li>P(X=9) = C(10,9)·(0.25)⁹·(0.75)¹ ≈ 0.00003</li>
+                        <li>P(X=10) = C(10,10)·(0.25)¹⁰·(0.75)⁰ ≈ 0.000001</li>
+                    </ul>
+                    <div class="formula">P(X ≥ 6) ≈ 0.0197 or 1.97%</div>
+
+                    <p><strong>Question c) Expected score and standard deviation:</strong></p>
+                    <div class="formula">μ = n·p = 10·0.25 = 2.5 questions</div>
+                    <div class="formula">σ = √(n·p·q) = √(10·0.25·0.75) = √1.875 ≈ 1.37 questions</div>
+
+                    <p><strong>Interpretation:</strong> By guessing, the student expects to get 2.5 questions correct (out of 10), with typical variation of about 1.37 questions. There's less than 2% chance of passing by pure guessing!</p>
+                </div>
+
+                <h3>Example 3: Quality Control (Hard)</h3>
+                <div class="example-box">
+                    <h4>Manufacturing Defects</h4>
+                    <p><strong>Scenario:</strong> A factory produces items where 3% are defective. A quality inspector randomly selects 20 items.</p>
+
+                    <p><strong>Parameters:</strong></p>
+                    <ul>
+                        <li>n = 20 items</li>
+                        <li>p = 0.03 (probability defective)</li>
+                        <li>q = 0.97</li>
+                        <li>X = number of defective items</li>
+                    </ul>
+
+                    <p><strong>Question a) P(X = 0) - No defective items:</strong></p>
+                    <div class="formula">P(X = 0) = C(20,0) · (0.03)⁰ · (0.97)²⁰</div>
+                    <div class="formula">P(X = 0) = 1 · 1 · 0.5438 = 0.5438 or 54.38%</div>
+
+                    <p><strong>Question b) P(X ≤ 2) - At most 2 defective:</strong></p>
+                    <div class="formula">P(X ≤ 2) = P(X=0) + P(X=1) + P(X=2)</div>
+                    <p>Calculating:</p>
+                    <ul style="margin-left: 20px;">
+                        <li>P(X=0) = 0.5438</li>
+                        <li>P(X=1) = C(20,1)·(0.03)¹·(0.97)¹⁹ = 20·0.03·0.5605 ≈ 0.3364</li>
+                        <li>P(X=2) = C(20,2)·(0.03)²·(0.97)¹⁸ = 190·0.0009·0.5780 ≈ 0.0988</li>
+                    </ul>
+                    <div class="formula">P(X ≤ 2) = 0.5438 + 0.3364 + 0.0988 = 0.9790 or 97.90%</div>
+
+                    <p><strong>Question c) P(X ≥ 3) - At least 3 defective:</strong></p>
+                    <div class="formula">P(X ≥ 3) = 1 - P(X ≤ 2) = 1 - 0.9790 = 0.0210 or 2.10%</div>
+
+                    <p><strong>Question d) Expected defects and interpretation:</strong></p>
+                    <div class="formula">μ = n·p = 20·0.03 = 0.6 defective items</div>
+                    <div class="formula">σ = √(n·p·q) = √(20·0.03·0.97) = √0.582 ≈ 0.763 items</div>
+
+                    <p><strong>Interpretation:</strong> In a sample of 20, we expect about 0.6 defective items on average. There's a 54.38% chance of finding no defects, and only 2.10% chance of finding 3 or more defects. If the inspector finds 3+ defects, it might signal a problem with the production process.</p>
+                </div>
+
+                <h3>When to Use Binomial Distribution</h3>
+                <div class="note-box">
+                    <p><strong>Appropriate Situations:</strong></p>
+                    <ul>
+                        <li>✓ Free throw shooting (fixed shots, hit or miss, independent)</li>
+                        <li>✓ Quality control with replacement</li>
+                        <li>✓ Medical treatments (success or failure)</li>
+                        <li>✓ Multiple choice testing by guessing</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>NOT Appropriate:</strong></p>
+                    <ul>
+                        <li>✗ Sampling without replacement from small populations (use hypergeometric)</li>
+                        <li>✗ Probability changes between trials</li>
+                        <li>✗ More than two outcomes</li>
+                        <li>✗ Trials are not independent</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Calculators Section -->
+            <div id="calculators" class="section">
+                <h2>Interactive Calculators</h2>
+
+                <h3>Binomial Probability Calculator</h3>
+                <div class="calculator">
+                    <div class="calc-input-group">
+                        <label>Number of trials (n):</label>
+                        <input type="number" id="binN" class="calc-input" value="10" min="1">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>Probability of success (p):</label>
+                        <input type="number" id="binP" class="calc-input" value="0.5" min="0" max="1" step="0.01">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>Number of successes (k):</label>
+                        <input type="number" id="binK" class="calc-input" value="5" min="0">
+                    </div>
+                    <button class="calc-btn" onclick="calculateBinomial()">Calculate P(X = k)</button>
+                    <button class="calc-btn" onclick="calculateBinomialCumulative()">Calculate P(X ≤ k)</button>
+                    <button class="calc-btn" onclick="calculateBinomialStats()">Calculate μ and σ</button>
+                    <div id="binomialResult" class="calc-result"></div>
+                </div>
+
+                <h3>Expected Value Calculator</h3>
+                <div class="calculator">
+                    <p><strong>Enter your probability distribution:</strong></p>
+                    <p style="font-size: 0.9em; color: #666;">Format: Enter comma-separated values</p>
+                    <div class="calc-input-group">
+                        <label>X values:</label>
+                        <input type="text" id="xValues" class="calc-input" value="0,1,2,3" style="max-width: 400px;">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>Probabilities P(X):</label>
+                        <input type="text" id="pValues" class="calc-input" value="0.1,0.3,0.4,0.2" style="max-width: 400px;">
+                    </div>
+                    <button class="calc-btn" onclick="calculateExpectedValue()">Calculate E(X), Var(X), and σ</button>
+                    <div id="expectedResult" class="calc-result"></div>
+                </div>
+
+                <h3>Combination Calculator</h3>
+                <div class="calculator">
+                    <p><strong>Calculate C(n,k) = n! / (k!(n-k)!)</strong></p>
+                    <div class="calc-input-group">
+                        <label>n (total items):</label>
+                        <input type="number" id="combN" class="calc-input" value="10" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>k (items chosen):</label>
+                        <input type="number" id="combK" class="calc-input" value="3" min="0">
+                    </div>
+                    <button class="calc-btn" onclick="calculateCombination()">Calculate C(n,k)</button>
+                    <div id="combinationResult" class="calc-result"></div>
+                </div>
+            </div>
+
+            <!-- Practice Exercises Section -->
+            <div id="exercises" class="section">
+                <h2>Practice Exercises</h2>
+
+                <div class="exercise">
+                    <h4>Exercise 1: Basic PDF (Easy)</h4>
+                    <p>The number of cars sold per day at a dealership has the following distribution:</p>
+                    <table style="width: auto; margin: 10px 0;">
+                        <tr>
+                            <th>Cars (x)</th>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <th>P(X = x)</th>
+                            <td>0.3</td>
+                            <td>0.4</td>
+                            <td>0.2</td>
+                            <td>0.1</td>
+                        </tr>
+                    </table>
+                    <p>Find: a) P(X = 2), b) P(X ≥ 2), c) P(X < 2)</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                    <div id="ans1" class="answer">
+                        <p><strong>a) P(X = 2):</strong></p>
+                        <div class="formula">P(X = 2) = 0.2 or 20%</div>
+                        
+                        <p><strong>b) P(X ≥ 2):</strong> At least 2 cars</p>
+                        <div class="formula">P(X ≥ 2) = P(X=2) + P(X=3) = 0.2 + 0.1 = 0.3 or 30%</div>
+                        
+                        <p><strong>c) P(X < 2):</strong> Less than 2 cars</p>
+                        <div class="formula">P(X < 2) = P(X=0) + P(X=1) = 0.3 + 0.4 = 0.7 or 70%</div>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 2: Expected Value (Medium)</h4>
+                    <p>A lottery ticket costs $5. The prizes and probabilities are:</p>
+                    <table style="width: auto;">
+                        <tr>
+                            <th>Prize</th>
+                            <td>$0</td>
+                            <td>$10</td>
+                            <td>$100</td>
+                            <td>$1,000</td>
+                        </tr>
+                        <tr>
+                            <th>Probability</th>
+                            <td>0.85</td>
+                            <td>0.10</td>
+                            <td>0.04</td>
+                            <td>0.01</td>
+                        </tr>
+                    </table>
+                    <p>What is the expected net gain (prize minus cost)?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                    <div id="ans2" class="answer">
+                        <p><strong>Step 1: Calculate expected prize:</strong></p>
+                        <div class="formula">E(Prize) = (0)(0.85) + (10)(0.10) + (100)(0.04) + (1000)(0.01)</div>
+                        <div class="formula">E(Prize) = 0 + 1 + 4 + 10 = $15</div>
+                        
+                        <p><strong>Step 2: Subtract ticket cost:</strong></p>
+                        <div class="formula">Expected net gain = $15 - $5 = $10</div>
+                        
+                        <p><strong>Interpretation:</strong> On average, you gain $10 per ticket. This is unusual for a lottery (usually negative). You should play this lottery!</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 3: Variance Calculation (Medium)</h4>
+                    <p>Given the distribution:</p>
+                    <table style="width: auto;">
+                        <tr>
+                            <th>x</th>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <th>P(X = x)</th>
+                            <td>0.5</td>
+                            <td>0.3</td>
+                            <td>0.2</td>
+                        </tr>
+                    </table>
+                    <p>Calculate the mean, variance, and standard deviation.</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+                    <div id="ans3" class="answer">
+                        <p><strong>Step 1: Mean (μ):</strong></p>
+                        <div class="formula">μ = (1)(0.5) + (2)(0.3) + (3)(0.2) = 0.5 + 0.6 + 0.6 = 1.7</div>
+                        
+                        <p><strong>Step 2: E(X²):</strong></p>
+                        <div class="formula">E(X²) = (1²)(0.5) + (2²)(0.3) + (3²)(0.2) = 0.5 + 1.2 + 1.8 = 3.5</div>
+                        
+                        <p><strong>Step 3: Variance:</strong></p>
+                        <div class="formula">Var(X) = E(X²) - [E(X)]² = 3.5 - (1.7)² = 3.5 - 2.89 = 0.61</div>
+                        
+                        <p><strong>Step 4: Standard Deviation:</strong></p>
+                        <div class="formula">σ = √0.61 ≈ 0.781</div>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 4: Binomial - Identifying Parameters (Easy)</h4>
+                    <p>For each scenario, identify if it's binomial and state n, p, and X:</p>
+                    <p>a) Roll a die 8 times, count the number of 6s</p>
+                    <p>b) Draw 5 cards without replacement, count the aces</p>
+                    <p>c) A basketball player with 70% free throw rate attempts 12 shots</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+                    <div id="ans4" class="answer">
+                        <p><strong>a) Binomial? YES</strong></p>
+                        <ul>
+                            <li>n = 8 (fixed trials)</li>
+                            <li>p = 1/6 (probability of rolling a 6)</li>
+                            <li>X = number of 6s rolled</li>
+                            <li>Independent trials ✓, constant probability ✓</li>
+                        </ul>
+                        
+                        <p><strong>b) Binomial? NO</strong></p>
+                        <ul>
+                            <li>Sampling without replacement violates independence</li>
+                            <li>Probability changes after each draw</li>
+                            <li>This is a hypergeometric distribution</li>
+                        </ul>
+                        
+                        <p><strong>c) Binomial? YES</strong></p>
+                        <ul>
+                            <li>n = 12 (12 free throws)</li>
+                            <li>p = 0.70 (70% success rate)</li>
+                            <li>X = number of successful free throws</li>
+                            <li>Independent trials ✓, constant probability ✓</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 5: Binomial Calculation (Medium)</h4>
+                    <p>A student takes a 6-question true/false test and guesses on every question. Find:</p>
+                    <p>a) P(exactly 4 correct)</p>
+                    <p>b) P(at least 5 correct)</p>
+                    <p>c) Expected number correct</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans5')">Show Answer</button>
+                    <div id="ans5" class="answer">
+                        <p><strong>Parameters:</strong> n = 6, p = 0.5, q = 0.5</p>
+                        
+                        <p><strong>a) P(X = 4):</strong></p>
+                        <div class="formula">P(X = 4) = C(6,4) · (0.5)⁴ · (0.5)²</div>
+                        <div class="formula">= 15 · 0.0625 · 0.25 = 15 · 0.015625 = 0.234375</div>
+                        <p>About 23.44% chance</p>
+                        
+                        <p><strong>b) P(X ≥ 5) = P(X=5) + P(X=6):</strong></p>
+                        <div class="formula">P(X=5) = C(6,5) · (0.5)⁵ · (0.5)¹ = 6 · 0.03125 · 0.5 = 0.09375</div>
+                        <div class="formula">P(X=6) = C(6,6) · (0.5)⁶ · (0.5)⁰ = 1 · 0.015625 · 1 = 0.015625</div>
+                        <div class="formula">P(X ≥ 5) = 0.09375 + 0.015625 = 0.109375</div>
+                        <p>About 10.94% chance of scoring at least 5</p>
+                        
+                        <p><strong>c) Expected correct:</strong></p>
+                        <div class="formula">μ = n · p = 6 · 0.5 = 3 questions</div>
+                        <p>By guessing, expect to get 3 out of 6 correct on average</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 6: Binomial Application (Hard)</h4>
+                    <p>A company knows 20% of customers will return an item. If 15 customers make purchases:</p>
+                    <p>a) What's the probability exactly 2 will return items?</p>
+                    <p>b) What's the probability fewer than 3 will return items?</p>
+                    <p>c) Find mean and standard deviation of returns</p>
+                    <p>d) If 8 customers return items, should the company be concerned?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans6')">Show Answer</button>
+                    <div id="ans6" class="answer">
+                        <p><strong>Parameters:</strong> n = 15, p = 0.20, q = 0.80</p>
+                        
+                        <p><strong>a) P(X = 2):</strong></p>
+                        <div class="formula">P(X = 2) = C(15,2) · (0.20)² · (0.80)¹³</div>
+                        <div class="formula">= 105 · 0.04 · 0.0550 = 0.2309</div>
+                        <p>About 23.09% probability</p>
+                        
+                        <p><strong>b) P(X < 3) = P(X=0) + P(X=1) + P(X=2):</strong></p>
+                        <div class="formula">P(X=0) = C(15,0) · (0.20)⁰ · (0.80)¹⁵ = 0.0352</div>
+                        <div class="formula">P(X=1) = C(15,1) · (0.20)¹ · (0.80)¹⁴ = 0.1319</div>
+                        <div class="formula">P(X=2) = 0.2309 (from part a)</div>
+                        <div class="formula">P(X < 3) = 0.0352 + 0.1319 + 0.2309 = 0.3980</div>
+                        <p>About 39.80% probability</p>
+                        
+                        <p><strong>c) Mean and standard deviation:</strong></p>
+                        <div class="formula">μ = n · p = 15 · 0.20 = 3 returns</div>
+                        <div class="formula">σ = √(n·p·q) = √(15·0.20·0.80) = √2.4 ≈ 1.55 returns</div>
+                        
+                        <p><strong>d) Should they be concerned about 8 returns?</strong></p>
+                        <p>8 is significantly above the mean of 3</p>
+                        <div class="formula">z-score = (8-3)/1.55 ≈ 3.23 standard deviations above mean</div>
+                        <p><strong>YES, be concerned!</strong> This is extremely unusual (>3 SD from mean). The return rate might be higher than 20%, or there could be a quality issue.</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 7: Creating a PDF (Hard)</h4>
+                    <p>Create a probability distribution where P(X = x) = k·x for x = 1, 2, 3, 4</p>
+                    <p>a) Find the value of k</p>
+                    <p>b) Calculate E(X)</p>
+                    <p>c) Calculate Var(X)</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('ans7')">Show Answer</button>
+                    <div id="ans7" class="answer">
+                        <p><strong>a) Find k using Σ P(X = x) = 1:</strong></p>
+                        <div class="formula">k·1 + k·2 + k·3 + k·4 = 1</div>
+                        <div class="formula">k(1 + 2 + 3 + 4) = 1</div>
+                        <div class="formula">10k = 1</div>
+                        <div class="formula">k = 0.1</div>
+                        
+                        <p><strong>Complete distribution:</strong></p>
+                        <table style="width: auto;">
+                            <tr>
+                                <th>x</th>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <th>P(X = x)</th>
+                                <td>0.1</td>
+                                <td>0.2</td>
+                                <td>0.3</td>
+                                <td>0.4</td>
+                            </tr>
+                        </table>
+                        
+                        <p><strong>b) E(X):</strong></p>
+                        <div class="formula">E(X) = (1)(0.1) + (2)(0.2) + (3)(0.3) + (4)(0.4)</div>
+                        <div class="formula">= 0.1 + 0.4 + 0.9 + 1.6 = 3.0</div>
+                        
+                        <p><strong>c) Var(X):</strong></p>
+                        <div class="formula">E(X²) = (1²)(0.1) + (2²)(0.2) + (3²)(0.3) + (4²)(0.4)</div>
+                        <div class="formula">= 0.1 + 0.8 + 2.7 + 6.4 = 10.0</div>
+                        <div class="formula">Var(X) = E(X²) - [E(X)]² = 10.0 - (3.0)² = 10.0 - 9.0 = 1.0</div>
+                        <div class="formula">σ = √1.0 = 1.0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div id="quiz" class="section">
+                <h2>Multiple Choice Quiz</h2>
+                <p>Test your understanding! Select the best answer for each question.</p>
+
+                <form id="quizForm">
+                    <div class="quiz-question">
+                        <p><strong>Question 1:</strong> Which of the following is a discrete random variable?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="a"> The weight of a newborn baby
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="b"> The number of students in a classroom
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="c"> The time it takes to run a mile
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="d"> The temperature at noon
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 2:</strong> For a valid probability distribution, which must be true?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="a"> All probabilities must be equal
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="b"> The sum of all probabilities must equal 1
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="c"> Each probability must be greater than 0.5
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="d"> There must be at least 5 different values
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 3:</strong> If E(X) = 10 and Var(X) = 4, what is the standard deviation?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="a"> 4
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="b"> 2
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="c"> 16
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="d"> 8
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 4:</strong> Which is NOT a requirement for binomial distribution?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="a"> Fixed number of trials
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="b"> Each trial has exactly two outcomes
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="c"> Trials must be independent
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="d"> The probability of success must be 0.5
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 5:</strong> For a binomial distribution with n=10 and p=0.3, what is E(X)?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q5" value="a"> 0.3
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q5" value="b"> 3
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q5" value="c"> 10
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q5" value="d"> 7
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 6:</strong> What does C(5,2) equal?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q6" value="a"> 10
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q6" value="b"> 20
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q6" value="c"> 5
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q6" value="d"> 25
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 7:</strong> If X ~ B(20, 0.4), what is the variance?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q7" value="a"> 8
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q7" value="b"> 4.8
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q7" value="c"> 2.19
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q7" value="d"> 12
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 8:</strong> Which scenario follows a binomial distribution?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q8" value="a"> Drawing 5 cards from a deck without replacement
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q8" value="b"> Rolling a die until you get a 6
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q8" value="c"> Flipping a coin 10 times and counting heads
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q8" value="d"> Measuring the height of 20 people
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 9:</strong> If P(X=0)=0.3, P(X=1)=0.5, P(X=2)=0.2, what is E(X)?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q9" value="a"> 1.0
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q9" value="b"> 0.9
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q9" value="c"> 1.1
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q9" value="d"> 0.5
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 10:</strong> For binomial distribution, as n increases while p stays constant, what happens to the standard deviation?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q10" value="a"> It stays the same
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q10" value="b"> It decreases
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q10" value="c"> It increases
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q10" value="d"> It becomes zero
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="button" class="submit-quiz-btn" onclick="gradeQuiz()">Submit Quiz</button>
+                </form>
+
+                <div id="quizResult" class="quiz-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Utility Functions
+        function factorial(n) {
+            if (n <= 1) return 1;
+            return n * factorial(n - 1);
+        }
+
+        function combination(n, k) {
+            if (k > n) return 0;
+            if (k === 0 || k === n) return 1;
+            return factorial(n) / (factorial(k) * factorial(n - k));
+        }
+
+        function binomialProbability(n, k, p) {
+            const q = 1 - p;
+            return combination(n, k) * Math.pow(p, k) * Math.pow(q, n - k);
+        }
+
+        // Navigation
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleAnswer(answerId) {
+            const answer = document.getElementById(answerId);
+            if (answer.style.display === 'none' || answer.style.display === '') {
+                answer.style.display = 'block';
+                event.target.textContent = 'Hide Answer';
+            } else {
+                answer.style.display = 'none';
+                event.target.textContent = 'Show Answer';
+            }
+        }
+
+        // Calculator Functions
+        function calculateBinomial() {
+            const n = parseInt(document.getElementById('binN').value);
+            const p = parseFloat(document.getElementById('binP').value);
+            const k = parseInt(document.getElementById('binK').value);
+
+            if (k > n) {
+                alert('k cannot be greater than n');
+                return;
+            }
+
+            if (p < 0 || p > 1) {
+                alert('Probability must be between 0 and 1');
+                return;
+            }
+
+            const prob = binomialProbability(n, k, p);
+            const resultDiv = document.getElementById('binomialResult');
+            
+            resultDiv.innerHTML = `
+                <h4>Result:</h4>
+                <p><strong>P(X = ${k}) = ${prob.toFixed(6)}</strong></p>
+                <p>Percentage: ${(prob * 100).toFixed(4)}%</p>
+                <hr style="margin: 15px 0;">
+                <p><strong>Calculation:</strong></p>
+                <p>C(${n},${k}) · (${p})^${k} · (${1-p})^${n-k}</p>
+                <p>= ${combination(n, k)} · ${Math.pow(p, k).toFixed(6)} · ${Math.pow(1-p, n-k).toFixed(6)}</p>
+                <p>= ${prob.toFixed(6)}</p>
+            `;
+            resultDiv.classList.add('show');
+        }
+
+        function calculateBinomialCumulative() {
+            const n = parseInt(document.getElementById('binN').value);
+            const p = parseFloat(document.getElementById('binP').value);
+            const k = parseInt(document.getElementById('binK').value);
+
+            if (k > n) {
+                alert('k cannot be greater than n');
+                return;
+            }
+
+            let cumProb = 0;
+            let details = '';
+            
+            for (let i = 0; i <= k; i++) {
+                const prob = binomialProbability(n, i, p);
+                cumProb += prob;
+                details += `<p>P(X=${i}) = ${prob.toFixed(6)}</p>`;
+            }
+
+            const resultDiv = document.getElementById('binomialResult');
+            resultDiv.innerHTML = `
+                <h4>Cumulative Probability:</h4>
+                <p><strong>P(X ≤ ${k}) = ${cumProb.toFixed(6)}</strong></p>
+                <p>Percentage: ${(cumProb * 100).toFixed(4)}%</p>
+                <hr style="margin: 15px 0;">
+                <p><strong>Individual Probabilities:</strong></p>
+                ${details}
+            `;
+            resultDiv.classList.add('show');
+        }
+
+        function calculateBinomialStats() {
+            const n = parseInt(document.getElementById('binN').value);
+            const p = parseFloat(document.getElementById('binP').value);
+            const q = 1 - p;
+
+            const mean = n * p;
+            const variance = n * p * q;
+            const stdDev = Math.sqrt(variance);
+
+            const resultDiv = document.getElementById('binomialResult');
+            resultDiv.innerHTML = `
+                <h4>Binomial Statistics:</h4>
+                <p><strong>Mean (μ):</strong> ${mean.toFixed(4)}</p>
+                <p>Formula: μ = n·p = ${n}·${p} = ${mean.toFixed(4)}</p>
+                <hr style="margin: 10px 0;">
+                <p><strong>Variance (σ²):</strong> ${variance.toFixed(4)}</p>
+                <p>Formula: σ² = n·p·q = ${n}·${p}·${q.toFixed(4)} = ${variance.toFixed(4)}</p>
+                <hr style="margin: 10px 0;">
+                <p><strong>Standard Deviation (σ):</strong> ${stdDev.toFixed(4)}</p>
+                <p>Formula: σ = √(n·p·q) = √${variance.toFixed(4)} = ${stdDev.toFixed(4)}</p>
+            `;
+            resultDiv.classList.add('show');
+        }
+
+        function calculateExpectedValue() {
+            const xInput = document.getElementById('xValues').value;
+            const pInput = document.getElementById('pValues').value;
+
+            const xValues = xInput.split(',').map(x => parseFloat(x.trim()));
+            const pValues = pInput.split(',').map(p => parseFloat(p.trim()));
+
+            if (xValues.length !== pValues.length) {
+                alert('Number of X values must match number of probabilities');
+                return;
+            }
+
+            const pSum = pValues.reduce((a, b) => a + b, 0);
+            if (Math.abs(pSum - 1) > 0.0001) {
+                alert(`Probabilities must sum to 1 (currently sum to ${pSum.toFixed(4)})`);
+                return;
+            }
+
+            let expectedValue = 0;
+            let expectedXSquared = 0;
+
+            for (let i = 0; i < xValues.length; i++) {
+                expectedValue += xValues[i] * pValues[i];
+                expectedXSquared += xValues[i] * xValues[i] * pValues[i];
+            }
+
+            const variance = expectedXSquared - expectedValue * expectedValue;
+            const stdDev = Math.sqrt(variance);
+
+            let calcDetails = '<p><strong>Calculations:</strong></p>';
+            calcDetails += '<p>E(X) = ';
+            for (let i = 0; i < xValues.length; i++) {
+                calcDetails += `(${xValues[i]}·${pValues[i]})`;
+                if (i < xValues.length - 1) calcDetails += ' + ';
+            }
+            calcDetails += ` = ${expectedValue.toFixed(4)}</p>`;
+
+            const resultDiv = document.getElementById('expectedResult');
+            resultDiv.innerHTML = `
+                <h4>Results:</h4>
+                <p><strong>Expected Value E(X):</strong> ${expectedValue.toFixed(4)}</p>
+                <p><strong>E(X²):</strong> ${expectedXSquared.toFixed(4)}</p>
+                <p><strong>Variance Var(X):</strong> ${variance.toFixed(4)}</p>
+                <p><strong>Standard Deviation σ:</strong> ${stdDev.toFixed(4)}</p>
+                <hr style="margin: 15px 0;">
+                ${calcDetails}
+            `;
+            resultDiv.classList.add('show');
+        }
+
+        function calculateCombination() {
+            const n = parseInt(document.getElementById('combN').value);
+            const k = parseInt(document.getElementById('combK').value);
+
+            if (k > n) {
+                alert('k cannot be greater than n');
+                return;
+            }
+
+            const result = combination(n, k);
+            const resultDiv = document.getElementById('combinationResult');
+
+            resultDiv.innerHTML = `
+                <h4>Result:</h4>
+                <p><strong>C(${n},${k}) = ${result}</strong></p>
+                <hr style="margin: 15px 0;">
+                <p><strong>Formula:</strong></p>
+                <p>C(n,k) = n! / (k!(n-k)!)</p>
+                <p>C(${n},${k}) = ${n}! / (${k}!·${n-k}!)</p>
+                <p>= ${factorial(n)} / (${factorial(k)}·${factorial(n-k)})</p>
+                <p>= ${result}</p>
+            `;
+            resultDiv.classList.add('show');
+        }
+
+        function gradeQuiz() {
+            const answers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'b',
+                q4: 'd',
+                q5: 'b',
+                q6: 'a',
+                q7: 'b',
+                q8: 'c',
+                q9: 'b',
+                q10: 'c'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+            const form = document.getElementById('quizForm');
+            
+            for (let question in answers) {
+                const selected = form.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === answers[question]) {
+                    score++;
+                }
+            }
+
+            const percentage = (score / total * 100).toFixed(1);
+            const resultDiv = document.getElementById('quizResult');
+            
+            let resultClass = 'incorrect';
+            let resultText = `You scored ${score} out of ${total} (${percentage}%).`;
+            
+            if (percentage >= 90) {
+                resultClass = 'correct';
+                resultText += ' Outstanding! You have mastered discrete probability distributions! 🎉';
+            } else if (percentage >= 80) {
+                resultClass = 'correct';
+                resultText += ' Excellent work! You have a strong understanding! 👏';
+            } else if (percentage >= 70) {
+                resultClass = 'correct';
+                resultText += ' Good job! Review the topics you missed. 👍';
+            } else if (percentage >= 60) {
+                resultText += ' You\'re getting there! Review the material and try again. 📚';
+            } else {
+                resultText += ' Keep studying! Go through the examples again. 💪';
+            }
+
+            resultDiv.className = `quiz-result show ${resultClass}`;
+            resultDiv.textContent = resultText;
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
