@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correlation & Regression - Interactive Computer Lab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: #e9ecef;
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .lab-section {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .input-area {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #667eea;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .data-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .data-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .results {
+            background: #e7f3ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-box strong {
+            color: #667eea;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            background: white;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .formula {
+            background: #fff3cd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+        }
+
+        .note {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: #721c24;
+        }
+
+        .example-datasets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .dataset-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .dataset-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+            border-color: #764ba2;
+        }
+
+        .dataset-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .interpretation {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .interpretation h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .prediction-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed #667eea;
+        }
+
+        .prediction-input {
+            width: 200px;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 1em;
+            margin: 10px;
+        }
+
+        .prediction-result {
+            background: #fff3cd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #856404;
+            display: none;
+        }
+
+        .prediction-result.show {
+            display: block;
+        }
+
+        .scatter-controls {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            padding: 8px 15px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #6c757d;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .example-datasets {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Correlation & Regression Lab</h1>
+            <p class="subtitle">Interactive Statistical Analysis Tool</p>
+        </div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection('intro')">Introduction</button>
+            <button class="nav-btn" onclick="showSection('scatter')">Scatter Plot</button>
+            <button class="nav-btn" onclick="showSection('correlation')">Correlation</button>
+            <button class="nav-btn" onclick="showSection('regression')">Regression</button>
+            <button class="nav-btn" onclick="showSection('analysis')">Full Analysis</button>
+            <button class="nav-btn" onclick="showSection('datasets')">Example Data</button>
+        </div>
+
+        <div class="content">
+            <!-- Introduction Section -->
+            <div id="intro" class="section active">
+                <h2>Welcome to Correlation & Regression Lab</h2>
+                
+                <div class="lab-section">
+                    <h3>📊 What You'll Learn</h3>
+                    <ul style="line-height: 2; margin-left: 20px;">
+                        <li><strong>Scatter Plots:</strong> Visualize relationships between two variables</li>
+                        <li><strong>Correlation:</strong> Measure the strength and direction of linear relationships</li>
+                        <li><strong>Linear Regression:</strong> Find the line of best fit and make predictions</li>
+                        <li><strong>Interpretation:</strong> Understand what the statistics mean in real contexts</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>🎯 Key Concepts</h4>
+                    <p><strong>Correlation (r):</strong> A measure of linear association between two variables. Ranges from -1 to +1.</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>r = +1: Perfect positive linear relationship</li>
+                        <li>r = 0: No linear relationship</li>
+                        <li>r = -1: Perfect negative linear relationship</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Regression:</strong> Finding the equation of the line that best fits the data: y = a + bx</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li><strong>b</strong> (slope): Change in y for each unit increase in x</li>
+                        <li><strong>a</strong> (intercept): Value of y when x = 0</li>
+                    </ul>
+                </div>
+
+                <div class="formula">
+                    <strong>Correlation Coefficient (r):</strong><br>
+                    r = [n(Σxy) - (Σx)(Σy)] / √{[n(Σx²) - (Σx)²][n(Σy²) - (Σy)²]}
+                </div>
+
+                <div class="formula">
+                    <strong>Regression Line: y = a + bx</strong><br>
+                    b = [n(Σxy) - (Σx)(Σy)] / [n(Σx²) - (Σx)²]<br>
+                    a = ȳ - b·x̄
+                </div>
+
+                <div class="lab-section">
+                    <h3>🚀 How to Use This Lab</h3>
+                    <ol style="line-height: 2; margin-left: 20px;">
+                        <li>Navigate through the tabs to explore different analyses</li>
+                        <li>Input your own data or use example datasets</li>
+                        <li>Click "Calculate" or "Analyze" to see results</li>
+                        <li>Explore interactive visualizations and interpretations</li>
+                        <li>Try the prediction tool to forecast new values</li>
+                    </ol>
+                </div>
+
+                <div class="note">
+                    <p><strong>💡 Data Format:</strong> Enter data as comma-separated values</p>
+                    <p>Example: 1, 2, 3, 4, 5</p>
+                </div>
+            </div>
+
+            <!-- Scatter Plot Section -->
+            <div id="scatter" class="section">
+                <h2>Scatter Plot Creator</h2>
+                
+                <div class="input-area">
+                    <h3>Enter Your Data</h3>
+                    
+                    <div class="input-group">
+                        <label>X Values (Independent Variable):</label>
+                        <input type="text" id="scatterX" class="data-input" 
+                               placeholder="e.g., 1, 2, 3, 4, 5" 
+                               value="1, 2, 3, 4, 5">
+                        <p class="help-text">Enter comma-separated numbers</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Y Values (Dependent Variable):</label>
+                        <input type="text" id="scatterY" class="data-input" 
+                               placeholder="e.g., 2, 4, 5, 4, 5" 
+                               value="2, 4, 5, 4, 5">
+                        <p class="help-text">Must have same number of values as X</p>
+                    </div>
+
+                    <button class="btn" onclick="createScatterPlot()">Create Scatter Plot</button>
+                    <button class="btn btn-secondary" onclick="clearScatterPlot()">Clear</button>
+                </div>
+
+                <div class="scatter-controls" id="scatterControls" style="display: none;">
+                    <button class="toggle-btn" id="showLine" onclick="toggleRegressionLine()">Show Regression Line</button>
+                    <button class="toggle-btn" id="showMeans" onclick="toggleMeans()">Show Means</button>
+                </div>
+
+                <canvas id="scatterCanvas" width="800" height="500"></canvas>
+
+                <div id="scatterInfo" class="results"></div>
+            </div>
+
+            <!-- Correlation Section -->
+            <div id="correlation" class="section">
+                <h2>Correlation Analysis</h2>
+
+                <div class="input-area">
+                    <h3>Calculate Correlation Coefficient</h3>
+                    
+                    <div class="input-group">
+                        <label>X Values:</label>
+                        <input type="text" id="corrX" class="data-input" 
+                               placeholder="e.g., 1, 2, 3, 4, 5" 
+                               value="1, 2, 3, 4, 5">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Y Values:</label>
+                        <input type="text" id="corrY" class="data-input" 
+                               placeholder="e.g., 2, 4, 5, 4, 5" 
+                               value="2, 4, 5, 4, 5">
+                    </div>
+
+                    <button class="btn" onclick="calculateCorrelation()">Calculate Correlation</button>
+                </div>
+
+                <div id="corrResults" class="results"></div>
+
+                <div class="note" style="margin-top: 30px;">
+                    <h4>Interpreting Correlation Values</h4>
+                    <table>
+                        <tr>
+                            <th>r Value</th>
+                            <th>Strength</th>
+                            <th>Direction</th>
+                        </tr>
+                        <tr>
+                            <td>0.9 to 1.0</td>
+                            <td>Very Strong</td>
+                            <td>Positive</td>
+                        </tr>
+                        <tr>
+                            <td>0.7 to 0.9</td>
+                            <td>Strong</td>
+                            <td>Positive</td>
+                        </tr>
+                        <tr>
+                            <td>0.4 to 0.7</td>
+                            <td>Moderate</td>
+                            <td>Positive</td>
+                        </tr>
+                        <tr>
+                            <td>0.1 to 0.4</td>
+                            <td>Weak</td>
+                            <td>Positive</td>
+                        </tr>
+                        <tr>
+                            <td>-0.1 to 0.1</td>
+                            <td>None</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>-0.4 to -0.1</td>
+                            <td>Weak</td>
+                            <td>Negative</td>
+                        </tr>
+                        <tr>
+                            <td>-0.7 to -0.4</td>
+                            <td>Moderate</td>
+                            <td>Negative</td>
+                        </tr>
+                        <tr>
+                            <td>-0.9 to -0.7</td>
+                            <td>Strong</td>
+                            <td>Negative</td>
+                        </tr>
+                        <tr>
+                            <td>-1.0 to -0.9</td>
+                            <td>Very Strong</td>
+                            <td>Negative</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Regression Section -->
+            <div id="regression" class="section">
+                <h2>Linear Regression Analysis</h2>
+
+                <div class="input-area">
+                    <h3>Find the Line of Best Fit</h3>
+                    
+                    <div class="input-group">
+                        <label>X Values:</label>
+                        <input type="text" id="regX" class="data-input" 
+                               placeholder="e.g., 1, 2, 3, 4, 5" 
+                               value="1, 2, 3, 4, 5">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Y Values:</label>
+                        <input type="text" id="regY" class="data-input" 
+                               placeholder="e.g., 2, 4, 5, 4, 5" 
+                               value="2, 4, 5, 4, 5">
+                    </div>
+
+                    <button class="btn" onclick="calculateRegression()">Calculate Regression</button>
+                </div>
+
+                <div id="regResults" class="results"></div>
+
+                <div class="prediction-section" id="predictionSection" style="display: none;">
+                    <h3>📊 Make Predictions</h3>
+                    <p>Use your regression equation to predict Y values:</p>
+                    <div style="margin: 15px 0;">
+                        <label style="font-weight: 600;">Enter X value:</label>
+                        <input type="number" id="predictX" class="prediction-input" step="0.1" placeholder="e.g., 3.5">
+                        <button class="btn btn-success" onclick="makePrediction()">Predict Y</button>
+                    </div>
+                    <div id="predictionResult" class="prediction-result"></div>
+                </div>
+
+                <canvas id="regressionCanvas" width="800" height="500" style="display: none;"></canvas>
+            </div>
+
+            <!-- Full Analysis Section -->
+            <div id="analysis" class="section">
+                <h2>Complete Statistical Analysis</h2>
+
+                <div class="input-area">
+                    <h3>Comprehensive Analysis</h3>
+                    <p>This will calculate correlation, regression, and create visualizations</p>
+                    
+                    <div class="input-group">
+                        <label>X Variable Name:</label>
+                        <input type="text" id="xVarName" class="data-input" placeholder="e.g., Study Hours" value="Study Hours">
+                    </div>
+
+                    <div class="input-group">
+                        <label>X Values:</label>
+                        <input type="text" id="analysisX" class="data-input" 
+                               placeholder="e.g., 2, 3, 4, 5, 6, 7, 8" 
+                               value="2, 3, 4, 5, 6, 7, 8">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Y Variable Name:</label>
+                        <input type="text" id="yVarName" class="data-input" placeholder="e.g., Test Score" value="Test Score">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Y Values:</label>
+                        <input type="text" id="analysisY" class="data-input" 
+                               placeholder="e.g., 65, 70, 75, 80, 85, 88, 92" 
+                               value="65, 70, 75, 80, 85, 88, 92">
+                    </div>
+
+                    <button class="btn" onclick="performFullAnalysis()">Perform Full Analysis</button>
+                </div>
+
+                <div id="fullResults" class="results"></div>
+                <canvas id="analysisCanvas" width="800" height="500" style="display: none;"></canvas>
+            </div>
+
+            <!-- Example Datasets Section -->
+            <div id="datasets" class="section">
+                <h2>Example Datasets</h2>
+                <p>Click on any dataset to load it into the Full Analysis tab</p>
+
+                <div class="example-datasets">
+                    <div class="dataset-card" onclick="loadDataset('studying')">
+                        <h4>📚 Study Time vs Grades</h4>
+                        <p>Hours studied vs test score</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Strong positive correlation</p>
+                    </div>
+
+                    <div class="dataset-card" onclick="loadDataset('temperature')">
+                        <h4>🌡️ Temperature vs Ice Cream</h4>
+                        <p>Temperature vs ice cream sales</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Strong positive correlation</p>
+                    </div>
+
+                    <div class="dataset-card" onclick="loadDataset('car')">
+                        <h4>🚗 Car Age vs Value</h4>
+                        <p>Car age vs resale value</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Strong negative correlation</p>
+                    </div>
+
+                    <div class="dataset-card" onclick="loadDataset('advertising')">
+                        <h4>📺 Advertising vs Sales</h4>
+                        <p>Ad spending vs revenue</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Moderate positive correlation</p>
+                    </div>
+
+                    <div class="dataset-card" onclick="loadDataset('height')">
+                        <h4>📏 Height vs Weight</h4>
+                        <p>Height vs weight relationship</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Strong positive correlation</p>
+                    </div>
+
+                    <div class="dataset-card" onclick="loadDataset('random')">
+                        <h4>🎲 Random Data</h4>
+                        <p>No correlation example</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Weak/no correlation</p>
+                    </div>
+                </div>
+
+                <div class="note" style="margin-top: 30px;">
+                    <h4>💡 Dataset Descriptions</h4>
+                    <p><strong>Study Time vs Grades:</strong> Shows how study hours relate to test performance. Expected strong positive correlation.</p>
+                    <p><strong>Temperature vs Ice Cream:</strong> Daily temperature and ice cream sales. Classic positive correlation example.</p>
+                    <p><strong>Car Age vs Value:</strong> As cars age, their value decreases. Negative correlation example.</p>
+                    <p><strong>Advertising vs Sales:</strong> Marketing spend impact on revenue. Moderate positive correlation.</p>
+                    <p><strong>Height vs Weight:</strong> Biological relationship showing positive correlation.</p>
+                    <p><strong>Random Data:</strong> Demonstrates what no correlation looks like in practice.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = {
+            x: [],
+            y: [],
+            slope: 0,
+            intercept: 0,
+            correlation: 0
+        };
+
+        let showLine = false;
+        let showMeans = false;
+
+        // Navigation
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Parse input data
+        function parseData(input) {
+            return input.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
+        }
+
+        // Statistical calculations
+        function calculateStats(x, y) {
+            const n = x.length;
+            const sumX = x.reduce((a, b) => a + b, 0);
+            const sumY = y.reduce((a, b) => a + b, 0);
+            const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+            const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+            const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
+            
+            const meanX = sumX / n;
+            const meanY = sumY / n;
+            
+            // Correlation
+            const numerator = n * sumXY - sumX * sumY;
+            const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+            const r = numerator / denominator;
+            
+            // Regression
+            const slope = numerator / (n * sumX2 - sumX * sumX);
+            const intercept = meanY - slope * meanX;
+            
+            // R-squared
+            const rSquared = r * r;
+            
+            return {
+                n, sumX, sumY, sumXY, sumX2, sumY2,
+                meanX, meanY, r, slope, intercept, rSquared
+            };
+        }
+
+        // Create scatter plot
+        function createScatterPlot() {
+            const xInput = document.getElementById('scatterX').value;
+            const yInput = document.getElementById('scatterY').value;
+            
+            const x = parseData(xInput);
+            const y = parseData(yInput);
+            
+            if (x.length !== y.length || x.length < 2) {
+                alert('Please enter equal numbers of X and Y values (at least 2 pairs)');
+                return;
+            }
+            
+            currentData.x = x;
+            currentData.y = y;
+            
+            const stats = calculateStats(x, y);
+            currentData.slope = stats.slope;
+            currentData.intercept = stats.intercept;
+            currentData.correlation = stats.r;
+            
+            drawScatterPlot();
+            
+            document.getElementById('scatterControls').style.display = 'flex';
+            
+            const info = document.getElementById('scatterInfo');
+            info.innerHTML = `
+                <h4>Data Summary</h4>
+                <div class="stat-box">
+                    <strong>Number of data points:</strong> ${x.length}
+                </div>
+                <div class="stat-box">
+                    <strong>X range:</strong> ${Math.min(...x).toFixed(2)} to ${Math.max(...x).toFixed(2)}
+                </div>
+                <div class="stat-box">
+                    <strong>Y range:</strong> ${Math.min(...y).toFixed(2)} to ${Math.max(...y).toFixed(2)}
+                </div>
+            `;
+            info.classList.add('show');
+        }
+
+        function clearScatterPlot() {
+            const canvas = document.getElementById('scatterCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('scatterInfo').classList.remove('show');
+            document.getElementById('scatterControls').style.display = 'none';
+            showLine = false;
+            showMeans = false;
+            document.getElementById('showLine').classList.remove('active');
+            document.getElementById('showMeans').classList.remove('active');
+        }
+
+        function toggleRegressionLine() {
+            showLine = !showLine;
+            document.getElementById('showLine').classList.toggle('active');
+            drawScatterPlot();
+        }
+
+        function toggleMeans() {
+            showMeans = !showMeans;
+            document.getElementById('showMeans').classList.toggle('active');
+            drawScatterPlot();
+        }
+
+        function drawScatterPlot() {
+            const canvas = document.getElementById('scatterCanvas');
+            const ctx = canvas.getContext('2d');
+            const x = currentData.x;
+            const y = currentData.y;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Setup
+            const padding = 60;
+            const width = canvas.width - 2 * padding;
+            const height = canvas.height - 2 * padding;
+            
+            const minX = Math.min(...x);
+            const maxX = Math.max(...x);
+            const minY = Math.min(...y);
+            const maxY = Math.max(...y);
+            
+            const rangeX = maxX - minX || 1;
+            const rangeY = maxY - minY || 1;
+            
+            // Draw axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Draw grid
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 10; i++) {
+                const xPos = padding + (width * i / 10);
+                const yPos = canvas.height - padding - (height * i / 10);
+                
+                ctx.beginPath();
+                ctx.moveTo(xPos, canvas.height - padding);
+                ctx.lineTo(xPos, padding);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(padding, yPos);
+                ctx.lineTo(canvas.width - padding, yPos);
+                ctx.stroke();
+            }
+            
+            // Draw axis labels
+            ctx.fillStyle = '#333';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            
+            for (let i = 0; i <= 5; i++) {
+                const xVal = minX + (rangeX * i / 5);
+                const xPos = padding + (width * i / 5);
+                ctx.fillText(xVal.toFixed(1), xPos, canvas.height - padding + 20);
+                
+                const yVal = minY + (rangeY * i / 5);
+                const yPos = canvas.height - padding - (height * i / 5);
+                ctx.textAlign = 'right';
+                ctx.fillText(yVal.toFixed(1), padding - 10, yPos + 5);
+                ctx.textAlign = 'center';
+            }
+            
+            // Draw mean lines if enabled
+            if (showMeans) {
+                const stats = calculateStats(x, y);
+                const meanXPos = padding + ((stats.meanX - minX) / rangeX) * width;
+                const meanYPos = canvas.height - padding - ((stats.meanY - minY) / rangeY) * height;
+                
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                
+                ctx.beginPath();
+                ctx.moveTo(meanXPos, padding);
+                ctx.lineTo(meanXPos, canvas.height - padding);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(padding, meanYPos);
+                ctx.lineTo(canvas.width - padding, meanYPos);
+                ctx.stroke();
+                
+                ctx.setLineDash([]);
+            }
+            
+            // Draw regression line if enabled
+            if (showLine) {
+                ctx.strokeStyle = '#667eea';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                const x1 = minX;
+                const y1 = currentData.intercept + currentData.slope * x1;
+                const x2 = maxX;
+                const y2 = currentData.intercept + currentData.slope * x2;
+                
+                const x1Pos = padding;
+                const y1Pos = canvas.height - padding - ((y1 - minY) / rangeY) * height;
+                const x2Pos = canvas.width - padding;
+                const y2Pos = canvas.height - padding - ((y2 - minY) / rangeY) * height;
+                
+                ctx.moveTo(x1Pos, y1Pos);
+                ctx.lineTo(x2Pos, y2Pos);
+                ctx.stroke();
+            }
+            
+            // Draw points
+            x.forEach((xi, i) => {
+                const yi = y[i];
+                const xPos = padding + ((xi - minX) / rangeX) * width;
+                const yPos = canvas.height - padding - ((yi - minY) / rangeY) * height;
+                
+                ctx.fillStyle = '#764ba2';
+                ctx.beginPath();
+                ctx.arc(xPos, yPos, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+            
+            // Labels
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('X Variable', canvas.width / 2, canvas.height - 10);
+            
+            ctx.save();
+            ctx.translate(15, canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Y Variable', 0, 0);
+            ctx.restore();
+        }
+
+        // Calculate correlation
+        function calculateCorrelation() {
+            const xInput = document.getElementById('corrX').value;
+            const yInput = document.getElementById('corrY').value;
+            
+            const x = parseData(xInput);
+            const y = parseData(yInput);
+            
+            if (x.length !== y.length || x.length < 2) {
+                alert('Please enter equal numbers of X and Y values (at least 2 pairs)');
+                return;
+            }
+            
+            const stats = calculateStats(x, y);
+            
+            // Interpretation
+            let strength = '';
+            let direction = '';
+            const absR = Math.abs(stats.r);
+            
+            if (absR >= 0.9) strength = 'Very Strong';
+            else if (absR >= 0.7) strength = 'Strong';
+            else if (absR >= 0.4) strength = 'Moderate';
+            else if (absR >= 0.1) strength = 'Weak';
+            else strength = 'Very Weak/None';
+            
+            if (stats.r > 0.1) direction = 'Positive';
+            else if (stats.r < -0.1) direction = 'Negative';
+            else direction = 'No clear direction';
+            
+            // Create calculation table
+            const table = createCalculationTable(x, y, stats);
+            
+            const results = document.getElementById('corrResults');
+            results.innerHTML = `
+                <h4>Correlation Analysis Results</h4>
+                
+                <div class="stat-box" style="background: #d4edda; border-color: #28a745;">
+                    <strong style="font-size: 1.5em; color: #155724;">r = ${stats.r.toFixed(4)}</strong>
+                </div>
+                
+                <div class="stat-box">
+                    <strong>Interpretation:</strong> ${strength} ${direction} Linear Relationship
+                </div>
+                
+                <div class="stat-box">
+                    <strong>R² (Coefficient of Determination):</strong> ${stats.rSquared.toFixed(4)} or ${(stats.rSquared * 100).toFixed(2)}%
+                    <p style="margin-top: 10px; font-size: 0.9em;">
+                        This means ${(stats.rSquared * 100).toFixed(2)}% of the variation in Y can be explained by X.
+                    </p>
+                </div>
+                
+                <div class="stat-box">
+                    <strong>Number of pairs:</strong> n = ${stats.n}
+                </div>
+                
+                <h4 style="margin-top: 25px;">Detailed Calculations</h4>
+                ${table}
+                
+                <div class="formula">
+                    <strong>Correlation Formula Applied:</strong><br>
+                    r = [n(Σxy) - (Σx)(Σy)] / √{[n(Σx²) - (Σx)²][n(Σy²) - (Σy)²]}<br><br>
+                    r = [${stats.n}(${stats.sumXY.toFixed(2)}) - (${stats.sumX.toFixed(2)})(${stats.sumY.toFixed(2)})] / 
+                    √{[${stats.n}(${stats.sumX2.toFixed(2)}) - (${stats.sumX.toFixed(2)})²][${stats.n}(${stats.sumY2.toFixed(2)}) - (${stats.sumY.toFixed(2)})²]}<br><br>
+                    r = ${stats.r.toFixed(4)}
+                </div>
+            `;
+            
+            results.classList.add('show');
+        }
+
+        function createCalculationTable(x, y, stats) {
+            let tableHTML = '<table><tr><th>i</th><th>x</th><th>y</th><th>xy</th><th>x²</th><th>y²</th></tr>';
+            
+            x.forEach((xi, i) => {
+                const yi = y[i];
+                tableHTML += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${xi.toFixed(2)}</td>
+                        <td>${yi.toFixed(2)}</td>
+                        <td>${(xi * yi).toFixed(2)}</td>
+                        <td>${(xi * xi).toFixed(2)}</td>
+                        <td>${(yi * yi).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                <tr style="background: #667eea; color: white; font-weight: bold;">
+                    <td>Sum</td>
+                    <td>${stats.sumX.toFixed(2)}</td>
+                    <td>${stats.sumY.toFixed(2)}</td>
+                    <td>${stats.sumXY.toFixed(2)}</td>
+                    <td>${stats.sumX2.toFixed(2)}</td>
+                    <td>${stats.sumY2.toFixed(2)}</td>
+                </tr>
+                <tr style="background: #764ba2; color: white; font-weight: bold;">
+                    <td>Mean</td>
+                    <td>${stats.meanX.toFixed(2)}</td>
+                    <td>${stats.meanY.toFixed(2)}</td>
+                    <td colspan="3">n = ${stats.n}</td>
+                </tr>
+            `;
+            
+            tableHTML += '</table>';
+            return tableHTML;
+        }
+
+        // Calculate regression
+        function calculateRegression() {
+            const xInput = document.getElementById('regX').value;
+            const yInput = document.getElementById('regY').value;
+            
+            const x = parseData(xInput);
+            const y = parseData(yInput);
+            
+            if (x.length !== y.length || x.length < 2) {
+                alert('Please enter equal numbers of X and Y values (at least 2 pairs)');
+                return;
+            }
+            
+            currentData.x = x;
+            currentData.y = y;
+            
+            const stats = calculateStats(x, y);
+            currentData.slope = stats.slope;
+            currentData.intercept = stats.intercept;
+            currentData.correlation = stats.r;
+            
+            const table = createCalculationTable(x, y, stats);
+            
+            const results = document.getElementById('regResults');
+            results.innerHTML = `
+                <h4>Linear Regression Results</h4>
+                
+                <div class="stat-box" style="background: #d4edda; border-color: #28a745;">
+                    <strong style="font-size: 1.3em; color: #155724;">
+                        Regression Equation: ŷ = ${stats.intercept.toFixed(4)} + ${stats.slope.toFixed(4)}x
+                    </strong>
+                </div>
+                
+                <div class="stat-box">
+                    <strong>Slope (b):</strong> ${stats.slope.toFixed(4)}
+                    <p style="margin-top: 8px; font-size: 0.9em;">
+                        For each unit increase in X, Y ${stats.slope > 0 ? 'increases' : 'decreases'} by ${Math.abs(stats.slope).toFixed(4)} units.
+                    </p>
+                </div>
+                
+                <div class="stat-box">
+                    <strong>Y-Intercept (a):</strong> ${stats.intercept.toFixed(4)}
+                    <p style="margin-top: 8px; font-size: 0.9em;">
+                        When X = 0, the predicted Y value is ${stats.intercept.toFixed(4)}.
+                    </p>
+                </div>
+                
+                <div class="stat-box">
+                    <strong>Correlation (r):</strong> ${stats.r.toFixed(4)}
+                </div>
+                
+                <div class="stat-box">
+                    <strong>R² (Goodness of Fit):</strong> ${stats.rSquared.toFixed(4)} or ${(stats.rSquared * 100).toFixed(2)}%
+                    <p style="margin-top: 8px; font-size: 0.9em;">
+                        The regression line explains ${(stats.rSquared * 100).toFixed(2)}% of the variation in the data.
+                    </p>
+                </div>
+                
+                <h4 style="margin-top: 25px;">Calculation Details</h4>
+                ${table}
+                
+                <div class="formula">
+                    <strong>Slope Calculation:</strong><br>
+                    b = [n(Σxy) - (Σx)(Σy)] / [n(Σx²) - (Σx)²]<br>
+                    b = [${stats.n}(${stats.sumXY.toFixed(2)}) - (${stats.sumX.toFixed(2)})(${stats.sumY.toFixed(2)})] / 
+                    [${stats.n}(${stats.sumX2.toFixed(2)}) - (${stats.sumX.toFixed(2)})²]<br>
+                    b = ${stats.slope.toFixed(4)}
+                </div>
+                
+                <div class="formula">
+                    <strong>Intercept Calculation:</strong><br>
+                    a = ȳ - b·x̄<br>
+                    a = ${stats.meanY.toFixed(4)} - (${stats.slope.toFixed(4)})(${stats.meanX.toFixed(4)})<br>
+                    a = ${stats.intercept.toFixed(4)}
+                </div>
+            `;
+            
+            results.classList.add('show');
+            
+            document.getElementById('predictionSection').style.display = 'block';
+            
+            drawRegressionPlot(x, y, stats);
+        }
+
+        function drawRegressionPlot(x, y, stats) {
+            const canvas = document.getElementById('regressionCanvas');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const padding = 60;
+            const width = canvas.width - 2 * padding;
+            const height = canvas.height - 2 * padding;
+            
+            const minX = Math.min(...x);
+            const maxX = Math.max(...x);
+            const minY = Math.min(...y);
+            const maxY = Math.max(...y);
+            
+            const rangeX = maxX - minX || 1;
+            const rangeY = maxY - minY || 1;
+            
+            // Draw axes and grid
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Draw regression line
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            const x1 = minX - rangeX * 0.1;
+            const y1 = stats.intercept + stats.slope * x1;
+            const x2 = maxX + rangeX * 0.1;
+            const y2 = stats.intercept + stats.slope * x2;
+            
+            const x1Pos = padding + ((x1 - minX) / rangeX) * width;
+            const y1Pos = canvas.height - padding - ((y1 - minY) / rangeY) * height;
+            const x2Pos = padding + ((x2 - minX) / rangeX) * width;
+            const y2Pos = canvas.height - padding - ((y2 - minY) / rangeY) * height;
+            
+            ctx.moveTo(x1Pos, y1Pos);
+            ctx.lineTo(x2Pos, y2Pos);
+            ctx.stroke();
+            
+            // Draw points
+            x.forEach((xi, i) => {
+                const yi = y[i];
+                const xPos = padding + ((xi - minX) / rangeX) * width;
+                const yPos = canvas.height - padding - ((yi - minY) / rangeY) * height;
+                
+                ctx.fillStyle = '#764ba2';
+                ctx.beginPath();
+                ctx.arc(xPos, yPos, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+            
+            // Add title
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Scatter Plot with Regression Line', canvas.width / 2, 30);
+        }
+
+        function makePrediction() {
+            const xValue = parseFloat(document.getElementById('predictX').value);
+            
+            if (isNaN(xValue)) {
+                alert('Please enter a valid number');
+                return;
+            }
+            
+            const predictedY = currentData.intercept + currentData.slope * xValue;
+            
+            const result = document.getElementById('predictionResult');
+            result.innerHTML = `
+                For X = ${xValue}, the predicted Y = ${predictedY.toFixed(4)}
+                <br><br>
+                <span style="font-size: 0.9em;">
+                Using equation: ŷ = ${currentData.intercept.toFixed(4)} + ${currentData.slope.toFixed(4)}(${xValue})
+                </span>
+            `;
+            result.classList.add('show');
+        }
+
+        // Full analysis
+        function performFullAnalysis() {
+            const xName = document.getElementById('xVarName').value || 'X';
+            const yName = document.getElementById('yVarName').value || 'Y';
+            const xInput = document.getElementById('analysisX').value;
+            const yInput = document.getElementById('analysisY').value;
+            
+            const x = parseData(xInput);
+            const y = parseData(yInput);
+            
+            if (x.length !== y.length || x.length < 2) {
+                alert('Please enter equal numbers of X and Y values (at least 2 pairs)');
+                return;
+            }
+            
+            const stats = calculateStats(x, y);
+            currentData.x = x;
+            currentData.y = y;
+            currentData.slope = stats.slope;
+            currentData.intercept = stats.intercept;
+            currentData.correlation = stats.r;
+            
+            let strength = '';
+            const absR = Math.abs(stats.r);
+            if (absR >= 0.9) strength = 'Very Strong';
+            else if (absR >= 0.7) strength = 'Strong';
+            else if (absR >= 0.4) strength = 'Moderate';
+            else if (absR >= 0.1) strength = 'Weak';
+            else strength = 'Very Weak/None';
+            
+            const direction = stats.r > 0.1 ? 'Positive' : (stats.r < -0.1 ? 'Negative' : 'No clear direction');
+            
+            const table = createCalculationTable(x, y, stats);
+            
+            const results = document.getElementById('fullResults');
+            results.innerHTML = `
+                <h4>Complete Statistical Analysis: ${xName} vs ${yName}</h4>
+                
+                <div class="interpretation">
+                    <h4>📊 Key Findings</h4>
+                    <p><strong>Relationship:</strong> There is a ${strength.toLowerCase()} ${direction.toLowerCase()} linear relationship between ${xName} and ${yName}.</p>
+                    <p><strong>Predictive Power:</strong> ${(stats.rSquared * 100).toFixed(2)}% of the variation in ${yName} can be explained by ${xName}.</p>
+                    <p><strong>Regression Equation:</strong> ${yName} = ${stats.intercept.toFixed(4)} + ${stats.slope.toFixed(4)}·${xName}</p>
+                </div>
+                
+                <h4 style="margin-top: 25px;">Correlation Analysis</h4>
+                <div class="stat-box">
+                    <strong>Correlation Coefficient (r):</strong> ${stats.r.toFixed(4)}
+                </div>
+                <div class="stat-box">
+                    <strong>Interpretation:</strong> ${strength} ${direction} relationship
+                </div>
+                <div class="stat-box">
+                    <strong>R² (Coefficient of Determination):</strong> ${(stats.rSquared * 100).toFixed(2)}%
+                </div>
+                
+                <h4 style="margin-top: 25px;">Regression Analysis</h4>
+                <div class="stat-box" style="background: #d4edda;">
+                    <strong style="font-size: 1.2em;">ŷ = ${stats.intercept.toFixed(4)} + ${stats.slope.toFixed(4)}x</strong>
+                </div>
+                <div class="stat-box">
+                    <strong>Slope:</strong> ${stats.slope.toFixed(4)}<br>
+                    <span style="font-size: 0.9em;">Each unit increase in ${xName} is associated with a ${Math.abs(stats.slope).toFixed(4)} unit ${stats.slope > 0 ? 'increase' : 'decrease'} in ${yName}.</span>
+                </div>
+                <div class="stat-box">
+                    <strong>Y-Intercept:</strong> ${stats.intercept.toFixed(4)}<br>
+                    <span style="font-size: 0.9em;">When ${xName} = 0, predicted ${yName} = ${stats.intercept.toFixed(4)}.</span>
+                </div>
+                
+                <h4 style="margin-top: 25px;">Descriptive Statistics</h4>
+                <div class="stat-box">
+                    <strong>Mean ${xName}:</strong> ${stats.meanX.toFixed(4)} | <strong>Mean ${yName}:</strong> ${stats.meanY.toFixed(4)}
+                </div>
+                <div class="stat-box">
+                    <strong>Sample Size:</strong> n = ${stats.n} pairs
+                </div>
+                
+                <h4 style="margin-top: 25px;">Calculation Table</h4>
+                ${table}
+            `;
+            
+            results.classList.add('show');
+            
+            drawAnalysisPlot(x, y, stats, xName, yName);
+        }
+
+        function drawAnalysisPlot(x, y, stats, xName, yName) {
+            const canvas = document.getElementById('analysisCanvas');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const padding = 80;
+            const width = canvas.width - 2 * padding;
+            const height = canvas.height - 2 * padding;
+            
+            const minX = Math.min(...x);
+            const maxX = Math.max(...x);
+            const minY = Math.min(...y);
+            const maxY = Math.max(...y);
+            
+            const rangeX = maxX - minX || 1;
+            const rangeY = maxY - minY || 1;
+            
+            // Background
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Grid
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 10; i++) {
+                const xPos = padding + (width * i / 10);
+                const yPos = canvas.height - padding - (height * i / 10);
+                
+                ctx.beginPath();
+                ctx.moveTo(xPos, canvas.height - padding);
+                ctx.lineTo(xPos, padding);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(padding, yPos);
+                ctx.lineTo(canvas.width - padding, yPos);
+                ctx.stroke();
+            }
+            
+            // Regression line
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            const x1 = minX;
+            const y1 = stats.intercept + stats.slope * x1;
+            const x2 = maxX;
+            const y2 = stats.intercept + stats.slope * x2;
+            
+            const x1Pos = padding;
+            const y1Pos = canvas.height - padding - ((y1 - minY) / rangeY) * height;
+            const x2Pos = canvas.width - padding;
+            const y2Pos = canvas.height - padding - ((y2 - minY) / rangeY) * height;
+            
+            ctx.moveTo(x1Pos, y1Pos);
+            ctx.lineTo(x2Pos, y2Pos);
+            ctx.stroke();
+            
+            // Points
+            x.forEach((xi, i) => {
+                const yi = y[i];
+                const xPos = padding + ((xi - minX) / rangeX) * width;
+                const yPos = canvas.height - padding - ((yi - minY) / rangeY) * height;
+                
+                ctx.fillStyle = '#764ba2';
+                ctx.beginPath();
+                ctx.arc(xPos, yPos, 7, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+            
+            // Labels
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(xName, canvas.width / 2, canvas.height - 30);
+            
+            ctx.save();
+            ctx.translate(25, canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(yName, 0, 0);
+            ctx.restore();
+            
+            // Title
+            ctx.font = 'bold 18px Arial';
+            ctx.fillText(`${yName} vs ${xName} with Regression Line`, canvas.width / 2, 35);
+            
+            // Equation on plot
+            ctx.font = 'bold 14px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.textAlign = 'left';
+            ctx.fillText(`ŷ = ${stats.intercept.toFixed(2)} + ${stats.slope.toFixed(2)}x`, padding + 10, padding + 20);
+            ctx.fillText(`r = ${stats.r.toFixed(4)}`, padding + 10, padding + 40);
+        }
+
+        // Load example datasets
+        function loadDataset(type) {
+            let xData, yData, xName, yName;
+            
+            switch(type) {
+                case 'studying':
+                    xData = '2, 3, 4, 5, 6, 7, 8, 9, 10';
+                    yData = '65, 70, 75, 80, 85, 88, 92, 95, 98';
+                    xName = 'Study Hours';
+                    yName = 'Test Score';
+                    break;
+                case 'temperature':
+                    xData = '65, 70, 75, 80, 85, 90, 95, 100';
+                    yData = '200, 250, 300, 400, 500, 650, 800, 950';
+                    xName = 'Temperature (°F)';
+                    yName = 'Ice Cream Sales ($)';
+                    break;
+                case 'car':
+                    xData = '1, 2, 3, 4, 5, 6, 7, 8, 10';
+                    yData = '25000, 22000, 19000, 16000, 14000, 12000, 10000, 8000, 5000';
+                    xName = 'Car Age (years)';
+                    yName = 'Resale Value ($)';
+                    break;
+                case 'advertising':
+                    xData = '1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000';
+                    yData = '15000, 18000, 22000, 26000, 30000, 33000, 37000, 40000';
+                    xName = 'Ad Spending ($)';
+                    yName = 'Revenue ($)';
+                    break;
+                case 'height':
+                    xData = '60, 62, 65, 67, 68, 70, 72, 74, 75';
+                    yData = '110, 120, 130, 145, 150, 165, 180, 190, 200';
+                    xName = 'Height (inches)';
+                    yName = 'Weight (lbs)';
+                    break;
+                case 'random':
+                    xData = '1, 2, 3, 4, 5, 6, 7, 8, 9, 10';
+                    yData = '5, 8, 3, 9, 4, 7, 2, 6, 5, 8';
+                    xName = 'Variable X';
+                    yName = 'Variable Y';
+                    break;
+            }
+            
+            document.getElementById('xVarName').value = xName;
+            document.getElementById('analysisX').value = xData;
+            document.getElementById('yVarName').value = yName;
+            document.getElementById('analysisY').value = yData;
+            
+            // Switch to analysis tab
+            showSection('analysis');
+            
+            // Update nav button
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons[4].classList.add('active'); // Analysis tab is 5th button (index 4)
+            
+            // Auto-perform analysis
+            setTimeout(performFullAnalysis, 100);
+        }
+    </script>
+</body>
+</html>
