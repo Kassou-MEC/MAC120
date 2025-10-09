@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability Topics - Interactive Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: #e9ecef;
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .definition-box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .definition-box strong {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .example-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .formula {
+            background: #e7f3ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .exercise {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .exercise h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .show-answer-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .show-answer-btn:hover {
+            background: #218838;
+        }
+
+        .answer {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border: 2px solid #28a745;
+        }
+
+        .quiz-question {
+            background: #e7e7ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        .quiz-options {
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .quiz-option input {
+            margin-right: 10px;
+        }
+
+        .submit-quiz-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .submit-quiz-btn:hover {
+            background: #764ba2;
+        }
+
+        .quiz-result {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+
+        .quiz-result.show {
+            display: block;
+        }
+
+        .correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .interactive-table {
+            margin: 20px 0;
+        }
+
+        .table-input {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+            border: 2px solid #667eea;
+            border-radius: 3px;
+        }
+
+        .calculate-btn {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+
+        .calculate-btn:hover {
+            background: #667eea;
+        }
+
+        .result-display {
+            background: #d4edda;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .result-display.show {
+            display: block;
+        }
+
+        ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 MAT120 Prof. Khalid Kassou</h1>
+            <h1>📊 Probability Topics</h1>
+            <p class="subtitle">Interactive Learning Module</p>
+        </div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection('terminology')">Terminology</button>
+            <button class="nav-btn" onclick="showSection('events')">Events</button>
+            <button class="nav-btn" onclick="showSection('rules')">Basic Rules</button>
+            <button class="nav-btn" onclick="showSection('contingency')">Contingency Tables</button>
+            <button class="nav-btn" onclick="showSection('exercises')">Practice</button>
+            <button class="nav-btn" onclick="showSection('quiz')">Quiz</button>
+        </div>
+
+        <div class="content">
+            <!-- Terminology Section -->
+            <div id="terminology" class="section active">
+                <h2>Probability Terminology</h2>
+
+                <div class="definition-box">
+                    <p><strong>Experiment:</strong> Any process that generates well-defined outcomes.</p>
+                    <p style="margin-top: 10px;">Example: Tossing a coin, rolling a die, selecting a card from a deck.</p>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Sample Space (S):</strong> The set of all possible outcomes of an experiment.</p>
+                    <p style="margin-top: 10px;">Example: For a coin toss, S = {Heads, Tails}</p>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Event:</strong> A subset of the sample space. It's one or more outcomes from an experiment.</p>
+                    <p style="margin-top: 10px;">Example: Getting an even number when rolling a die = {2, 4, 6}</p>
+                </div>
+
+                <div class="definition-box">
+                    <p><strong>Probability P(A):</strong> A measure of the likelihood that event A will occur.</p>
+                    <div class="formula">P(A) = Number of favorable outcomes / Total number of possible outcomes</div>
+                    <p style="margin-top: 10px;">Range: 0 ≤ P(A) ≤ 1, where 0 = impossible and 1 = certain</p>
+                </div>
+
+                <h3>Simple Examples</h3>
+
+                <div class="example-box">
+                    <h4>Example 1: Coin Toss</h4>
+                    <p><strong>Experiment:</strong> Tossing a fair coin</p>
+                    <p><strong>Sample Space:</strong> S = {H, T}</p>
+                    <p><strong>Event A:</strong> Getting heads</p>
+                    <p><strong>Calculation:</strong></p>
+                    <div class="formula">P(Heads) = 1/2 = 0.5 or 50%</div>
+                    <p><strong>Explanation:</strong> There is 1 favorable outcome (heads) out of 2 possible outcomes (heads or tails).</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 2: Rolling a Die</h4>
+                    <p><strong>Experiment:</strong> Rolling a standard six-sided die</p>
+                    <p><strong>Sample Space:</strong> S = {1, 2, 3, 4, 5, 6}</p>
+                    <p><strong>Event A:</strong> Getting a number greater than 4</p>
+                    <p><strong>Event A outcomes:</strong> {5, 6}</p>
+                    <p><strong>Calculation:</strong></p>
+                    <div class="formula">P(A) = 2/6 = 1/3 ≈ 0.333 or 33.3%</div>
+                    <p><strong>Explanation:</strong> There are 2 favorable outcomes (5 and 6) out of 6 possible outcomes.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 3: Drawing a Card</h4>
+                    <p><strong>Experiment:</strong> Drawing one card from a standard 52-card deck</p>
+                    <p><strong>Sample Space:</strong> 52 cards total</p>
+                    <p><strong>Event A:</strong> Drawing an Ace</p>
+                    <p><strong>Calculation:</strong></p>
+                    <div class="formula">P(Ace) = 4/52 = 1/13 ≈ 0.077 or 7.7%</div>
+                    <p><strong>Explanation:</strong> There are 4 Aces in a deck (one of each suit) out of 52 total cards.</p>
+                </div>
+            </div>
+
+            <!-- Events Section -->
+            <div id="events" class="section">
+                <h2>Independent and Mutually Exclusive Events</h2>
+
+                <h3>Independent Events</h3>
+                <div class="definition-box">
+                    <p><strong>Independent Events:</strong> Two events are independent if the occurrence of one does not affect the probability of the other occurring.</p>
+                    <div class="formula">P(A and B) = P(A) × P(B)</div>
+                    <p style="margin-top: 10px;"><strong>Test for Independence:</strong> Events A and B are independent if P(A|B) = P(A) or equivalently P(B|A) = P(B)</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 1: Two Coin Tosses (Easy)</h4>
+                    <p><strong>Question:</strong> What is the probability of getting heads on both tosses?</p>
+                    <p><strong>Solution:</strong></p>
+                    <p>Let A = first toss is heads, P(A) = 1/2</p>
+                    <p>Let B = second toss is heads, P(B) = 1/2</p>
+                    <p>The tosses are independent (first toss doesn't affect second)</p>
+                    <div class="formula">P(A and B) = P(A) × P(B) = 1/2 × 1/2 = 1/4 = 0.25</div>
+                    <p><strong>Explanation:</strong> Since coin tosses are independent events, we multiply the individual probabilities. The first toss has no effect on the second toss.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 2: Die and Coin (Medium)</h4>
+                    <p><strong>Question:</strong> What is the probability of rolling a 6 on a die AND getting tails on a coin?</p>
+                    <p><strong>Solution:</strong></p>
+                    <p>Let A = rolling a 6, P(A) = 1/6</p>
+                    <p>Let B = getting tails, P(B) = 1/2</p>
+                    <div class="formula">P(A and B) = 1/6 × 1/2 = 1/12 ≈ 0.083 or 8.3%</div>
+                    <p><strong>Explanation:</strong> Rolling a die and tossing a coin are completely independent events. The die outcome has no influence on the coin outcome.</p>
+                </div>
+
+                <h3>Mutually Exclusive Events</h3>
+                <div class="definition-box">
+                    <p><strong>Mutually Exclusive Events:</strong> Two events that cannot occur at the same time. If one occurs, the other cannot.</p>
+                    <div class="formula">P(A and B) = 0</div>
+                    <div class="formula">P(A or B) = P(A) + P(B)</div>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 3: Single Die Roll (Easy)</h4>
+                    <p><strong>Question:</strong> What is the probability of rolling a 2 OR a 5?</p>
+                    <p><strong>Solution:</strong></p>
+                    <p>Event A = rolling a 2, P(A) = 1/6</p>
+                    <p>Event B = rolling a 5, P(B) = 1/6</p>
+                    <p>These events are mutually exclusive (can't roll both at once)</p>
+                    <div class="formula">P(A or B) = P(A) + P(B) = 1/6 + 1/6 = 2/6 = 1/3</div>
+                    <p><strong>Explanation:</strong> In a single die roll, you cannot get both 2 and 5 simultaneously, so these events are mutually exclusive.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 4: Drawing Cards (Hard)</h4>
+                    <p><strong>Question:</strong> Are drawing a King and drawing a Heart mutually exclusive?</p>
+                    <p><strong>Solution:</strong></p>
+                    <p>NO! These events are NOT mutually exclusive because you can draw the King of Hearts.</p>
+                    <p>P(King) = 4/52</p>
+                    <p>P(Heart) = 13/52</p>
+                    <p>P(King and Heart) = 1/52 ≠ 0</p>
+                    <p><strong>Explanation:</strong> Since there exists a card that is both a King and a Heart (King of Hearts), these events can occur together, making them NOT mutually exclusive. This is a common mistake to watch for!</p>
+                </div>
+
+                <h3>Key Differences</h3>
+                <table>
+                    <tr>
+                        <th>Characteristic</th>
+                        <th>Independent Events</th>
+                        <th>Mutually Exclusive Events</th>
+                    </tr>
+                    <tr>
+                        <td>Definition</td>
+                        <td>Occurrence of one doesn't affect the other</td>
+                        <td>Cannot occur simultaneously</td>
+                    </tr>
+                    <tr>
+                        <td>P(A and B)</td>
+                        <td>P(A) × P(B)</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Can both occur?</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>Example</td>
+                        <td>Two coin tosses</td>
+                        <td>Rolling a 2 or 5 on one die</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Basic Rules Section -->
+            <div id="rules" class="section">
+                <h2>Two Basic Rules of Probability</h2>
+
+                <h3>1. Addition Rule</h3>
+                <div class="definition-box">
+                    <p><strong>For Any Two Events A and B:</strong></p>
+                    <div class="formula">P(A or B) = P(A) + P(B) - P(A and B)</div>
+                    <p style="margin-top: 10px;"><strong>Special Case (Mutually Exclusive):</strong></p>
+                    <div class="formula">P(A or B) = P(A) + P(B)</div>
+                    <p style="margin-top: 10px;">We subtract P(A and B) to avoid counting the overlap twice.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 1: Drawing Cards (Medium)</h4>
+                    <p><strong>Question:</strong> What is the probability of drawing a King OR a Heart?</p>
+                    <p><strong>Solution:</strong></p>
+                    <p>P(King) = 4/52</p>
+                    <p>P(Heart) = 13/52</p>
+                    <p>P(King and Heart) = 1/52 (the King of Hearts)</p>
+                    <div class="formula">P(King or Heart) = 4/52 + 13/52 - 1/52 = 16/52 = 4/13 ≈ 0.308</div>
+                    <p><strong>Explanation:</strong> We must subtract the King of Hearts because it's counted in both "Kings" and "Hearts". Without subtracting, we'd count it twice.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 2: Student Activities (Hard)</h4>
+                    <p><strong>Question:</strong> In a class, 60% play sports, 40% play music, and 25% do both. What's the probability a randomly selected student does at least one?</p>
+                    <p><strong>Solution:</strong></p>
+                    <p>Let S = plays sports, M = plays music</p>
+                    <p>P(S) = 0.60, P(M) = 0.40, P(S and M) = 0.25</p>
+                    <div class="formula">P(S or M) = 0.60 + 0.40 - 0.25 = 0.75 or 75%</div>
+                    <p><strong>Explanation:</strong> This is a real-world application of the addition rule. The 25% who do both would be counted twice if we just added, so we subtract them once.</p>
+                </div>
+
+                <h3>2. Multiplication Rule</h3>
+                <div class="definition-box">
+                    <p><strong>For Any Two Events A and B:</strong></p>
+                    <div class="formula">P(A and B) = P(A) × P(B|A)</div>
+                    <p style="margin-top: 10px;">Where P(B|A) is the probability of B given that A has occurred.</p>
+                    <p style="margin-top: 10px;"><strong>Special Case (Independent Events):</strong></p>
+                    <div class="formula">P(A and B) = P(A) × P(B)</div>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 3: Drawing Cards Without Replacement (Hard)</h4>
+                    <p><strong>Question:</strong> What is the probability of drawing two Aces in a row without replacement?</p>
+                    <p><strong>Solution:</strong></p>
+                    <p>P(1st Ace) = 4/52</p>
+                    <p>P(2nd Ace | 1st Ace) = 3/51 (only 3 Aces left in 51 cards)</p>
+                    <div class="formula">P(both Aces) = 4/52 × 3/51 = 12/2652 = 1/221 ≈ 0.0045 or 0.45%</div>
+                    <p><strong>Explanation:</strong> These events are NOT independent because removing the first Ace changes the probabilities for the second draw. This is called "sampling without replacement."</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 4: Conditional Probability (Hard)</h4>
+                    <p><strong>Question:</strong> A bag has 5 red and 3 blue marbles. What's the probability of drawing a red, then a blue, without replacement?</p>
+                    <p><strong>Solution:</strong></p>
+                    <p>Total marbles = 8</p>
+                    <p>P(Red first) = 5/8</p>
+                    <p>P(Blue second | Red first) = 3/7 (3 blue left, 7 total left)</p>
+                    <div class="formula">P(Red then Blue) = 5/8 × 3/7 = 15/56 ≈ 0.268 or 26.8%</div>
+                    <p><strong>Explanation:</strong> After drawing a red marble, there are only 7 marbles left. The conditional probability P(Blue|Red) reflects this changed situation.</p>
+                </div>
+
+                <h3>Complement Rule</h3>
+                <div class="definition-box">
+                    <p><strong>The complement of event A (denoted A'):</strong> All outcomes NOT in A</p>
+                    <div class="formula">P(A') = 1 - P(A)</div>
+                    <div class="formula">P(A) + P(A') = 1</div>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 5: Using Complement (Medium)</h4>
+                    <p><strong>Question:</strong> If the probability of rain tomorrow is 0.35, what's the probability it won't rain?</p>
+                    <p><strong>Solution:</strong></p>
+                    <div class="formula">P(No rain) = 1 - P(Rain) = 1 - 0.35 = 0.65 or 65%</div>
+                    <p><strong>Explanation:</strong> The complement rule is useful when it's easier to calculate the probability of something NOT happening.</p>
+                </div>
+            </div>
+
+            <!-- Contingency Tables Section -->
+            <div id="contingency" class="section">
+                <h2>Contingency Tables (Two-Way Tables)</h2>
+
+                <div class="definition-box">
+                    <p><strong>Contingency Table:</strong> A table showing the frequency distribution of two categorical variables. Also called a two-way table or cross-tabulation.</p>
+                    <p style="margin-top: 10px;">Used to examine the relationship between two categorical variables and calculate various probabilities.</p>
+                </div>
+
+                <h3>Example 1: Student Survey (Easy)</h3>
+                <div class="example-box">
+                    <h4>Scenario</h4>
+                    <p>A survey of 100 students asked about gender and whether they own a laptop:</p>
+                    
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Own Laptop</th>
+                            <th>Don't Own Laptop</th>
+                            <th>Total</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Male</strong></td>
+                            <td>35</td>
+                            <td>15</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Female</strong></td>
+                            <td>30</td>
+                            <td>20</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td>65</td>
+                            <td>35</td>
+                            <td>100</td>
+                        </tr>
+                    </table>
+
+                    <h4>Questions and Solutions:</h4>
+                    <p><strong>a) P(Male):</strong></p>
+                    <div class="formula">P(Male) = 50/100 = 0.50 or 50%</div>
+
+                    <p><strong>b) P(Own Laptop):</strong></p>
+                    <div class="formula">P(Own Laptop) = 65/100 = 0.65 or 65%</div>
+
+                    <p><strong>c) P(Male AND Own Laptop):</strong></p>
+                    <div class="formula">P(Male and Own Laptop) = 35/100 = 0.35 or 35%</div>
+
+                    <p><strong>d) P(Male OR Own Laptop):</strong></p>
+                    <p>Using addition rule:</p>
+                    <div class="formula">P(Male or Own Laptop) = P(Male) + P(Own Laptop) - P(Male and Own Laptop)</div>
+                    <div class="formula">= 50/100 + 65/100 - 35/100 = 80/100 = 0.80 or 80%</div>
+                </div>
+
+                <h3>Conditional Probability from Tables</h3>
+                <div class="definition-box">
+                    <p><strong>Conditional Probability P(A|B):</strong> Probability of A given that B has occurred</p>
+                    <div class="formula">P(A|B) = P(A and B) / P(B)</div>
+                </div>
+
+                <div class="example-box">
+                    <h4>Continuing Previous Example:</h4>
+                    <p><strong>e) P(Own Laptop | Male):</strong> What's the probability a student owns a laptop GIVEN they are male?</p>
+                    <div class="formula">P(Own Laptop | Male) = 35/50 = 0.70 or 70%</div>
+                    <p><strong>Explanation:</strong> We only consider the 50 males. Of these, 35 own laptops.</p>
+
+                    <p><strong>f) P(Female | Don't Own Laptop):</strong></p>
+                    <div class="formula">P(Female | Don't Own Laptop) = 20/35 ≈ 0.571 or 57.1%</div>
+                    <p><strong>Explanation:</strong> Among the 35 students who don't own laptops, 20 are female.</p>
+                </div>
+
+                <h3>Example 2: Medical Testing (Medium)</h3>
+                <div class="example-box">
+                    <h4>Scenario</h4>
+                    <p>A medical test for a disease was administered to 1000 people:</p>
+                    
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Test Positive</th>
+                            <th>Test Negative</th>
+                            <th>Total</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Has Disease</strong></td>
+                            <td>95</td>
+                            <td>5</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td><strong>No Disease</strong></td>
+                            <td>90</td>
+                            <td>810</td>
+                            <td>900</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td>185</td>
+                            <td>815</td>
+                            <td>1000</td>
+                        </tr>
+                    </table>
+
+                    <h4>Important Probabilities:</h4>
+                    
+                    <p><strong>Sensitivity (True Positive Rate):</strong> P(Test Positive | Has Disease)</p>
+                    <div class="formula">= 95/100 = 0.95 or 95%</div>
+                    <p>The test correctly identifies 95% of people who have the disease.</p>
+
+                    <p><strong>Specificity (True Negative Rate):</strong> P(Test Negative | No Disease)</p>
+                    <div class="formula">= 810/900 = 0.90 or 90%</div>
+                    <p>The test correctly identifies 90% of people who don't have the disease.</p>
+
+                    <p><strong>Positive Predictive Value:</strong> P(Has Disease | Test Positive)</p>
+                    <div class="formula">= 95/185 ≈ 0.514 or 51.4%</div>
+                    <p>If you test positive, there's only a 51.4% chance you actually have the disease!</p>
+
+                    <p><strong>False Positive Rate:</strong> P(Test Positive | No Disease)</p>
+                    <div class="formula">= 90/900 = 0.10 or 10%</div>
+                </div>
+
+                <h3>Example 3: Employment Data (Hard)</h3>
+                <div class="example-box">
+                    <h4>Scenario</h4>
+                    <p>A company tracks education level and job satisfaction for 500 employees:</p>
+                    
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Satisfied</th>
+                            <th>Neutral</th>
+                            <th>Dissatisfied</th>
+                            <th>Total</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Bachelor's</strong></td>
+                            <td>120</td>
+                            <td>50</td>
+                            <td>30</td>
+                            <td>200</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Master's</strong></td>
+                            <td>140</td>
+                            <td>40</td>
+                            <td>20</td>
+                            <td>200</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PhD</strong></td>
+                            <td>60</td>
+                            <td>25</td>
+                            <td>15</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td>320</td>
+                            <td>115</td>
+                            <td>65</td>
+                            <td>500</td>
+                        </tr>
+                    </table>
+
+                    <h4>Complex Questions:</h4>
+                    
+                    <p><strong>a) Are education level and satisfaction independent?</strong></p>
+                    <p>Check: Does P(Satisfied | Bachelor's) = P(Satisfied)?</p>
+                    <p>P(Satisfied | Bachelor's) = 120/200 = 0.60</p>
+                    <p>P(Satisfied) = 320/500 = 0.64</p>
+                    <p>Since 0.60 ≠ 0.64, they are NOT independent.</p>
+
+                    <p><strong>b) P(Master's | Dissatisfied):</strong></p>
+                    <div class="formula">= 20/65 ≈ 0.308 or 30.8%</div>
+                    
+                    <p><strong>c) P(Satisfied OR PhD):</strong></p>
+                    <div class="formula">= P(Satisfied) + P(PhD) - P(Satisfied and PhD)</div>
+                    <div class="formula">= 320/500 + 100/500 - 60/500 = 360/500 = 0.72 or 72%</div>
+                </div>
+
+                <h3>Interactive Contingency Table Calculator</h3>
+                <div class="interactive-table">
+                    <p>Fill in the table values and calculate probabilities:</p>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Category B1</th>
+                            <th>Category B2</th>
+                            <th>Total</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Category A1</strong></td>
+                            <td><input type="number" class="table-input" id="cell11" value="30"></td>
+                            <td><input type="number" class="table-input" id="cell12" value="20"></td>
+                            <td id="rowTotal1">50</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Category A2</strong></td>
+                            <td><input type="number" class="table-input" id="cell21" value="15"></td>
+                            <td><input type="number" class="table-input" id="cell22" value="35"></td>
+                            <td id="rowTotal2">50</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td id="colTotal1">45</td>
+                            <td id="colTotal2">55</td>
+                            <td id="grandTotal">100</td>
+                        </tr>
+                    </table>
+                    <button class="calculate-btn" onclick="calculateTableProbabilities()">Calculate Totals & Probabilities</button>
+                    <div id="tableResults" class="result-display"></div>
+                </div>
+            </div>
+
+            <!-- Practice Exercises Section -->
+            <div id="exercises" class="section">
+                <h2>Practice Exercises</h2>
+
+                <div class="exercise">
+                    <h4>Exercise 1: Basic Probability (Easy)</h4>
+                    <p>A bag contains 3 red balls, 5 blue balls, and 2 green balls. What is the probability of randomly selecting a blue ball?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+                    <div id="answer1" class="answer">
+                        <p><strong>Solution:</strong></p>
+                        <p>Total balls = 3 + 5 + 2 = 10</p>
+                        <p>Number of blue balls = 5</p>
+                        <div class="formula">P(Blue) = 5/10 = 1/2 = 0.5 or 50%</div>
+                        <p><strong>Explanation:</strong> We divide the number of favorable outcomes (blue balls) by the total number of possible outcomes (all balls).</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 2: Independent Events (Medium)</h4>
+                    <p>A coin is tossed three times. What is the probability of getting exactly two heads?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+                    <div id="answer2" class="answer">
+                        <p><strong>Solution:</strong></p>
+                        <p>Possible outcomes with exactly 2 heads: HHT, HTH, THH</p>
+                        <p>Total possible outcomes: 2³ = 8</p>
+                        <p>Favorable outcomes: 3</p>
+                        <div class="formula">P(Exactly 2 heads) = 3/8 = 0.375 or 37.5%</div>
+                        <p><strong>Alternative method using combinations:</strong></p>
+                        <p>Number of ways to choose 2 positions for heads out of 3 tosses: C(3,2) = 3</p>
+                        <p>Probability of each sequence: (1/2)² × (1/2)¹ = 1/8</p>
+                        <p>Total: 3 × 1/8 = 3/8</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 3: Addition Rule (Medium)</h4>
+                    <p>In a class of 40 students, 25 study French, 18 study Spanish, and 10 study both. If a student is selected at random, what is the probability they study French OR Spanish?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+                    <div id="answer3" class="answer">
+                        <p><strong>Solution:</strong></p>
+                        <p>P(French) = 25/40</p>
+                        <p>P(Spanish) = 18/40</p>
+                        <p>P(Both) = 10/40</p>
+                        <div class="formula">P(French or Spanish) = P(French) + P(Spanish) - P(Both)</div>
+                        <div class="formula">= 25/40 + 18/40 - 10/40 = 33/40 = 0.825 or 82.5%</div>
+                        <p><strong>Explanation:</strong> We subtract the students who study both languages because they're counted twice when we add P(French) and P(Spanish).</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 4: Conditional Probability (Hard)</h4>
+                    <p>A box contains 4 red cards numbered 1-4 and 3 blue cards numbered 1-3. Two cards are drawn without replacement. What is the probability that the second card is red given that the first card was blue?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+                    <div id="answer4" class="answer">
+                        <p><strong>Solution:</strong></p>
+                        <p>After drawing a blue card first:</p>
+                        <p>- Remaining cards: 6 total</p>
+                        <p>- Red cards remaining: 4</p>
+                        <p>- Blue cards remaining: 2</p>
+                        <div class="formula">P(2nd is Red | 1st is Blue) = 4/6 = 2/3 ≈ 0.667 or 66.7%</div>
+                        <p><strong>Explanation:</strong> Given that the first card is blue, we have 6 cards left. Since we drew a blue card, all 4 red cards are still in the box.</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 5: Multiplication Rule (Hard)</h4>
+                    <p>In a factory, Machine A produces 60% of items and Machine B produces 40%. Machine A produces 2% defective items, while Machine B produces 5% defective items. What is the probability that a randomly selected item is defective AND from Machine A?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+                    <div id="answer5" class="answer">
+                        <p><strong>Solution:</strong></p>
+                        <p>P(Machine A) = 0.60</p>
+                        <p>P(Defective | Machine A) = 0.02</p>
+                        <div class="formula">P(Defective and Machine A) = P(Machine A) × P(Defective | Machine A)</div>
+                        <div class="formula">= 0.60 × 0.02 = 0.012 or 1.2%</div>
+                        <p><strong>Explanation:</strong> We use the multiplication rule. First, we select an item from Machine A (60% chance), then that item must be defective (2% chance among Machine A items).</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 6: Contingency Table (Hard)</h4>
+                    <p>Use the table below showing survey results from 200 people:</p>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Exercise Regularly</th>
+                            <th>Don't Exercise</th>
+                            <th>Total</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Under 30</strong></td>
+                            <td>55</td>
+                            <td>25</td>
+                            <td>80</td>
+                        </tr>
+                        <tr>
+                            <td><strong>30 or Older</strong></td>
+                            <td>45</td>
+                            <td>75</td>
+                            <td>120</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td>100</td>
+                            <td>100</td>
+                            <td>200</td>
+                        </tr>
+                    </table>
+                    <p>Find: a) P(Exercise Regularly | Under 30), b) Are age and exercise independent?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+                    <div id="answer6" class="answer">
+                        <p><strong>Solution:</strong></p>
+                        <p><strong>a) P(Exercise Regularly | Under 30):</strong></p>
+                        <div class="formula">= 55/80 = 0.6875 or 68.75%</div>
+                        <p>Among people under 30, 68.75% exercise regularly.</p>
+                        
+                        <p><strong>b) Testing Independence:</strong></p>
+                        <p>For independence: P(Exercise | Under 30) should equal P(Exercise)</p>
+                        <p>P(Exercise Regularly | Under 30) = 55/80 = 0.6875</p>
+                        <p>P(Exercise Regularly) = 100/200 = 0.50</p>
+                        <p>Since 0.6875 ≠ 0.50, age and exercise habits are NOT independent.</p>
+                        <p><strong>Interpretation:</strong> Younger people are more likely to exercise regularly than the general population.</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 7: Complement Rule (Medium)</h4>
+                    <p>The probability that at least one component in a system fails is 0.15. What is the probability that all components work properly?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+                    <div id="answer7" class="answer">
+                        <p><strong>Solution:</strong></p>
+                        <p>Let A = at least one component fails</p>
+                        <p>Let A' = all components work (complement of A)</p>
+                        <p>P(A) = 0.15</p>
+                        <div class="formula">P(A') = 1 - P(A) = 1 - 0.15 = 0.85 or 85%</div>
+                        <p><strong>Explanation:</strong> "All components work" is the complement of "at least one fails." These two events cover all possibilities and cannot occur together.</p>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <h4>Exercise 8: Complex Probability (Very Hard)</h4>
+                    <p>A test for a rare disease has 99% sensitivity (detects disease when present) and 95% specificity (correctly identifies when disease is absent). If 1% of the population has the disease, what is the probability that a person who tests positive actually has the disease?</p>
+                    <button class="show-answer-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+                    <div id="answer8" class="answer">
+                        <p><strong>Solution using Contingency Table:</strong></p>
+                        <p>Assume 10,000 people are tested:</p>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>Test +</th>
+                                <th>Test -</th>
+                                <th>Total</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Has Disease</strong></td>
+                                <td>99</td>
+                                <td>1</td>
+                                <td>100</td>
+                            </tr>
+                            <tr>
+                                <td><strong>No Disease</strong></td>
+                                <td>495</td>
+                                <td>9405</td>
+                                <td>9900</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td>594</td>
+                                <td>9406</td>
+                                <td>10000</td>
+                            </tr>
+                        </table>
+                        <p><strong>Calculations:</strong></p>
+                        <p>- Has disease: 1% of 10,000 = 100 people</p>
+                        <p>- Test correctly identifies: 99% of 100 = 99</p>
+                        <p>- No disease: 99% of 10,000 = 9,900 people</p>
+                        <p>- False positives: 5% of 9,900 = 495</p>
+                        <div class="formula">P(Disease | Test Positive) = 99/594 ≈ 0.167 or 16.7%</div>
+                        <p><strong>Explanation:</strong> Even with a highly accurate test, only 16.7% of positive results indicate actual disease! This is because the disease is rare (1%), so most positive tests are false positives from the large healthy population.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div id="quiz" class="section">
+                <h2>Multiple Choice Quiz</h2>
+                <p>Test your understanding of probability concepts!</p>
+
+                <form id="quizForm">
+                    <div class="quiz-question">
+                        <p><strong>Question 1:</strong> What is the sample space when rolling a standard die?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="a"> {1, 2, 3, 4, 5}
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="b"> {1, 2, 3, 4, 5, 6}
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="c"> {0, 1, 2, 3, 4, 5, 6}
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="d"> All possible numbers
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 2:</strong> Two events are mutually exclusive if:</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="a"> They cannot occur at the same time
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="b"> One event doesn't affect the other
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="c"> They always occur together
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="d"> They have equal probabilities
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 3:</strong> If P(A) = 0.6 and P(B) = 0.4, and A and B are independent, what is P(A and B)?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="a"> 1.0
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="b"> 0.24
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="c"> 0.20
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="d"> 0
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 4:</strong> If P(A) = 0.3, what is P(A'), the complement of A?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="a"> 0.3
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="b"> 0.7
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="c"> 1.3
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="d"> -0.3
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 5:</strong> In a deck of 52 cards, what is the probability of drawing a red King?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q5" value="a"> 1/13
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q5" value="b"> 1/26
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q5" value="c"> 2/52
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q5" value="d"> 4/52
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 6:</strong> If P(A) = 0.5, P(B) = 0.3, and P(A and B) = 0.15, what is P(A or B)?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q6" value="a"> 0.80
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q6" value="b"> 0.65
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q6" value="c"> 0.95
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q6" value="d"> 0.15
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 7:</strong> Which of the following pairs of events are independent?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q7" value="a"> Drawing a card from a deck, then drawing another without replacement
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q7" value="b"> Flipping a coin twice
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q7" value="c"> Rolling a 2 or rolling a 5 on one die
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q7" value="d"> Being tall and being a basketball player
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 8:</strong> In a contingency table, if events A and B are independent, then:</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q8" value="a"> P(A|B) = P(A)
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q8" value="b"> P(A and B) = 0
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q8" value="c"> P(A or B) = 1
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q8" value="d"> P(A) = P(B)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 9:</strong> A bag has 5 red and 3 blue marbles. Two are drawn without replacement. What is P(both red)?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q9" value="a"> 25/64
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q9" value="b"> 20/56
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q9" value="c"> 5/14
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q9" value="d"> 10/28
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 10:</strong> Which statement is always true?</p>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q10" value="a"> If events are mutually exclusive, they are independent
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q10" value="b"> If events are independent, they are mutually exclusive
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q10" value="c"> P(A) + P(A') = 1
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q10" value="d"> P(A or B) always equals P(A) + P(B)
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="button" class="submit-quiz-btn" onclick="gradeQuiz()">Submit Quiz</button>
+                </form>
+
+                <div id="quizResult" class="quiz-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleAnswer(answerId) {
+            const answer = document.getElementById(answerId);
+            if (answer.style.display === 'none' || answer.style.display === '') {
+                answer.style.display = 'block';
+                event.target.textContent = 'Hide Answer';
+            } else {
+                answer.style.display = 'none';
+                event.target.textContent = 'Show Answer';
+            }
+        }
+
+        function calculateTableProbabilities() {
+            const cell11 = parseFloat(document.getElementById('cell11').value) || 0;
+            const cell12 = parseFloat(document.getElementById('cell12').value) || 0;
+            const cell21 = parseFloat(document.getElementById('cell21').value) || 0;
+            const cell22 = parseFloat(document.getElementById('cell22').value) || 0;
+
+            const rowTotal1 = cell11 + cell12;
+            const rowTotal2 = cell21 + cell22;
+            const colTotal1 = cell11 + cell21;
+            const colTotal2 = cell12 + cell22;
+            const grandTotal = rowTotal1 + rowTotal2;
+
+            document.getElementById('rowTotal1').textContent = rowTotal1;
+            document.getElementById('rowTotal2').textContent = rowTotal2;
+            document.getElementById('colTotal1').textContent = colTotal1;
+            document.getElementById('colTotal2').textContent = colTotal2;
+            document.getElementById('grandTotal').textContent = grandTotal;
+
+            if (grandTotal > 0) {
+                const probA1 = (rowTotal1 / grandTotal).toFixed(4);
+                const probA2 = (rowTotal2 / grandTotal).toFixed(4);
+                const probB1 = (colTotal1 / grandTotal).toFixed(4);
+                const probB2 = (colTotal2 / grandTotal).toFixed(4);
+                const probA1B1 = (cell11 / grandTotal).toFixed(4);
+                const probA1GivenB1 = (cell11 / colTotal1).toFixed(4);
+                
+                const results = `
+                    <h4>Calculated Probabilities:</h4>
+                    <p><strong>P(A1) = ${probA1}</strong> (${((probA1 * 100).toFixed(2))}%)</p>
+                    <p><strong>P(A2) = ${probA2}</strong> (${((probA2 * 100).toFixed(2))}%)</p>
+                    <p><strong>P(B1) = ${probB1}</strong> (${((probB1 * 100).toFixed(2))}%)</p>
+                    <p><strong>P(B2) = ${probB2}</strong> (${((probB2 * 100).toFixed(2))}%)</p>
+                    <p><strong>P(A1 and B1) = ${probA1B1}</strong> (${((probA1B1 * 100).toFixed(2))}%)</p>
+                    <p><strong>P(A1 | B1) = ${probA1GivenB1}</strong> (${((probA1GivenB1 * 100).toFixed(2))}%)</p>
+                    <p style="margin-top: 15px;"><em>Try different values to see how probabilities change!</em></p>
+                `;
+                
+                document.getElementById('tableResults').innerHTML = results;
+                document.getElementById('tableResults').classList.add('show');
+            }
+        }
+
+        function gradeQuiz() {
+            const answers = {
+                q1: 'b',
+                q2: 'a',
+                q3: 'b',
+                q4: 'b',
+                q5: 'b',
+                q6: 'b',
+                q7: 'b',
+                q8: 'a',
+                q9: 'c',
+                q10: 'c'
+            };
+
+            let score = 0;
+            let total = Object.keys(answers).length;
+            const form = document.getElementById('quizForm');
+            
+            for (let question in answers) {
+                const selected = form.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === answers[question]) {
+                    score++;
+                }
+            }
+
+            const percentage = (score / total * 100).toFixed(1);
+            const resultDiv = document.getElementById('quizResult');
+            
+            let resultClass = 'incorrect';
+            let resultText = `You scored ${score} out of ${total} (${percentage}%).`;
+            
+            if (percentage >= 90) {
+                resultClass = 'correct';
+                resultText += ' Excellent work! 🎉';
+            } else if (percentage >= 70) {
+                resultClass = 'correct';
+                resultText += ' Good job! 👍';
+            } else if (percentage >= 50) {
+                resultText += ' Keep practicing! 📚';
+            } else {
+                resultText += ' Review the material and try again. 💪';
+            }
+
+            resultDiv.className = `quiz-result show ${resultClass}`;
+            resultDiv.textContent = resultText;
+
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Initialize with table calculation on load
+        window.addEventListener('load', function() {
+            calculateTableProbabilities();
+        });
+    </script>
+</body>
+</html>
